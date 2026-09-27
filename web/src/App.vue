@@ -87,9 +87,10 @@ main { position: relative; z-index: 1; }
 .glow--cyan { --depth: 0.3; top: 38%; right: -30vmax; background: radial-gradient(closest-side, rgb(0 240 255 / 0.08), transparent); }
 .glow--pink { --depth: 0.38; top: 62%; left: -30vmax; background: radial-gradient(closest-side, rgb(255 46 151 / 0.08), transparent); }
 .glow--low { --depth: 0.22; top: 82%; left: auto; right: -20vmax; }
-/* celular: luzes paradas (mesmo motivo do vitral, ver Hero.vue) */
+/* celular: luzes paradas (mesmo motivo do vitral, ver Hero.vue), mas cada
+   uma na sua camada (will-change) para não serem repintadas junto da página */
 @media (max-width: 820px) {
-  .glow { translate: none; will-change: auto; }
+  .glow { translate: none; }
 }
 
 .skip {

@@ -27,7 +27,7 @@ import { ascii } from '@/generated/ascii'
     </div>
 
     <!-- vitral: ao lado, nada por cima (docs/03); leva à exposição de devoção -->
-    <RouterLink to="/devocao" class="hero__window" aria-label="Ver a exposição 3D de devoção" title="Ver a exposição de devoção">
+    <RouterLink v-reveal to="/devocao" class="hero__window" aria-label="Ver a exposição 3D de devoção" title="Ver a exposição de devoção">
       <GothicWindow />
     </RouterLink>
   </section>
@@ -65,8 +65,20 @@ import { ascii } from '@/generated/ascii'
 @media (max-width: 820px) {
   .hero { grid-template-columns: 1fr; min-height: 0; gap: 1.75rem; padding-block: 1.5rem 3rem; }
   /* sem parallax no celular: a rolagem por inércia roda fora do JS, o
-     --scroll chega atrasado e o vitral ficava deslocado sobre o título */
-  .hero__window { grid-row: 1; width: min(42%, 170px); translate: none; will-change: auto; }
+     --scroll chega atrasado e o vitral ficava deslocado sobre o título.
+     O will-change fica: mantém o vitral numa camada própria, pintada uma vez
+     só — sem ela o SVG era repintado a cada animação vizinha e travava. */
+  .hero__window {
+    grid-row: 1;
+    width: min(42%, 170px);
+    translate: none;
+    /* chega descendo de cima (só translate/opacity: a GPU move a camada) */
+    transition:
+      filter 0.3s ease,
+      opacity 0.5s ease,
+      translate 0.7s cubic-bezier(0.2, 0.8, 0.3, 1);
+  }
+  .hero__window[data-reveal='out'] { opacity: 0; translate: 0 -48px; }
   /* fitas nos cantos sem cobrir o texto */
   .hero__card { padding: 1.9rem 1.5rem 1.4rem; }
   .hero__text { justify-items: center; text-align: center; }
