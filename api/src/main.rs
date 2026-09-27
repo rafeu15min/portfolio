@@ -151,8 +151,10 @@ async fn main() {
         std::process::exit(1);
     });
     match &mailer {
-        Some(_) => tracing::info!("contato: envio por e-mail ativo"),
-        None => tracing::warn!("contato: SMTP_USER/SMTP_PASSWORD/CONTACT_TO ausentes — formulário vai responder 503"),
+        Some(m) => tracing::info!("contato: envio por e-mail ativo ({})", m.kind()),
+        None => tracing::warn!(
+            "contato: CONTACT_TO + RESEND_API_KEY (ou SMTP_USER/SMTP_PASSWORD) ausentes — formulário vai responder 503"
+        ),
     }
 
     let state = Arc::new(AppState {

@@ -56,7 +56,8 @@ responde 503 em vez de fingir que recebeu.
 
 ## Publicação
 
-Koyeb (gratuito, container inteiro) + domínio `rafeu.dev` (Hostinger): ver
+Render (gratuito, container inteiro, `render.yaml`) + domínio `rafeu.dev`
+(Hostinger); Koyeb como alternativa. Ver
 [`docs/06-deploy.md`](docs/06-deploy.md). Depois de configurado, cada
 `git push` na `main` publica sozinho.
 

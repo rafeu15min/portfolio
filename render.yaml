@@ -1,0 +1,31 @@
+# Blueprint do Render: descreve o serviço inteiro. No painel do Render:
+# New → Blueprint → este repositório. Valores com `sync: false` são pedidos
+# na criação (não ficam no repositório público).
+services:
+  - type: web
+    name: portfolio
+    runtime: docker
+    plan: free
+    region: virginia
+    dockerfilePath: ./Dockerfile
+    healthCheckPath: /api/health
+    autoDeploy: true
+    domains:
+      - portfolio.rafeu.dev
+      - portifolio.rafeu.dev
+    envVars:
+      # contato por e-mail via API do Resend (o plano gratuito bloqueia SMTP)
+      - key: RESEND_API_KEY
+        sync: false
+      - key: CONTACT_TO
+        sync: false
+      # portifolio.rafeu.dev redireciona para o domínio principal
+      - key: CANONICAL_HOST
+        value: portfolio.rafeu.dev
+      - key: REDIRECT_HOSTS
+        value: portifolio.rafeu.dev
+      # o proxy do Render acrescenta o IP real ao X-Forwarded-For
+      - key: TRUSTED_PROXY_HOPS
+        value: "1"
+      - key: RUST_LOG
+        value: portfolio_api=info,tower_http=warn

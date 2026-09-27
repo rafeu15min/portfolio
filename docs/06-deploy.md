@@ -1,9 +1,43 @@
-# 06 — Deploy (Koyeb + domínio na Hostinger)
+# 06 — Deploy
 
 Endereço principal: **https://portfolio.rafeu.dev** ·
 `portifolio.rafeu.dev` redireciona para ele (308, preservando o caminho).
 
-## Por que Koyeb
+## Hospedagem atual: Render (gratuito)
+
+Container inteiro (mesmo `Dockerfile`), sem cartão, domínio próprio com HTTPS.
+Configuração no `render.yaml` (Blueprint). Limites do plano gratuito:
+- **SMTP bloqueado** → o contato sai pela **API do Resend** (`RESEND_API_KEY`);
+  sem domínio verificado no Resend, o remetente é `onboarding@resend.dev` e só
+  entrega ao e-mail do dono da conta — que é exatamente o destino.
+- **Dorme após 15 min** sem visitas (~1 min para acordar). Opcional: monitor
+  gratuito (UptimeRobot) em `https://portfolio.rafeu.dev/api/health` a cada
+  5 min — cabe nas 750 h/mês gratuitas.
+
+### Passo a passo
+
+1. **Resend** (https://resend.com): criar conta **com o mesmo e-mail** que vai
+   receber as mensagens → API Keys → Create (permissão *Sending access*) →
+   copiar a chave.
+2. **Render** (https://render.com): entrar com o GitHub → **New → Blueprint**
+   → repositório `rafeu15min/portfolio` → o Render lê o `render.yaml` e pede:
+   `RESEND_API_KEY` (a chave do Resend) e `CONTACT_TO` (o seu e-mail).
+   Confirmar → primeiro build (alguns minutos).
+3. Testar pelo endereço `*.onrender.com` do serviço.
+4. **Domínios**: já declarados no `render.yaml`; no serviço → Settings →
+   Custom Domains, o Render mostra o destino de cada um.
+5. **DNS na Hostinger** (hPanel → Domínios → rafeu.dev → Zona DNS): um
+   **CNAME** `portfolio` e um **CNAME** `portifolio`, ambos para
+   `<serviço>.onrender.com` (o valor que o Render mostrar). O HTTPS é emitido
+   sozinho quando o DNS propagar.
+
+Cada `git push` na `main` publica sozinho (`autoDeploy: true`).
+
+---
+
+## Alternativa: Koyeb
+
+### Por que Koyeb
 
 Gratuito sem cartão, roda o **container inteiro** (o mesmo `Dockerfile`),
 domínio próprio com HTTPS, porta 587 (SMTP do Gmail) liberada. Dorme após
@@ -13,7 +47,7 @@ domínio próprio com HTTPS, porta 587 (SMTP do Gmail) liberada. Dorme após
 trava para pessoa física no Brasil — bug sem solução em 2026. Os scripts
 `deploy/*.sh` e a seção no fim deste doc continuam válidos para ele.)
 
-## Passo a passo
+### Passo a passo (Koyeb)
 
 1. **Conta**: https://app.koyeb.com → entrar com o GitHub.
 2. **Criar serviço**: Create Service → **Web Service** → **GitHub** →
@@ -25,8 +59,8 @@ trava para pessoa física no Brasil — bug sem solução em 2026. Os scripts
 3. **Variáveis de ambiente** (Environment variables):
    | Nome | Valor | Tipo |
    |---|---|---|
-   | `SMTP_USER` | `rafaeldepaulo7@gmail.com` | texto |
-   | `CONTACT_TO` | `rafaeldepaulo7@gmail.com` | texto |
+   | `SMTP_USER` | o seu Gmail | texto |
+   | `CONTACT_TO` | o e-mail que recebe as mensagens | texto |
    | `SMTP_PASSWORD` | a senha de app do Gmail (a mesma do `.env`) | **Secret** |
    | `CANONICAL_HOST` | `portfolio.rafeu.dev` | texto |
    | `REDIRECT_HOSTS` | `portifolio.rafeu.dev` | texto |
