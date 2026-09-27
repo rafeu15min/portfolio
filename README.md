@@ -56,9 +56,9 @@ responde 503 em vez de fingir que recebeu.
 
 ## Publicação
 
-Google Cloud Run + domínio `rafeu.dev` (Hostinger): ver
-[`docs/06-deploy.md`](docs/06-deploy.md). Depois da preparação única,
-cada publicação é `./deploy/cloudrun.sh`.
+Koyeb (gratuito, container inteiro) + domínio `rafeu.dev` (Hostinger): ver
+[`docs/06-deploy.md`](docs/06-deploy.md). Depois de configurado, cada
+`git push` na `main` publica sozinho.
 
 ## Testes
 

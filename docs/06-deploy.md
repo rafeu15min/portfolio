@@ -1,4 +1,53 @@
-# 06 — Deploy (Google Cloud Run + domínio na Hostinger)
+# 06 — Deploy (Koyeb + domínio na Hostinger)
+
+Endereço principal: **https://portfolio.rafeu.dev** ·
+`portifolio.rafeu.dev` redireciona para ele (308, preservando o caminho).
+
+## Por que Koyeb
+
+Gratuito sem cartão, roda o **container inteiro** (o mesmo `Dockerfile`),
+domínio próprio com HTTPS, porta 587 (SMTP do Gmail) liberada. Dorme após
+1 h sem visitas e acorda em 1–5 s. Região: Washington (EUA).
+
+(O Cloud Run foi a primeira escolha, mas o cadastro de faturamento do Google
+trava para pessoa física no Brasil — bug sem solução em 2026. Os scripts
+`deploy/*.sh` e a seção no fim deste doc continuam válidos para ele.)
+
+## Passo a passo
+
+1. **Conta**: https://app.koyeb.com → entrar com o GitHub.
+2. **Criar serviço**: Create Service → **Web Service** → **GitHub** →
+   repositório `rafeu15min/portfolio`, branch `main`.
+   - Builder: **Dockerfile** (na raiz).
+   - Instância: **Free** · Região: **Washington, D.C.**
+   - Porta: **8080**, protocolo HTTP, rota `/`.
+   - Health check: **HTTP**, caminho `/api/health`, porta 8080.
+3. **Variáveis de ambiente** (Environment variables):
+   | Nome | Valor | Tipo |
+   |---|---|---|
+   | `SMTP_USER` | `rafaeldepaulo7@gmail.com` | texto |
+   | `CONTACT_TO` | `rafaeldepaulo7@gmail.com` | texto |
+   | `SMTP_PASSWORD` | a senha de app do Gmail (a mesma do `.env`) | **Secret** |
+   | `CANONICAL_HOST` | `portfolio.rafeu.dev` | texto |
+   | `REDIRECT_HOSTS` | `portifolio.rafeu.dev` | texto |
+   | `TRUSTED_PROXY_HOPS` | `1` | texto |
+4. **Deploy** e aguardar o build (alguns minutos). O serviço ganha um endereço
+   `*.koyeb.app` — testar por ele antes do domínio.
+5. **Domínios**: no serviço → Settings → **Domains** → adicionar
+   `portfolio.rafeu.dev` e `portifolio.rafeu.dev`. O Koyeb mostra o **destino
+   do CNAME** de cada um.
+6. **DNS na Hostinger**: hPanel → Domínios → rafeu.dev → **Zona DNS** →
+   para cada subdomínio, um registro **CNAME** (nome `portfolio` /
+   `portifolio`, apontando para o destino mostrado pelo Koyeb). Se já existir
+   outro registro com o mesmo nome, remova-o antes.
+7. O HTTPS é emitido sozinho quando o DNS propagar (minutos a algumas horas).
+   `.dev` exige HTTPS, então o endereço só abre depois disso.
+
+Depois do primeiro deploy, cada `git push` na `main` publica sozinho.
+
+---
+
+## Alternativa: Google Cloud Run
 
 Endereço principal: **https://portfolio.rafeu.dev** ·
 `portifolio.rafeu.dev` redireciona para ele (308, preservando o caminho).

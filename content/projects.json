@@ -85,8 +85,8 @@
       "Docker"
     ],
     "status": "ativo",
-    "visibility": "private",
-    "repo": null,
+    "visibility": "public",
+    "repo": "rafeu15min/portfolio",
     "accent": "purple"
   },
   {
