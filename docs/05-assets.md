@@ -64,8 +64,11 @@ porque o build do Docker não tem Blender.
 entrada `"generator"` no `models.json`) — sem geometria de terceiros. Inspirado
 em arquitetura gótica: nicho em arco ogival, arcos em camadas, colunetas,
 contrafortes com pináculos, frontão com florões, quadrifólio e cruz dourada, e
-no fundo do nicho um vitral (duas lancetas + rosácea quadrifoliada) e lambris.
-Medidas (fração da altura): vão 0.368, piso interno 0.088, recuo 0.26,
+no fundo do nicho um vitral (duas lancetas + rosácea quadrifoliada) e lambris;
+nas paredes laterais, arcada cega com colunetas, cornija e quadrifólios;
+abóbada nervurada com florões dourados e piso em xadrez (`tile-a`/`tile-b`).
+Os arcanjos laterais ficam sobre mísulas com colunas até o piso.
+Medidas (fração da altura): vão 0.304, piso interno 0.088, recuo 0.26,
 profundidade 0.292. Na cena: altura 11, piso do nicho em y=0, fundo em z=−3.05 (nicho fundo o
 bastante para São Miguel ficar atrás da Sagrada Família).
 O vidro da janela é uma peça só por abertura (rótulo `glass-window`, com UV

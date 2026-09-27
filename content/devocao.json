@@ -55,9 +55,9 @@
       "prayer": null,
       "model": "/models/sao-gabriel.glb",
       "position": [
-        -1.15,
+        -0.9,
         1.55,
-        -1.1
+        -1.4
       ],
       "rotationY": 0.4,
       "height": 1.25,
@@ -76,9 +76,9 @@
       "prayer": null,
       "model": "/models/sao-rafael.glb",
       "position": [
-        1.15,
+        0.9,
         1.55,
-        -1.1
+        -1.4
       ],
       "rotationY": -0.4,
       "height": 1.25,

@@ -27,12 +27,14 @@ const OVERVIEW = { target: new THREE.Vector3(0, 2.45, -1.3), position: new THREE
 
 // A Capela (models/capela.glb): nicho gótico ORIGINAL, gerado por
 // tools/models/capela.py. Medidas em fração da altura, definidas no gerador:
-// vão 0.368 de largura, piso interno a 0.088, recuo (frente → fundo do nicho)
+// vão 0.304 de largura, piso interno a 0.088, recuo (frente → fundo do nicho)
 // 0.26, profundidade total 0.292 — fundo o bastante para São Miguel ficar
 // atrás da Sagrada Família.
-const CHAPEL = { height: 11, floor: 0.088, halfNiche: 0.184, depth: 0.292, recess: 0.26 }
+const CHAPEL = { height: 11, floor: 0.088, halfNiche: 0.152, depth: 0.292, recess: 0.26 }
 // vidro do frontão: do lado de fora, sem luz por trás — só reflete a cena
 const FRONT_GLASS: Record<string, string> = { 'front-ruby': '#7e0f22', 'front-gold': '#a8781e' }
+// piso do nicho em xadrez
+const TILES: Record<string, string> = { 'tile-a': '#6b4a31', 'tile-b': '#2a1a10' }
 const NICHE = {
   back: -3.05, // z do fundo do nicho (a frente da capela fica em ≈ -0.19)
   halfWidth: CHAPEL.halfNiche * CHAPEL.height, // ≈ 2.02
@@ -109,6 +111,17 @@ export function createChapel(o: Options): Chapel {
   const windowGlass = new THREE.MeshBasicMaterial({ map: glassTex, toneMapped: false })
   disposables.push(glassTex, windowGlass)
 
+  const tileCache = new Map<string, THREE.MeshStandardMaterial>()
+  const tile = (label: string) => {
+    let t = tileCache.get(label)
+    if (!t) {
+      t = new THREE.MeshStandardMaterial({ color: TILES[label], roughness: 0.55 })
+      tileCache.set(label, t)
+      disposables.push(t)
+    }
+    return t
+  }
+
   const frontCache = new Map<string, THREE.MeshStandardMaterial>()
   const frontGlass = (label: string) => {
     let f = frontCache.get(label)
@@ -179,7 +192,7 @@ export function createChapel(o: Options): Chapel {
             m.material = windowGlass // o vitral: mosaico aceso por trás
           } else {
             // cruz e remates: ouro metálico, sem brilho próprio (trim)
-            m.material = label === 'gold' ? trim : label in FRONT_GLASS ? frontGlass(label) : stone
+            m.material = label === 'gold' ? trim : label in FRONT_GLASS ? frontGlass(label) : label in TILES ? tile(label) : stone
             m.receiveShadow = true
           }
           m.renderOrder = -2 // arquitetura primeiro, depois a glória, depois as imagens
@@ -255,8 +268,16 @@ export function createChapel(o: Options): Chapel {
       corbel.castShadow = corbel.receiveShadow = true
       const ring = new THREE.Mesh(new THREE.TorusGeometry(0.42, 0.018, 12, 64), trim)
       ring.rotation.x = Math.PI / 2
-      group.add(corbel, ring)
-      disposables.push(corbel.geometry, ring.geometry)
+      // coluna da mísula até o piso do nicho, com base
+      const floorY = -p.position[1] // piso do nicho, no referencial da peça
+      const corbelBottom = -0.28
+      const shaft = new THREE.Mesh(new THREE.CylinderGeometry(0.1, 0.12, corbelBottom - floorY, 24), stone)
+      shaft.position.y = (floorY + corbelBottom) / 2
+      const plinth = new THREE.Mesh(new THREE.CylinderGeometry(0.2, 0.22, 0.12, 24), stone)
+      plinth.position.y = floorY + 0.06
+      for (const m of [corbel, shaft, plinth]) m.castShadow = m.receiveShadow = true
+      group.add(corbel, ring, shaft, plinth)
+      disposables.push(corbel.geometry, ring.geometry, shaft.geometry, plinth.geometry)
     } else {
       const glow = new THREE.Mesh(new THREE.PlaneGeometry(p.height * 2, p.height * 2), glowMat)
       glow.renderOrder = -1
@@ -390,7 +411,8 @@ export function createChapel(o: Options): Chapel {
       const maxX = NICHE.halfWidth - margin
       goal.get(q.id)!.set(
         THREE.MathUtils.clamp(base.x + away.x * 1.3, -maxX, maxX),
-        base.y + (q.base === 'altar' ? Math.max(away.y, 0) : away.y) * 0.9,
+        // altar não desce; mísulas (com coluna até o piso) não se movem na vertical
+        base.y + (q.base === 'altar' ? Math.max(away.y, 0) : q.base === 'corbel' ? 0 : away.y) * 0.9,
         Math.max(base.z - 0.8, NICHE.back + margin),
       )
     }

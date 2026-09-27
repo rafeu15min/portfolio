@@ -7,11 +7,11 @@
 #
 # Medidas em "unidades de desenho" (altura total 250) escolhidas para bater
 # com as constantes de chapel.ts: piso do nicho 22 (0.088), meia-largura do
-# vão 46 (0.184), recuo frente→fundo do nicho 64 (+1 do friso: 0.26), profundidade 72
+# vão 38 (0.152), recuo frente→fundo do nicho 64 (+1 do friso: 0.26), profundidade 72
 # (+1: 0.292). No fim tudo é normalizado: altura 1, base em z=0, centrado.
 #
 # Frente = -Y (vira +Z no glTF). Materiais são só rótulos — a cor vem da cena:
-#   stone · gold · glass-window (vitral, com UV — o mosaico é uma textura
+#   stone · gold · tile-a · tile-b (piso em xadrez) · glass-window (vitral, com UV — o mosaico é uma textura
 #   gerada na cena) · front-ruby · front-gold (vidro do frontão, sem brilho)
 
 import bpy, bmesh, math, sys
@@ -21,7 +21,10 @@ OUT = sys.argv[sys.argv.index("--") + 1:][0]
 
 H = 250.0           # altura total (topo da cruz)
 FLOOR = 22.0        # piso do nicho
-NICHE_HW = 46.0     # meia-largura do vão
+NICHE_HW = 38.0     # meia-largura do vão
+# o resto da largura segue o vão: paredes laterais de 30 unidades
+OUTER = NICHE_HW + 30   # meia-largura da moldura
+GABLE = NICHE_HW + 16   # base do frontão / face interna dos contrafortes
 SPRING = 125.0      # início do arco
 RISE = 55.0         # altura do arco (ápice em 180)
 FRONT_Y = 4.0       # face da moldura
@@ -97,6 +100,11 @@ def pane(name, outline_xz, y, material, uv=False):
 
 
 def molding(name, points_xz, y, radius, material="stone", closed=False):
+    """Moldura arredondada no plano XZ (em y fixo)."""
+    return molding3d(name, [(x, y, z) for x, z in points_xz], radius, material, closed)
+
+
+def molding3d(name, points, radius, material="stone", closed=False):
     """Moldura arredondada: curva com bevel, convertida em malha no fim."""
     cu = bpy.data.curves.new(name, "CURVE")
     cu.dimensions = "3D"
@@ -104,8 +112,8 @@ def molding(name, points_xz, y, radius, material="stone", closed=False):
     cu.bevel_resolution = 2
     cu.use_fill_caps = True
     sp = cu.splines.new("POLY")
-    sp.points.add(len(points_xz) - 1)
-    for p, (x, z) in zip(sp.points, points_xz):
+    sp.points.add(len(points) - 1)
+    for p, (x, y, z) in zip(sp.points, points):
         p.co = (x, y, z, 1)
     sp.use_cyclic_u = closed
     o = bpy.data.objects.new(name, cu)
@@ -178,12 +186,12 @@ def cut(target, cutter):
 
 
 # ---------------------------------------------------------------- base
-box("pedestal", -80, 80, 0, DEPTH, 0, 12)
-box("pedestal_friso", -81, 81, -1, DEPTH, 10, 12)          # friso saliente
-box("degrau", -78, 78, 2, DEPTH, 12, FLOOR)                 # piso do nicho no topo
+box("pedestal", -(OUTER + 4), OUTER + 4, 0, DEPTH, 0, 12)
+box("pedestal_friso", -(OUTER + 5), OUTER + 5, -1, DEPTH, 10, 12)          # friso saliente
+box("degrau", -(OUTER + 2), OUTER + 2, 2, DEPTH, 12, FLOOR)                 # piso do nicho no topo
 
 # ------------------------------------------------ moldura com frontão
-frame = prism("moldura", [(-76, FLOOR), (-76, 150), (-62, 150), (0, 228), (62, 150), (76, 150), (76, FLOOR)], FRONT_Y, DEPTH)
+frame = prism("moldura", [(-OUTER, FLOOR), (-OUTER, 150), (-GABLE, 150), (0, 228), (GABLE, 150), (OUTER, 150), (OUTER, FLOOR)], FRONT_Y, DEPTH)
 cut(frame, prism("vao", opening(NICHE_HW, FLOOR - 1, SPRING, RISE), FRONT_Y - 1, BACK_Y))
 # nicho do quadrifólio no frontão (vidro recuado)
 GABLE_Q = (0, 204)
@@ -193,12 +201,12 @@ pane("vidro_frontao_centro", circle(*GABLE_Q, 3.6), FRONT_Y + 2.8, "front-gold")
 molding("friso_q", quatrefoil(*GABLE_Q, 4.2, 5.4), FRONT_Y - 0.4, 1.0, closed=True)
 
 # arestas do frontão, com florões (crockets) ao longo delas
-molding("frontao_esq", [(-64, 149), (0, 229.5)], FRONT_Y - 0.6, 2.2)
-molding("frontao_dir", [(0, 229.5), (64, 149)], FRONT_Y - 0.6, 2.2)
+molding("frontao_esq", [(-(GABLE + 2), 149), (0, 229.5)], FRONT_Y - 0.6, 2.2)
+molding("frontao_dir", [(0, 229.5), (GABLE + 2, 149)], FRONT_Y - 0.6, 2.2)
 for i in range(1, 6):
     t = i / 6
     for s in (-1, 1):
-        sphere(f"florao_{s}_{i}", s * 64 * (1 - t), FRONT_Y - 1.2, 149 + (229.5 - 149) * t + 2.4, 1.9)
+        sphere(f"florao_{s}_{i}", s * (GABLE + 2) * (1 - t), FRONT_Y - 1.2, 149 + (229.5 - 149) * t + 2.4, 1.9)
 
 # cruz dourada no topo (228 → 250)
 box("cruz_haste", -1.9, 1.9, FRONT_Y - 1.5, FRONT_Y + 3.5, 228, H, material="gold")
@@ -218,7 +226,7 @@ for s in (-1, 1):
 
 # --------------------------------- contrafortes com pináculos
 for s in (-1, 1):
-    x0, x1 = (62, 77) if s > 0 else (-77, -62)
+    x0, x1 = (GABLE, OUTER + 1) if s > 0 else (-(OUTER + 1), -GABLE)
     box(f"contraforte_{s}", x0, x1, 0, 14, 12, 150)
     box(f"contraforte_topo_{s}", x0 - 1, x1 + 1, -1, 15, 147, 151)
     cx = (x0 + x1) / 2
@@ -231,9 +239,63 @@ for s in (-1, 1):
             sphere(f"florao_p_{s}_{i}_{dx}{dy}", cx + dx * k * 0.95, 7 + dy * k * 0.95, z, 1.3)
     sphere(f"pinaculo_remate_{s}", cx, 7, 209.5, 2.4, material="gold")
 
+# -------------------------------------- paredes internas do nicho
+# arcada cega (três arcos ogivais em relevo com colunetas), uma cornija e
+# uma fileira de quadrifólios, nas duas paredes laterais (plano YZ)
+ARC_Y0, ARC_Y1 = FRONT_Y + 8, BACK_Y - 3
+bays = 3
+bay = (ARC_Y1 - ARC_Y0) / bays
+for s in (-1, 1):
+    wx = s * NICHE_HW                    # superfície da parede
+    rx = wx - s * 0.8                    # relevo, um pouco para dentro do nicho
+    for k in range(bays):
+        yc = ARC_Y0 + bay * (k + 0.5)
+        pts = [(yc + u, z) for u, z in opening(bay / 2 - 1.6, FLOOR + 4, 68, 12)]
+        molding3d(f"arcada_{s}_{k}", [(rx, y, z) for y, z in pts], 0.9, closed=True)
+        # trifólio no alto de cada arco
+        molding3d(f"arcada_trevo_{s}_{k}", [(rx, yc + u, z) for u, z in quatrefoil(0, 74.5, 1.6, 2.1, 48)], 0.55, closed=True)
+    for k in range(bays + 1):
+        y = ARC_Y0 + bay * k
+        cylinder(f"arcada_col_{s}_{k}", wx - s * 1.3, y, FLOOR, 69, 1.1)
+        box(f"arcada_cap_{s}_{k}", min(wx, wx - s * 3), max(wx, wx - s * 3), y - 1.8, y + 1.8, 68, 70.5)
+    # cornija ao longo da parede
+    molding3d(f"cornija_{s}", [(wx - s * 1.0, FRONT_Y + 1, 82), (wx - s * 1.0, BACK_Y, 82)], 1.5)
+    molding3d(f"cornija_b_{s}", [(wx - s * 0.6, FRONT_Y + 1, 79), (wx - s * 0.6, BACK_Y, 79)], 0.8)
+    # quadrifólios em relevo acima da cornija
+    for k in range(bays):
+        yc = ARC_Y0 + bay * (k + 0.5)
+        molding3d(f"parede_q_{s}_{k}", [(rx, yc + u, z) for u, z in quatrefoil(0, 100, 3.6, 4.6, 64)], 0.8, closed=True)
+        molding3d(f"parede_qc_{s}_{k}", [(rx, yc + u, z) for u, z in circle(0, 100, 2.0, 28)], 0.6, closed=True)
+
+# ------------------------------------ abóbada nervurada do nicho
+# nervuras transversais sobre as colunetas da arcada, nervura de cumeeira e
+# florões dourados nos cruzamentos; colunelos sobem da cornija até a nascença
+for k in range(bays + 1):
+    y = ARC_Y0 + bay * k
+    rib = arch(NICHE_HW - 1.4, SPRING, RISE - 1.4, 40)
+    molding3d(f"nervura_{k}", [(x, y, z) for x, z in rib], 1.4)
+    sphere(f"florao_abobada_{k}", 0, y, SPRING + RISE - 2.6, 2.3, material="gold")
+    for s in (-1, 1):
+        cylinder(f"colunelo_{s}_{k}", s * (NICHE_HW - 1.4), y, 83, SPRING, 0.9)
+        box(f"colunelo_cap_{s}_{k}", min(s * NICHE_HW, s * (NICHE_HW - 3.2)), max(s * NICHE_HW, s * (NICHE_HW - 3.2)), y - 1.6, y + 1.6, SPRING - 1.5, SPRING + 1)
+molding3d("cumeeira", [(0, FRONT_Y + 2, SPRING + RISE - 2.4), (0, BACK_Y, SPRING + RISE - 2.4)], 1.1)
+
+# ------------------------------------------------ piso em xadrez
+TILE = (2 * NICHE_HW) / 12
+rows = int((BACK_Y - FRONT_Y) // TILE)
+for i in range(12):
+    for j in range(rows):
+        x0 = -NICHE_HW + i * TILE
+        y0 = FRONT_Y + j * TILE
+        box(f"ladrilho_{i}_{j}", x0 + 0.15, x0 + TILE - 0.15, y0 + 0.15, y0 + TILE - 0.15, FLOOR, FLOOR + 0.25,
+            material="tile-a" if (i + j) % 2 else "tile-b")
+
 # ------------------------------------------------ fundo do nicho
+# friso logo abaixo do vitral
+molding3d("friso_fundo", [(-NICHE_HW, BACK_Y - 0.9, 92), (NICHE_HW, BACK_Y - 0.9, 92)], 1.2)
 # lambris na parte de baixo (atrás das imagens)
-for i, (a, b) in enumerate(((-40, -15), (-12, 12), (15, 40))):
+inner = NICHE_HW - 4
+for i, (a, b) in enumerate(((-inner, -inner / 3 - 1.5), (-inner / 3 + 1.5, inner / 3 - 1.5), (inner / 3 + 1.5, inner))):
     box(f"lambri_{i}", a, b, BACK_Y - 1.0, BACK_Y, 30, 88)
 
 # vitral: duas lancetas + quadrifólio. O vidro é uma peça só por abertura;
