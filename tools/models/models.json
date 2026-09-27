@@ -10,7 +10,7 @@
     "src": "3D/Espirito-Santo-CC/espirito_santo_cc.stl",
     "front": "+z",
     "tris": 160000,
-    "gold": "z < -0.62"
+    "gold": "i >= 16114"
   },
   {
     "id": "sao-miguel",

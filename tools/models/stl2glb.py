@@ -7,7 +7,8 @@
 # ("ivory"/"gold"): a cor de verdade é aplicada na cena.
 #
 # regra-dourada: expressão em x, z (coordenadas ORIGINAIS do STL, antes de
-# girar) que marca as faces douradas — ex.: raios atrás das figuras.
+# girar) e i (índice do triângulo no arquivo) que marca as faces douradas —
+# ex.: raios atrás das figuras, ou uma peça inteira de um STL combinado.
 import bpy, sys, math, mathutils
 
 args = sys.argv[sys.argv.index("--") + 1:]
@@ -27,7 +28,7 @@ if gold_rule:
     rule = compile(gold_rule, "regra-dourada", "eval")
     for p in obj.data.polygons:
         x, z = p.center.x, p.center.z
-        if eval(rule, {}, {"x": x, "z": z}):
+        if eval(rule, {}, {"x": x, "z": z, "i": p.index}):
             p.material_index = 1
             gold_faces += 1
 

@@ -54,7 +54,7 @@ porque o build do Docker não tem Blender.
 | Peça | Origem | Frente | Triângulos | Dourado (regra) |
 |---|---|---|---|---|
 | Sagrada Família | `3D/SagradaFamilia-CC/` (Renato Saioron Bernardo, **CC BY-NC-SA**) | +x | 3,07M → 240k | — |
-| Espírito Santo | `3D/Espirito-Santo-CC/` (SerVic, **CC0**; 3MF → STL das 2 peças) | +z (relevo deitado) | 54k | `z < -0.62` (resplendor, 63%) |
+| Espírito Santo | `3D/Espirito-Santo-CC/` (SerVic, **CC0**; 3MF → STL das 2 peças) | +z (relevo deitado) | 54k | `i >= 16114` (a peça do resplendor inteira: no STL combinado, os primeiros 16.114 triângulos são a pomba) |
 | São Miguel | `3D/Três Arcanjos/obj_1…_1` | -y | 271k → 150k | — |
 | São Gabriel | `3D/Três Arcanjos/obj_3…_3` | +y | 218k → 130k | — |
 | São Rafael | `3D/Três Arcanjos/obj_2…_2` | +y | 221k → 130k | — |

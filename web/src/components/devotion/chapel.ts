@@ -236,6 +236,8 @@ export function createChapel(o: Options): Chapel {
   // posição original e posição-alvo de cada peça (as outras se afastam no foco)
   const home = new Map<string, THREE.Vector3>()
   const goal = new Map<string, THREE.Vector3>()
+  const goalScale = new Map<string, number>() // 1 = visível; HIDDEN = encolhida fora de cena
+  const HIDDEN = 0.001
   const billboards: THREE.Group[] = []
   const materials = new Map<string, THREE.MeshStandardMaterial>()
 
@@ -320,7 +322,7 @@ export function createChapel(o: Options): Chapel {
     const r = o.canvas.getBoundingClientRect()
     pointer.set(((e.clientX - r.left) / r.width) * 2 - 1, -((e.clientY - r.top) / r.height) * 2 + 1)
     ray.setFromCamera(pointer, camera)
-    for (const hit of ray.intersectObjects([...roots.values()], true)) {
+    for (const hit of ray.intersectObjects([...roots.values()].filter((g) => g.visible), true)) {
       let n: THREE.Object3D | null = hit.object
       while (n && !n.userData.pieceId) n = n.parent
       if (n) return n.userData.pieceId as string
@@ -378,6 +380,7 @@ export function createChapel(o: Options): Chapel {
     from: [THREE.Vector3, THREE.Vector3]
     to: [THREE.Vector3, THREE.Vector3]
     pieces: Map<string, THREE.Vector3>
+    scales: Map<string, number>
     t0: number
   } | null = null
   function focus(id: string | null) {
@@ -395,35 +398,38 @@ export function createChapel(o: Options): Chapel {
       focusDistance = fit + 0.2
     }
 
-    // as outras peças abrem espaço: para os lados/para cima e para trás,
-    // sem sair do vão do nicho (colunas e fundo da Capela) e sem o altar descer
+    // com uma imagem em foco, SÓ ela fica na cena: as outras se afastam e
+    // encolhem até sumir, na mesma curva do zoom (podem atravessar parede e
+    // piso — somem antes de chegar lá). Na visão geral, voltam ao lugar.
     for (const q of o.pieces) {
       const base = home.get(q.id)!
-      if (!p || q.id === p.id) {
+      const keep = !p || q.id === p.id
+      goalScale.set(q.id, keep ? 1 : HIDDEN)
+      if (keep) {
         goal.get(q.id)!.copy(base)
         continue
       }
       const away = new THREE.Vector2(base.x - p.position[0], base.y - p.position[1])
       if (away.lengthSq() < 1e-6) away.set(0, 1)
       away.normalize()
-      // folga até a borda de cada peça: altar 0.62, mísula 0.45, glória 0.25
-      const margin = q.base === 'altar' ? 0.62 : q.base === 'corbel' ? 0.45 : 0.25
-      const maxX = NICHE.halfWidth - margin
-      goal.get(q.id)!.set(
-        THREE.MathUtils.clamp(base.x + away.x * 1.3, -maxX, maxX),
-        // altar não desce; mísulas (com coluna até o piso) não se movem na vertical
-        base.y + (q.base === 'altar' ? Math.max(away.y, 0) : q.base === 'corbel' ? 0 : away.y) * 0.9,
-        Math.max(base.z - 0.8, NICHE.back + margin),
-      )
+      goal.get(q.id)!.set(base.x + away.x * 1.3, base.y + away.y * 0.9, base.z - 0.8)
     }
-    if (o.reducedMotion) for (const [id, g] of roots) g.position.copy(goal.get(id)!)
+    for (const [id, g] of roots) g.visible = true // as que vão reaparecer já entram crescendo
+    if (o.reducedMotion) {
+      for (const [id, g] of roots) {
+        g.position.copy(goal.get(id)!)
+        g.scale.setScalar(goalScale.get(id)!)
+        g.visible = goalScale.get(id)! > HIDDEN
+      }
+    }
     if (o.reducedMotion) {
       controls.target.copy(to[0])
       camera.position.copy(to[1])
       tween = null
     } else {
       const pieces = new Map([...roots].map(([id, g]) => [id, g.position.clone()]))
-      tween = { from: [controls.target.clone(), camera.position.clone()], to, pieces, t0: performance.now() }
+      const scales = new Map([...roots].map(([id, g]) => [id, g.scale.x]))
+      tween = { from: [controls.target.clone(), camera.position.clone()], to, pieces, scales, t0: performance.now() }
     }
   }
 
@@ -455,7 +461,12 @@ export function createChapel(o: Options): Chapel {
       const e = t < 0.5 ? 4 * t * t * t : 1 - (-2 * t + 2) ** 3 / 2 // ease-in-out cúbico
       controls.target.lerpVectors(tween.from[0], tween.to[0], e)
       camera.position.lerpVectors(tween.from[1], tween.to[1], e)
-      for (const [id, g] of roots) g.position.lerpVectors(tween.pieces.get(id)!, goal.get(id)!, e)
+      for (const [id, g] of roots) {
+        g.position.lerpVectors(tween.pieces.get(id)!, goal.get(id)!, e)
+        g.scale.setScalar(THREE.MathUtils.lerp(tween.scales.get(id)!, goalScale.get(id)!, e))
+        // encolhida por completo: fica invisível (e fora do clique)
+        if (t === 1) g.visible = goalScale.get(id)! > HIDDEN
+      }
       if (t === 1) tween = null
     }
     controls.update()
