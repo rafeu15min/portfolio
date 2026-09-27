@@ -139,6 +139,8 @@ de 0.35rem a 0.9rem, calculado pra caber sem scroll horizontal.
   distância do foco volta à visão geral — vale para roda, touchpad e pinça. A placa de
   museu (papel reto, **sem tilt**) mostra nome, significado, festa,
   Escritura, texto e oração.
+- A câmera **não atravessa a capela**: dentro do nicho (ou na entrada) ela
+  fica no vão, encostando nas paredes, no fundo e no piso.
 - Movimento da câmera só por ação do visitante (o giro do Espírito Santo
   é consequência dela). `prefers-reduced-motion`
   troca a transição por corte seco. Nada gira sozinho.

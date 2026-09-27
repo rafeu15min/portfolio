@@ -545,6 +545,17 @@ export function createChapel(o: Options): Chapel {
       if (t === 1) tween = null
     }
     controls.update()
+    // a câmera não atravessa a capela: dentro do nicho (ou na entrada dele)
+    // ela fica no vão — encosta nas paredes, no fundo e no piso, sem entrar.
+    // É o que acontecia ao girar em volta das imagens dos cantos.
+    const frontZ = NICHE.back + CHAPEL.recess * CHAPEL.height
+    if (camera.position.z < frontZ + 0.4) {
+      const lim = NICHE.halfWidth - 0.25
+      camera.position.x = THREE.MathUtils.clamp(camera.position.x, -lim, lim)
+      camera.position.z = Math.max(camera.position.z, NICHE.back + 0.3)
+    }
+    camera.position.y = Math.max(camera.position.y, 0.15)
+    camera.lookAt(controls.target)
     // zoom-out além da distância do foco → visão geral (girar não muda a distância)
     if (!tween && current && camera.position.distanceTo(controls.target) > focusDistance * ZOOM_OUT_EXIT) leaveFocus()
     // o Espírito Santo encara a câmera só na visão geral; com uma imagem em
