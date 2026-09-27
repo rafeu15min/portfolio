@@ -1,0 +1,111 @@
+{
+  "intro": "Uma composição em três níveis, como num retábulo: o Espírito Santo no alto, os três Arcanjos em volta, e ao centro a Sagrada Família — Jesus nos braços de Maria, sob a guarda de José.",
+  "pieces": [
+    {
+      "id": "espirito-santo",
+      "name": "Espírito Santo",
+      "subtitle": "Terceira Pessoa da Santíssima Trindade",
+      "meaning": null,
+      "feast": "Solenidade de Pentecostes — cinquenta dias após a Páscoa",
+      "refs": "Lc 3,22 · Jo 14,26 · At 2,1-4",
+      "text": "Não é um santo: é Deus. Desce sobre Jesus em forma de pomba no batismo no Jordão e sobre os apóstolos em línguas de fogo em Pentecostes. É o Paráclito, o Consolador, que ensina e recorda tudo o que Cristo disse.",
+      "prayer": "Vinde, Espírito Santo, enchei os corações dos vossos fiéis e acendei neles o fogo do vosso amor.",
+      "model": "/models/espirito-santo.glb",
+      "position": [
+        0,
+        4.35,
+        -2.5
+      ],
+      "rotationY": 0,
+      "height": 1.15,
+      "base": "glory",
+      "credit": "“Espíritu Santo con resplandor”, de SerVic (MakerWorld), CC0 — remix de “Holy Spirit”, de Uma mesa (Printables), CC0",
+      "billboard": true,
+      "creditUrl": "https://makerworld.com/pt/models/1863986-holy-spirit-with-radiance"
+    },
+    {
+      "id": "sao-miguel",
+      "name": "São Miguel Arcanjo",
+      "subtitle": "Príncipe da milícia celeste",
+      "meaning": "Quem como Deus?",
+      "feast": "29 de setembro, festa dos Arcanjos",
+      "refs": "Dn 12,1 · Jd 9 · Ap 12,7-9",
+      "text": "Seu nome é uma pergunta que já traz a resposta: ninguém é como Deus. O Apocalipse o mostra vencendo o dragão, e a Igreja o invoca como defensor no combate. Na imagem, a espada, o escudo com a cruz e o dragão sob os pés.",
+      "prayer": "São Miguel Arcanjo, defendei-nos no combate, sede o nosso refúgio contra a maldade e as ciladas do demônio.",
+      "model": "/models/sao-miguel.glb",
+      "position": [
+        0,
+        2.3,
+        -1.95
+      ],
+      "rotationY": 0,
+      "height": 1.45,
+      "base": "corbel",
+      "credit": "“Três arcanjos”, de user_2945973328 (MakerWorld), CC BY 4.0 — convertido e simplificado para a web",
+      "creditUrl": "https://makerworld.com/pt/models/3272577-three-archangels"
+    },
+    {
+      "id": "sao-gabriel",
+      "name": "São Gabriel Arcanjo",
+      "subtitle": "Mensageiro de Deus",
+      "meaning": "Força de Deus",
+      "feast": "29 de setembro, festa dos Arcanjos",
+      "refs": "Dn 8,16 · Lc 1,19 · Lc 1,26-38",
+      "text": "O anjo da Anunciação: leva a Maria o anúncio da Encarnação e a Zacarias o do nascimento de João Batista. Pio XII o proclamou padroeiro das telecomunicações. Na imagem, o lírio da Anunciação.",
+      "prayer": null,
+      "model": "/models/sao-gabriel.glb",
+      "position": [
+        -1.15,
+        1.55,
+        -1.1
+      ],
+      "rotationY": 0.4,
+      "height": 1.25,
+      "base": "corbel",
+      "credit": "“Três arcanjos”, de user_2945973328 (MakerWorld), CC BY 4.0 — convertido e simplificado para a web",
+      "creditUrl": "https://makerworld.com/pt/models/3272577-three-archangels"
+    },
+    {
+      "id": "sao-rafael",
+      "name": "São Rafael Arcanjo",
+      "subtitle": "Companheiro de viagem",
+      "meaning": "Deus cura",
+      "feast": "29 de setembro, festa dos Arcanjos",
+      "refs": "Tb 5,4-17 · Tb 11,7-15 · Tb 12,15",
+      "text": "No livro de Tobias, acompanha o jovem Tobias na viagem, o livra do perigo e cura a cegueira de seu pai, Tobit. Apresenta-se como um dos sete anjos que estão diante do Senhor. Padroeiro dos viajantes e dos enfermos — e o arcanjo que leva o meu nome. Na imagem, o cajado de peregrino, a cabaça e o peixe.",
+      "prayer": null,
+      "model": "/models/sao-rafael.glb",
+      "position": [
+        1.15,
+        1.55,
+        -1.1
+      ],
+      "rotationY": -0.4,
+      "height": 1.25,
+      "base": "corbel",
+      "credit": "“Três arcanjos”, de user_2945973328 (MakerWorld), CC BY 4.0 — convertido e simplificado para a web",
+      "creditUrl": "https://makerworld.com/pt/models/3272577-three-archangels"
+    },
+    {
+      "id": "sagrada-familia",
+      "name": "Sagrada Família",
+      "subtitle": "Jesus, Maria e José",
+      "meaning": null,
+      "feast": "Domingo dentro da oitava do Natal (ou 30 de dezembro)",
+      "refs": "Mt 2,13-15 · Lc 2,41-52",
+      "text": "No centro de tudo, o próprio Cristo: Deus feito criança nos braços de Maria, sob a guarda de José. Nazaré é a escola do Evangelho — trabalho, silêncio e obediência antes de qualquer pregação. São José, padroeiro da Igreja e dos trabalhadores; Maria, Mãe de Deus e nossa.",
+      "prayer": "Jesus, Maria e José, minha família vossa é.",
+      "model": "/models/sagrada-familia.glb",
+      "position": [
+        0,
+        0.45,
+        -0.3
+      ],
+      "rotationY": 0,
+      "height": 1.95,
+      "base": "altar",
+      "credit": "“Sagrada Familia”, de Renato Saioron Bernardo (MakerWorld), CC BY-NC-SA 4.0 — convertida e simplificada para a web, sob a mesma licença",
+      "creditUrl": "https://makerworld.com/pt/models/3312282-sagrada-familia"
+    }
+  ]
+}

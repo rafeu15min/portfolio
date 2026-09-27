@@ -1,0 +1,11 @@
+.git
+.env
+**/node_modules
+**/target
+web/dist
+web/src/generated
+docs
+*.md
+3D
+tools
+deploy

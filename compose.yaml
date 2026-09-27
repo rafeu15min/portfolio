@@ -1,0 +1,19 @@
+services:
+  portfolio:
+    build: .
+    image: rafeu/portfolio:latest
+    container_name: portfolio
+    # só localhost: em produção, um proxy reverso (TLS) fica na frente
+    ports:
+      - "127.0.0.1:8080:8080"
+    # segredos (SMTP, GitHub) vêm do .env local — nunca da imagem
+    env_file:
+      - path: .env
+        required: false
+    environment:
+      RUST_LOG: ${RUST_LOG:-portfolio_api=info,tower_http=warn}
+    # hardening: nada é gravado em disco, sem capabilities, sem escalar privilégio
+    read_only: true
+    cap_drop: [ALL]
+    security_opt: ["no-new-privileges:true"]
+    restart: unless-stopped

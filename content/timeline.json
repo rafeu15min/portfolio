@@ -1,0 +1,44 @@
+[
+  {
+    "kind": "trabalho",
+    "org": "Integrativa",
+    "role": "Analista de Suporte Field Service",
+    "period": null,
+    "text": "Realizar treinamentos presencialmente sobre o sistema, abrir Ordens de Serviço para qualquer problema, forçando a análise crítica do Sistema, e testes incansáveis."
+  },
+  {
+    "kind": "trabalho",
+    "org": "Associação Mahatma Gandhi",
+    "role": "Assistente de T.I.",
+    "period": null,
+    "text": "Manutenção da infraestrutura e dos equipamentos da rede pública de saúde."
+  },
+  {
+    "kind": "formação",
+    "org": "Univesp",
+    "role": "Bacharelado em Engenharia da Computação, e Bacharelado em Tecnologia da Informação com Ênfase em Internet das Coisas (IoT).",
+    "period": null,
+    "text": "Graduações pela Universidade Virtual do Estado de São Paulo."
+  },
+  {
+    "kind": "formação",
+    "org": "Univesp",
+    "role": "Licenciatura em Matemática",
+    "period": "em curso",
+    "text": "Graduação pela Universidade Virtual do Estado de São Paulo."
+  },
+  {
+    "kind": "formação",
+    "org": "FAMEF",
+    "role": "Pós-graduação em Cybersegurança",
+    "period": "em curso",
+    "text": "Modelagem de ameaças, hardening e resposta a incidentes."
+  },
+  {
+    "kind": "formação",
+    "org": "FAMEF",
+    "role": "Pós-graduação em Governança & LGPD",
+    "period": "em curso",
+    "text": "Governança de dados e adequação à LGPD."
+  }
+]

@@ -1,0 +1,4 @@
+.env
+*.log
+3D/
+tools/models/.tmp/

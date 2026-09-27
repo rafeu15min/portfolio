@@ -1,0 +1,311 @@
+[
+  {
+    "slug": "vault-sync",
+    "name": "vault-sync",
+    "tagline": "Sincroniza jogos entre o SSD local e um servidor próprio via SSH/rsync.",
+    "summary": "Sincroniza a biblioteca de jogos entre o NVMe local e um servidor próprio via SSH/rsync: baixa o jogo para jogar, envia de volta ao fechar e libera o espaço local. Integra Steam e Heroic (Epic), acorda o servidor via Wake-on-LAN e roda como serviço systemd no boot e no desligamento.",
+    "highlights": [
+      "Binário único em Rust, sem nome de máquina cravado no código",
+      "Wake-on-LAN automático antes de qualquer operação remota",
+      "Comandos run / pull / ingest / purge / doctor com diagnóstico só-leitura",
+      "Integração com systemd para sincronizar no desligamento"
+    ],
+    "stack": [
+      "Rust",
+      "rsync",
+      "SSH",
+      "systemd"
+    ],
+    "status": "ativo",
+    "visibility": "private",
+    "repo": "rafeu15min/vault-sync",
+    "accent": "rust"
+  },
+  {
+    "slug": "claudesktop",
+    "name": "claudesktop",
+    "tagline": "Servidor MCP que dá ao Claude controle de mouse e teclado no Linux.",
+    "summary": "Servidor MCP local que dá ao Claude Code controle de mouse e teclado com consciência de geometria de janela. Localiza elementos por árvore de acessibilidade (AT-SPI) e DOM (Chrome DevTools Protocol) antes de recorrer a print+clique. Toda ação que muda estado devolve um screenshot pra confirmação.",
+    "highlights": [
+      "Eventos reais via /dev/uinput (ydotool), direto no compositor Wayland",
+      "AT-SPI para apps GTK/Qt, CDP para navegadores Chromium",
+      "Diagnóstico de ambiente só-leitura antes de agir"
+    ],
+    "stack": [
+      "Python",
+      "MCP",
+      "AT-SPI",
+      "CDP",
+      "Wayland"
+    ],
+    "status": "ativo",
+    "visibility": "public",
+    "repo": "rafeu15min/claudesktop",
+    "accent": "cyan"
+  },
+  {
+    "slug": "kernel-heimdall",
+    "name": "Kernel Heimdall",
+    "tagline": "Kernel x86_64 bare-metal escrito do zero em Rust.",
+    "summary": "Kernel bare-metal (#![no_std], #![no_main]) escrito como estudo documentado: driver de vídeo VGA em modo texto, macros print!/println! próprias, GDT, IDT com tratamento de exceções e double fault, interrupções de hardware via PIC 8259 e teclado PS/2. Boota no QEMU a partir de uma imagem gerada pelo bootimage.",
+    "highlights": [
+      "Driver VGA em 0xb8000 com cores e escrita volátil",
+      "IDT, double fault com pilha dedicada (IST) e PIC encadeado",
+      "Teclado PS/2 por interrupção",
+      "Ambiente reproduzível: nightly fixado e QEMU num container"
+    ],
+    "stack": [
+      "Rust",
+      "x86_64",
+      "QEMU",
+      "Docker"
+    ],
+    "status": "em construção",
+    "visibility": "public",
+    "repo": "rafeu15min/kernel-heimdall",
+    "accent": "rust"
+  },
+  {
+    "slug": "portfolio",
+    "name": "Portfólio",
+    "tagline": "Este site: front em Vue e Three.js, API em Rust.",
+    "summary": "Front em Vue 3 + TypeScript com a estética feita à mão em CSS/SVG, exposição 3D em Three.js e uma API em Rust (Axum) que serve tudo como um binário só: proxy do GitHub com allowlist e cache, contato com rate limit e privacidade por padrão (LGPD), CSP estrita e imagem Docker distroless de usuário não-root.",
+    "highlights": [
+      "Artes ASCII geradas no build (figlet)",
+      "Pipeline STL → GLB com Blender e gltf-transform, sem decoder WASM",
+      "Arquivos pré-comprimidos (brotli) servidos pela API",
+      "Imagem Docker de ~120 MB, só-leitura, sem shell"
+    ],
+    "stack": [
+      "Vue",
+      "TypeScript",
+      "Three.js",
+      "Rust",
+      "Axum",
+      "Docker"
+    ],
+    "status": "ativo",
+    "visibility": "private",
+    "repo": null,
+    "accent": "purple"
+  },
+  {
+    "slug": "personal-bank-suite",
+    "name": "Personal Bank Suite",
+    "tagline": "Microsserviços de Open Finance com fluxo de consentimento OAuth 2.0.",
+    "summary": "Ecossistema de microsserviços que agrega dados financeiros de várias instituições pelo padrão Open Finance. O ms-consent orquestra o fluxo OAuth 2.0 com os bancos e guarda os tokens; após o consentimento, publica eventos no Kafka e os serviços de transações, cartões e investimentos consomem e processam cada domínio.",
+    "highlights": [
+      "Arquitetura orientada a eventos (Kafka, pub/sub)",
+      "Consentimento OAuth 2.0 como porta de entrada",
+      "Maven multi-módulo com biblioteca comum e clientes REST dinâmicos por banco",
+      "Dev Containers e Docker Compose"
+    ],
+    "stack": [
+      "Java",
+      "Quarkus",
+      "Kafka",
+      "OAuth 2.0",
+      "Docker"
+    ],
+    "status": "protótipo",
+    "visibility": "public",
+    "repo": "rafeu15min/personalbank-suite",
+    "accent": "pink"
+  },
+  {
+    "slug": "esp32-wake-on-lan",
+    "name": "ESP32 Wake-on-LAN",
+    "tagline": "Firmware ESP32 que liga máquinas da rede de casa por MQTT.",
+    "summary": "Firmware ESP32 que assina tópicos MQTT sobre TLS (HiveMQ Cloud) e, ao receber o payload secreto, envia o magic packet de Wake-on-LAN para a máquina certa da rede local. Reconexão resiliente: recupera o Wi-Fi antes do handshake TLS e reinicia de forma controlada após falha persistente.",
+    "highlights": [
+      "MQTT com TLS, autenticação e QoS 1",
+      "Um tópico por máquina + um para todas",
+      "Credenciais fora do repositório (secrets.h)"
+    ],
+    "stack": [
+      "C++",
+      "ESP32",
+      "MQTT",
+      "TLS"
+    ],
+    "status": "ativo",
+    "visibility": "public",
+    "repo": "rafeu15min/esp32-wake-on-lan",
+    "accent": "cyan"
+  },
+  {
+    "slug": "anubis",
+    "name": "Anubis",
+    "tagline": "Sistema de triagem estrutural seguro.",
+    "summary": "Sistema de triagem estrutural seguro. Descrição detalhada em breve.",
+    "highlights": [],
+    "stack": [
+      "Rust"
+    ],
+    "status": "em construção",
+    "visibility": "private",
+    "repo": null,
+    "accent": "purple",
+    "todo": "Confirmar descrição, stack e link com o Rafeu"
+  },
+  {
+    "slug": "token-econ-plugins",
+    "name": "Token Econ. Plugins",
+    "tagline": "Plugins para reduzir o consumo de tokens em chamadas de LLM.",
+    "summary": "Ambiente modular de plugins focado em otimização e economia de tokens em chamadas de LLM. Descrição detalhada em breve.",
+    "highlights": [],
+    "stack": [
+      "Claude API",
+      "Prompt Engineering"
+    ],
+    "status": "em construção",
+    "visibility": "private",
+    "repo": null,
+    "accent": "pink",
+    "todo": "Confirmar descrição, stack e link com o Rafeu"
+  },
+  {
+    "slug": "biblia",
+    "name": "Bíblia",
+    "tagline": "App Flutter de leitura da Bíblia offline, com extrator em Python.",
+    "summary": "Um extrator em Python monta um banco SQLite com a estrutura e o texto completo da Bíblia a partir de APIs públicas, e um app Flutter lê esse banco offline, com seletor de livro e capítulo.",
+    "highlights": [
+      "ETL em Python para SQLite",
+      "App Flutter multiplataforma, leitura offline"
+    ],
+    "stack": [
+      "Dart",
+      "Flutter",
+      "Python",
+      "SQLite"
+    ],
+    "status": "protótipo",
+    "visibility": "public",
+    "repo": "rafeu15min/bible",
+    "accent": "purple"
+  },
+  {
+    "slug": "rescue-backup",
+    "name": "rescue-backup",
+    "tagline": "CLI de restauração de backups Borg com snapshot prévio e undo.",
+    "summary": "CLI em Bash sobre Borg/borgmatic: antes de restaurar, tira um snapshot do estado atual e então faz o restore atômico. Mantém uma pilha de snapshots para desfazer em cadeia, só atua em caminhos permitidos e convive com o backup agendado via systemd em prioridade idle.",
+    "highlights": [
+      "Snapshot antes de qualquer restore",
+      "Undo em cadeia e limpeza profunda",
+      "Allowlist de caminhos"
+    ],
+    "stack": [
+      "Bash",
+      "Borg",
+      "systemd"
+    ],
+    "status": "ativo",
+    "visibility": "public",
+    "repo": "rafeu15min/rescue-backup",
+    "accent": "cyan"
+  },
+  {
+    "slug": "ship-n-click",
+    "name": "Ship'n'click",
+    "tagline": "Jogo clicker com gestão de recursos, lógica em Rust na Godot.",
+    "summary": "Jogo interativo que combina mecânicas de clicker com gestão de recursos. A cena e o render ficam na Godot; a lógica de jogo roda em Rust via GDExtension (godot-rust).",
+    "highlights": [
+      "Lógica em Rust compilada como cdylib e carregada pela Godot",
+      "Assets vetoriais próprios (SVG)"
+    ],
+    "stack": [
+      "Rust",
+      "Godot",
+      "GDExtension"
+    ],
+    "status": "protótipo",
+    "visibility": "public",
+    "repo": "rafeu15min/click-n-ship",
+    "accent": "rust"
+  },
+  {
+    "slug": "internal-linux-env",
+    "name": "Internal Linux Env",
+    "tagline": "Meu setup CachyOS + Hyprland versionado em dotfiles.",
+    "summary": "Setup Linux (CachyOS + Hyprland) hiper-customizado e versionado: compositor, barra, launcher, notificações, editor, shell e tema de login próprio, tudo reproduzível a partir de um repositório de dotfiles.",
+    "highlights": [
+      "Hyprland configurado em Lua, Waybar, Rofi, SwayNC",
+      "Tema de login SDDM próprio (hypr-login)",
+      "Segredos fora do repositório por padrão"
+    ],
+    "stack": [
+      "Linux",
+      "Hyprland",
+      "Lua",
+      "fish",
+      "QML"
+    ],
+    "status": "ativo",
+    "visibility": "public",
+    "repo": "rafeu15min/rice",
+    "accent": "cyan"
+  },
+  {
+    "slug": "compiler",
+    "name": "compiler",
+    "tagline": "Lexer e parser de regras de reescrita em Rust, sem dependências.",
+    "summary": "Estudo de compiladores em Rust: um lexer transforma regras de reescrita como \"aa(end)= bb\" em tokens, e um parser de máquina de estados monta a regra (lado esquerdo = lado direito), rejeitando linhas malformadas.",
+    "highlights": [],
+    "stack": [
+      "Rust"
+    ],
+    "status": "estudo",
+    "visibility": "public",
+    "repo": "rafeu15min/compiler",
+    "accent": "rust"
+  },
+  {
+    "slug": "tab-plus",
+    "name": "Tab+",
+    "tagline": "Backend de um jogo de tabuada com histórico por aluno.",
+    "summary": "Backend de um jogo educativo de tabuada: registra cada partida por jogador, série e ano — contas, respostas e acertos — e expõe consultas por jogador e por partida. Acompanha um serviço de analytics em Python.",
+    "highlights": [],
+    "stack": [
+      "Java",
+      "Spring Boot",
+      "JPA",
+      "Docker"
+    ],
+    "status": "protótipo",
+    "visibility": "public",
+    "repo": "rafeu15min/tabplusBackend",
+    "accent": "pink"
+  },
+  {
+    "slug": "autopark",
+    "name": "AutoPark",
+    "tagline": "Backend de ocupação de vagas em tempo real via MQTT e WebSocket.",
+    "summary": "Backend que consome o estado das vagas via MQTT, mantém o mapa de ocupação e empurra cada mudança para os clientes por WebSocket.",
+    "highlights": [],
+    "stack": [
+      "Java",
+      "Quarkus",
+      "MQTT",
+      "WebSocket"
+    ],
+    "status": "protótipo",
+    "visibility": "public",
+    "repo": "rafeu15min/AutoParkBackend",
+    "accent": "cyan"
+  },
+  {
+    "slug": "theme-shuffler",
+    "name": "YTM Theme Shuffler",
+    "tagline": "Sorteia um tema CSS para o YouTube Music Desktop.",
+    "summary": "Utilitário em Rust que sorteia um dos temas CSS de uma pasta e o aplica como tema ativo do YouTube Music Desktop.",
+    "highlights": [],
+    "stack": [
+      "Rust",
+      "CSS"
+    ],
+    "status": "concluído",
+    "visibility": "public",
+    "repo": "rafeu15min/ytmdesktop-theme-shuffler",
+    "accent": "rust"
+  }
+]

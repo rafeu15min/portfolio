@@ -1,0 +1,37 @@
+[
+  {
+    "id": "sagrada-familia",
+    "src": "3D/SagradaFamilia-CC/obj_1_quant_1.stl",
+    "front": "+x",
+    "tris": 240000
+  },
+  {
+    "id": "espirito-santo",
+    "src": "3D/Espirito-Santo-CC/espirito_santo_cc.stl",
+    "front": "+z",
+    "tris": 160000,
+    "gold": "z < -0.62"
+  },
+  {
+    "id": "sao-miguel",
+    "src": "3D/Três Arcanjos/obj_1_single_color (5).stl_1.stl",
+    "front": "-y",
+    "tris": 150000
+  },
+  {
+    "id": "sao-gabriel",
+    "src": "3D/Três Arcanjos/obj_3_single_color (5).stl_3.stl",
+    "front": "+y",
+    "tris": 130000
+  },
+  {
+    "id": "sao-rafael",
+    "src": "3D/Três Arcanjos/obj_2_single_color (5).stl_2.stl",
+    "front": "+y",
+    "tris": 130000
+  },
+  {
+    "id": "capela",
+    "generator": "capela.py"
+  }
+]

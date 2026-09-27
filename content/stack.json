@@ -1,0 +1,203 @@
+{
+  "main": {
+    "name": "Rust",
+    "text": "Minha linguagem principal. Uso quando o projeto precisa de desempenho e segurança de memória, do kernel bare-metal à API deste site.",
+    "projects": [
+      "vault-sync",
+      "kernel-heimdall",
+      "portfolio",
+      "compiler",
+      "ship-n-click",
+      "theme-shuffler"
+    ]
+  },
+  "groups": [
+    {
+      "title": "Linguagens",
+      "items": [
+        {
+          "name": "Java",
+          "projects": [
+            "personal-bank-suite",
+            "tab-plus",
+            "autopark"
+          ]
+        },
+        {
+          "name": "Python",
+          "projects": [
+            "claudesktop",
+            "biblia"
+          ]
+        },
+        {
+          "name": "TypeScript",
+          "projects": [
+            "portfolio"
+          ]
+        },
+        {
+          "name": "Dart",
+          "projects": [
+            "biblia"
+          ]
+        },
+        {
+          "name": "C++",
+          "projects": [
+            "esp32-wake-on-lan"
+          ]
+        },
+        {
+          "name": "Bash",
+          "projects": [
+            "rescue-backup"
+          ]
+        },
+        {
+          "name": "Lua",
+          "projects": [
+            "internal-linux-env"
+          ]
+        }
+      ]
+    },
+    {
+      "title": "Frameworks",
+      "items": [
+        {
+          "name": "Quarkus",
+          "projects": [
+            "personal-bank-suite",
+            "autopark"
+          ]
+        },
+        {
+          "name": "Spring Boot",
+          "projects": [
+            "tab-plus"
+          ]
+        },
+        {
+          "name": "Axum · Tokio",
+          "projects": [
+            "portfolio"
+          ]
+        },
+        {
+          "name": "Vue 3 · Vite",
+          "projects": [
+            "portfolio"
+          ]
+        },
+        {
+          "name": "Three.js",
+          "projects": [
+            "portfolio"
+          ]
+        },
+        {
+          "name": "Flutter",
+          "projects": [
+            "biblia"
+          ]
+        },
+        {
+          "name": "Godot · GDExtension",
+          "projects": [
+            "ship-n-click"
+          ]
+        },
+        {
+          "name": "MCP",
+          "projects": [
+            "claudesktop"
+          ]
+        }
+      ]
+    },
+    {
+      "title": "Infra & dados",
+      "items": [
+        {
+          "name": "Docker · Compose",
+          "projects": [
+            "portfolio",
+            "personal-bank-suite",
+            "kernel-heimdall",
+            "compiler"
+          ]
+        },
+        {
+          "name": "Kafka",
+          "projects": [
+            "personal-bank-suite"
+          ]
+        },
+        {
+          "name": "MQTT · TLS",
+          "projects": [
+            "esp32-wake-on-lan",
+            "autopark"
+          ]
+        },
+        {
+          "name": "SQLite",
+          "projects": [
+            "biblia"
+          ]
+        },
+        {
+          "name": "systemd",
+          "projects": [
+            "vault-sync",
+            "rescue-backup"
+          ]
+        },
+        {
+          "name": "SSH · rsync",
+          "projects": [
+            "vault-sync"
+          ]
+        },
+        {
+          "name": "Borg",
+          "projects": [
+            "rescue-backup"
+          ]
+        },
+        {
+          "name": "QEMU",
+          "projects": [
+            "kernel-heimdall"
+          ]
+        },
+        {
+          "name": "Linux · Hyprland",
+          "projects": [
+            "internal-linux-env",
+            "claudesktop"
+          ]
+        }
+      ]
+    },
+    {
+      "title": "IA & 3D",
+      "items": [
+        {
+          "name": "Claude API · Prompt Eng.",
+          "projects": [
+            "claudesktop",
+            "token-econ-plugins"
+          ]
+        },
+        {
+          "name": "Blender",
+          "projects": [
+            "portfolio"
+          ]
+        }
+      ]
+    }
+  ]
+}

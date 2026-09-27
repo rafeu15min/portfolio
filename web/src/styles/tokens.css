@@ -1,0 +1,58 @@
+/* Fonte da verdade dos valores visuais — ver docs/03-design-system.md */
+:root {
+  /* papel */
+  --bg-paper: #141019; /* fundo da página: o preto-violeta dos cartazes */
+  --on-bg: #f3eee6; /* texto direto sobre o fundo */
+  --on-bg-soft: #e2d6c3;
+  --kraft: #c8a676;
+  --kraft-dark: #a9885a;
+  --newsprint: #ede6d6;
+  --notebook: #f6f1e4;
+  --ink: #1a1a1a;
+  --ink-soft: #3b362e;
+  --poster: #141019;
+  --poster-raised: #221b2c; /* cartaz colado sobre o fundo escuro */
+
+  /* neon */
+  --neon-cyan: #00f0ff;
+  --neon-pink: #ff2e97;
+  --neon-purple: #b026ff;
+  /* exclusivo do Rust — não usar pra mais nada */
+  --rust: #ff5f1f;
+
+  /* colagem */
+  --tape: #e8d9a8cc;
+  --staple: #9aa0a6;
+
+  /* vitral */
+  --glass-gold: #f2c14e;
+  --glass-gold-light: #ffe29a;
+  --glass-blue: #1f4fff;
+  --glass-blue-light: #5b82ff;
+  --glass-ruby: #c8102e;
+  --glass-ruby-light: #e8485f;
+  --glass-green: #1e8c4e;
+  --glass-green-light: #4cb97c;
+
+  /* tipografia */
+  --font-mono: 'JetBrains Mono', ui-monospace, monospace;
+  --font-body: 'Courier Prime', 'Courier New', monospace;
+  --font-stencil: 'Big Shoulders Stencil Display', Impact, sans-serif;
+
+  /* grade */
+  --maxw: 1200px;
+  --gutter: 24px;
+
+  /* sombra de papel sobre papel */
+  --paper-shadow: 1px 2px 0 rgb(0 0 0 / 0.25), 4px 8px 14px rgb(40 25 5 / 0.25);
+
+  /* camadas */
+  --z-bg: 0;
+  --z-glass: 1;
+  --z-collage: 2;
+  --z-neon: 3;
+}
+
+@media (max-width: 640px) {
+  :root { --gutter: 16px; }
+}
