@@ -50,6 +50,10 @@ const cols = computed(() => Math.max(...props.art.split('\n').map((l) => [...l].
   font-size: min(var(--max), calc(100cqw / var(--cols) / 0.605));
   line-height: 1.1;
   white-space: pre;
+  /* cada linha começa na coluna 0: com text-align: center herdado (hero no
+     celular), as linhas mais curtas eram centralizadas sozinhas e a arte
+     desalinhava */
+  text-align: left;
   overflow: visible;
   font-variant-ligatures: none;
 }

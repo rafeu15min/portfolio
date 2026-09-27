@@ -64,7 +64,9 @@ import { ascii } from '@/generated/ascii'
 
 @media (max-width: 820px) {
   .hero { grid-template-columns: 1fr; min-height: 0; gap: 1.75rem; padding-block: 1.5rem 3rem; }
-  .hero__window { grid-row: 1; width: min(42%, 170px); }
+  /* sem parallax no celular: a rolagem por inércia roda fora do JS, o
+     --scroll chega atrasado e o vitral ficava deslocado sobre o título */
+  .hero__window { grid-row: 1; width: min(42%, 170px); translate: none; will-change: auto; }
   /* fitas nos cantos sem cobrir o texto */
   .hero__card { padding: 1.9rem 1.5rem 1.4rem; }
   .hero__text { justify-items: center; text-align: center; }
