@@ -93,6 +93,8 @@ export function createChapel(o: Options): Chapel {
   scene.add(rim, rim.target)
 
   const loader = new GLTFLoader()
+  let chapelRoot: THREE.Object3D | null = null
+  let chapelStart = 0
   const total = o.pieces.length + 1 // + a Capela
   let loaded = 0
   const progress = () => o.onProgress(++loaded, total)
@@ -199,7 +201,10 @@ export function createChapel(o: Options): Chapel {
           disposables.push(m.geometry)
         }
       })
+      opacityOf(gltf.scene, 0)
       scene.add(gltf.scene)
+      chapelRoot = gltf.scene
+      chapelStart = performance.now()
       progress()
     },
     undefined,
@@ -240,11 +245,15 @@ export function createChapel(o: Options): Chapel {
   const goalFade = new Map<string, number>()
 
   /** Desvanece a peça inteira (materiais e luz própria) para a opacidade `a`. */
-  const setFade = (id: string, a: number) => {
-    const g = roots.get(id)!
-    fade.set(id, a)
-    g.visible = a > 0.01
-    g.traverse((n) => {
+  // Nada surge ou some de repente: toda peça tem duas camadas de opacidade
+  // que se multiplicam — aparição (sobe de 0 a 1 quando o modelo carrega) e
+  // foco (desce/sobe junto com o zoom). Só fica invisível perto de zero.
+  const APPEAR_MS = o.reducedMotion ? 1 : 700
+  const smooth = (k: number) => k * k * (3 - 2 * k)
+
+  /** Opacidade de um objeto inteiro: materiais e luzes próprias. */
+  const opacityOf = (obj: THREE.Object3D, a: number) => {
+    obj.traverse((n) => {
       const light = n as THREE.PointLight
       if (light.isPointLight) {
         light.userData.base ??= light.intensity
@@ -259,6 +268,20 @@ export function createChapel(o: Options): Chapel {
       m.depthWrite = a >= 1 ? base.depthWrite : false
     })
   }
+
+  const appear = new Map<string, number>() // aparição de cada peça (0..1)
+  const appearStart = new Map<string, number>() // quando o modelo da peça carregou
+  const applyPiece = (id: string) => {
+    const g = roots.get(id)!
+    const a = (fade.get(id) ?? 1) * (appear.get(id) ?? 1)
+    g.visible = a > 0.01
+    opacityOf(g, a)
+  }
+  const setFade = (id: string, a: number) => {
+    fade.set(id, a)
+    applyPiece(id)
+  }
+
   const billboards: THREE.Group[] = []
   const materials = new Map<string, THREE.MeshStandardMaterial>()
 
@@ -317,6 +340,9 @@ export function createChapel(o: Options): Chapel {
       disposables.push(glow.geometry)
     }
 
+    appear.set(p.id, 0)
+    applyPiece(p.id) // a base (altar/mísula/coluna) também começa transparente
+
     const mat = new THREE.MeshStandardMaterial({ color: IVORY, roughness: 0.55, metalness: 0, emissive: GOLD, emissiveIntensity: 0 })
     materials.set(p.id, mat)
     const pGilded = gilded.clone()
@@ -337,6 +363,8 @@ export function createChapel(o: Options): Chapel {
           }
         })
         group.add(gltf.scene)
+        applyPiece(p.id) // o modelo entra transparente…
+        appearStart.set(p.id, performance.now()) // …e aparece aos poucos
         progress()
       },
       undefined,
@@ -439,12 +467,27 @@ export function createChapel(o: Options): Chapel {
     )
     for (const q of o.pieces) {
       const g = roots.get(q.id)!
-      goal.get(q.id)!.copy(home.get(q.id)!)
-      const inView = p && q.id !== p.id && frustum.intersectsBox(new THREE.Box3().setFromObject(g))
+      const base = home.get(q.id)!
+      // caixa da peça na posição de repouso (ela pode estar afastada agora)
+      const box = new THREE.Box3().setFromObject(g).translate(base.clone().sub(g.position))
+      const inView = !!p && q.id !== p.id && frustum.intersectsBox(box)
       goalFade.set(q.id, inView ? 0 : 1)
-      if (!inView) g.visible = true // reaparece desvanecendo de volta
+      if (inView) {
+        // desvanece enquanto se afasta: para os lados/cima e para trás
+        const away = new THREE.Vector2(base.x - p.position[0], base.y - p.position[1])
+        if (away.lengthSq() < 1e-6) away.set(0, 1)
+        away.normalize()
+        goal.get(q.id)!.set(base.x + away.x * 1.3, base.y + away.y * 0.9, base.z - 0.8)
+      } else {
+        goal.get(q.id)!.copy(base)
+      }
     }
-    if (o.reducedMotion) for (const q of o.pieces) setFade(q.id, goalFade.get(q.id)!)
+    if (o.reducedMotion) {
+      for (const q of o.pieces) {
+        roots.get(q.id)!.position.copy(goal.get(q.id)!)
+        setFade(q.id, goalFade.get(q.id)!)
+      }
+    }
     if (o.reducedMotion) {
       controls.target.copy(to[0])
       camera.position.copy(to[1])
@@ -478,6 +521,17 @@ export function createChapel(o: Options): Chapel {
   const aim = new THREE.Object3D() // auxiliar: calcula a orientação "de frente pra câmera"
   const facing = new THREE.Quaternion()
   const loop = (now: number) => {
+    for (const [id, t0] of appearStart) {
+      const k = Math.min(1, (now - t0) / APPEAR_MS)
+      appear.set(id, smooth(k))
+      applyPiece(id)
+      if (k === 1) appearStart.delete(id)
+    }
+    if (chapelRoot && chapelStart) {
+      const k = Math.min(1, (now - chapelStart) / APPEAR_MS)
+      opacityOf(chapelRoot, smooth(k))
+      if (k === 1) chapelStart = 0
+    }
 
     if (tween) {
       const t = Math.min(1, (now - tween.t0) / 900)

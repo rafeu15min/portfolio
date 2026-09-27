@@ -128,8 +128,11 @@ de 0.35rem a 0.9rem, calculado pra caber sem scroll horizontal.
 - Hover: leve brilho dourado. Clique (na cena ou na lista): a câmera
   chega perto o bastante pra imagem ocupar ~¾ da altura da vista, e as
   peças que apareceriam no enquadramento final (teste da caixa de cada uma
-  contra o frustum da câmera no fim do zoom) **desvanecem no lugar**; as que
-  ficariam fora do quadro não mudam —
+  contra o frustum da câmera no fim do zoom) **desvanecem enquanto se
+  afastam**, na mesma curva do zoom; as que ficariam fora do quadro não mudam.
+  **Nada surge ou some de repente**: cada peça tem opacidade = foco × aparição
+  (a aparição sobe de 0 a 1 em 0,7 s quando o modelo carrega; a capela também
+  aparece assim), e só fica invisível perto de zero —
   **ao mesmo tempo** que a câmera: uma única transição de 900 ms, mesma curva.
   "Visão geral" devolve tudo ao lugar. Com uma imagem em foco, girar só
   orbita em volta dela; afastar a câmera (zoom-out) além de 12% da
