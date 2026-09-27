@@ -32,6 +32,10 @@ const teeth = Array.from({ length: 28 }, (_, i) => (360 / 28) * i)
   filter: drop-shadow(0 0 6px var(--rust)) drop-shadow(0 0 18px color-mix(in srgb, var(--rust) 60%, transparent));
 }
 .pulse { animation: rust-pulse 4s ease-in-out infinite; }
+/* celular: o pulso anima um filter, que repinta a cada quadro */
+@media (max-width: 820px) {
+  .pulse { animation: none; }
+}
 @media (prefers-reduced-motion: reduce) {
   .pulse { animation: none; }
 }

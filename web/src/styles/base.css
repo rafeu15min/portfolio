@@ -58,6 +58,11 @@ a { color: inherit; }
    a valer para qualquer elemento ainda não revelado. */
 [data-reveal='out'] .tape { opacity: 0; scale: 1.6; }
 [data-reveal='out'] .staple { opacity: 0; translate: 0 -14px; }
+/* celular: fita e grampo só aparecem, sem escala nem salto */
+@media (max-width: 820px) {
+  [data-reveal='out'] .tape { scale: none; }
+  [data-reveal='out'] .staple { translate: none; }
+}
 
 .sr-only {
   position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;

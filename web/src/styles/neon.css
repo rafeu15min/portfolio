@@ -37,6 +37,31 @@
   50% { filter: drop-shadow(0 0 10px var(--rust)) drop-shadow(0 0 36px var(--rust)); }
 }
 
+/* celular: sem a camada de 56px (a mais cara de pintar); o piscar usa as
+   versões leves abaixo (só opacidade, que a GPU anima sem repintar) */
+@media (max-width: 820px) {
+  .neon {
+    text-shadow:
+      0 0 1px #fff,
+      0 0 4px var(--glow),
+      0 0 12px var(--glow),
+      0 0 26px color-mix(in srgb, var(--glow) 60%, transparent);
+  }
+  .neon--flicker { animation: neon-flicker-lite 9s infinite; }
+}
+
+/* celular: duas piscadas ao acender e uma piscada suave de vez em quando */
+@keyframes neon-ignite-lite {
+  0% { opacity: 0.06; }
+  15% { opacity: 0.9; }
+  28% { opacity: 0.35; }
+  50%, 100% { opacity: 1; }
+}
+@keyframes neon-flicker-lite {
+  0%, 94%, 97%, 100% { opacity: 1; }
+  95.5% { opacity: 0.6; }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .neon--flicker { animation: none; }
 }

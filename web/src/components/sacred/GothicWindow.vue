@@ -105,6 +105,10 @@ const crossPath = `M${cross.v.x} ${cross.v.y}H${cross.v.x + cross.v.w}V${cross.h
   height: 100%;
   filter: drop-shadow(0 0 22px rgb(242 193 78 / 0.35)) drop-shadow(0 0 60px rgb(91 130 255 / 0.25));
 }
+/* celular: um halo só (dois drop-shadows grandes pesavam na rolagem) */
+@media (max-width: 820px) {
+  .window__svg { filter: drop-shadow(0 0 18px rgb(242 193 78 / 0.35)); }
+}
 /* luz que atravessa o vidro e banha a parede */
 .window__light {
   position: absolute;

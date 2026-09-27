@@ -70,4 +70,17 @@ const cols = computed(() => Math.max(...props.art.split('\n').map((l) => [...l].
     neon-ignite 1s ease-out var(--reveal-delay, 0ms) both,
     neon-flicker 7s calc(var(--reveal-delay, 0ms) + 1s) infinite;
 }
+/* celular: acende com menos piscadas e o nome pisca de leve de vez em
+   quando; camada própria (will-change) → o halo é pintado uma vez só */
+@media (max-width: 820px) {
+  .ascii { will-change: opacity; }
+  .ascii-box[data-reveal='in'] .ascii {
+    animation: neon-ignite-lite 0.7s ease-out var(--reveal-delay, 0ms) both;
+  }
+  .ascii-box[data-reveal='in'] .ascii.neon--flicker {
+    animation:
+      neon-ignite-lite 0.7s ease-out var(--reveal-delay, 0ms) both,
+      neon-flicker-lite 9s calc(var(--reveal-delay, 0ms) + 0.7s) infinite;
+  }
+}
 </style>

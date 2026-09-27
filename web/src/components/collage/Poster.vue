@@ -34,6 +34,16 @@ const clip = computed(() => tornClip(props.torn, props.seed, 9, 40))
   translate: 0 -32px;
   rotate: -5deg;
 }
+/* celular: chegada simples e sombra sem desfoque (a de 18px pesava) */
+@media (max-width: 820px) {
+  .poster-wrap {
+    transition:
+      opacity 0.4s ease var(--reveal-delay, 0ms),
+      translate 0.4s ease-out var(--reveal-delay, 0ms);
+    filter: drop-shadow(2px 4px 0 rgb(0 0 0 / 0.35));
+  }
+  .poster-wrap[data-reveal='out'] { translate: 0 12px; rotate: none; }
+}
 .poster {
   background-color: var(--poster-raised);
   padding: clamp(1.5rem, 4vw, 3rem) clamp(1rem, 4vw, 3rem);

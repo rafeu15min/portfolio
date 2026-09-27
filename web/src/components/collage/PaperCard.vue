@@ -49,5 +49,16 @@ const style = computed(() => ({
   rotate: 7deg;
   scale: 1.05;
 }
+/* celular: chegada simples (fade + 12px), sem giro, escala nem quique */
+@media (max-width: 820px) {
+  .paper {
+    transition:
+      transform 0.25s ease,
+      box-shadow 0.25s ease,
+      opacity 0.4s ease var(--reveal-delay, 0ms),
+      translate 0.4s ease-out var(--reveal-delay, 0ms);
+  }
+  .paper[data-reveal='out'] { translate: 0 12px; rotate: none; scale: none; }
+}
 .tex-kraft { background-color: var(--kraft-dark); }
 </style>
