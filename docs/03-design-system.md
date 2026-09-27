@@ -167,3 +167,11 @@ tela, volta a "out" (fora da vista) — rolar de volta monta de novo, nos dois
 sentidos; entre 0% e 12% visível nada muda, pra não piscar na borda; cada componente define no
 próprio CSS como chega. A rolagem publica `--scroll`/`--progress` (um cálculo
 por quadro, ouvinte passivo) e só `translate`/`transform` mudam — nada repinta.
+
+## Celular
+
+- Sem rolagem lateral em 360 px (o menor celular comum) — verificado em todas
+  as rotas. Texto longo sem espaço (URLs, código) quebra em qualquer ponto.
+- Alvos de toque com no mínimo 44 px (menu, lista da exposição, "voltar").
+- Hero: vitral menor (≤ 170 px) para o nome e os botões caberem na primeira tela.
+- Cena 3D em telas de toque ou < 820 px: resolução até 1,5× e sombras menores.

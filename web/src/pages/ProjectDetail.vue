@@ -76,6 +76,7 @@ const date = (iso: string) => new Date(iso).toLocaleDateString('pt-BR')
 <style scoped>
 .back {
   display: inline-block;
+  padding: 0.5rem 0;
   margin-bottom: 1.5rem;
   font-family: var(--font-mono);
   font-weight: 700;
@@ -97,5 +98,6 @@ const date = (iso: string) => new Date(iso).toLocaleDateString('pt-BR')
 .detail__meta dt:first-child { margin-top: 0; }
 .detail__meta dd { margin: 0.2rem 0 0; }
 .detail__stack { display: flex; flex-wrap: wrap; gap: 0.35rem; }
-@media (max-width: 760px) { .detail__grid { grid-template-columns: 1fr; } }
+@media (max-width: 760px) { .detail__grid { grid-template-columns: minmax(0, 1fr); } }
+.detail__body, .detail__meta { overflow-wrap: anywhere; }
 </style>

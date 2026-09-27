@@ -63,8 +63,10 @@ import { ascii } from '@/generated/ascii'
 .hero__window:focus-visible { outline-offset: 6px; }
 
 @media (max-width: 820px) {
-  .hero { grid-template-columns: 1fr; min-height: 0; gap: 2.5rem; }
-  .hero__window { grid-row: 1; width: min(62%, 230px); }
+  .hero { grid-template-columns: 1fr; min-height: 0; gap: 1.75rem; padding-block: 1.5rem 3rem; }
+  .hero__window { grid-row: 1; width: min(42%, 170px); }
+  /* fitas nos cantos sem cobrir o texto */
+  .hero__card { padding: 1.9rem 1.5rem 1.4rem; }
   .hero__text { justify-items: center; text-align: center; }
 }
 </style>

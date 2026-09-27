@@ -42,8 +42,10 @@ const NICHE = {
 const HALF_WIDTH = 1.95 // meia-largura da composição, pra caber em telas estreitas
 
 export function createChapel(o: Options): Chapel {
+  // celular/tablet: menos pixels e sombras menores (bateria e fluidez)
+  const lowPower = matchMedia('(pointer: coarse)').matches || innerWidth < 820
   const renderer = new THREE.WebGLRenderer({ canvas: o.canvas, antialias: true, powerPreference: 'high-performance' })
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, lowPower ? 1.5 : 2))
   renderer.toneMapping = THREE.ACESFilmicToneMapping
   renderer.shadowMap.enabled = true
   renderer.shadowMap.type = THREE.PCFShadowMap
@@ -81,7 +83,7 @@ export function createChapel(o: Options): Chapel {
   key.position.set(3.5, 8, 7)
   key.target.position.set(0, 2.2, -1.3)
   key.castShadow = true
-  key.shadow.mapSize.set(2048, 2048)
+  key.shadow.mapSize.setScalar(lowPower ? 1024 : 2048)
   key.shadow.bias = -0.0004
   scene.add(key, key.target)
   const fill = new THREE.DirectionalLight('#9fb4ff', 0.55)
@@ -152,7 +154,7 @@ export function createChapel(o: Options): Chapel {
   behind.target.position.set(0, 0.6, 1.6)
   behind.map = glassTex
   behind.castShadow = true
-  behind.shadow.mapSize.set(1024, 1024)
+  behind.shadow.mapSize.setScalar(lowPower ? 512 : 1024)
   behind.shadow.bias = -0.0006
   scene.add(behind, behind.target)
   // halo: a luz vazando pela janela e se espalhando no nicho

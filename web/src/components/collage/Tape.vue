@@ -29,10 +29,6 @@ const props = withDefaults(
     100% 92%, 96% 100%, 92% 91%, 88% 99%, 84% 92%, 80% 100%, 20% 100%, 16% 93%, 12% 100%, 8% 91%, 4% 100%, 0 94%
   );
 }
-:global([data-reveal='out']) .tape {
-  opacity: 0;
-  scale: 1.6;
-}
 .tape--top { top: -14px; left: 50%; transform: translateX(-50%) rotate(var(--angle)); }
 .tape--tl { top: -10px; left: -22px; transform: rotate(calc(var(--angle) - 38deg)); }
 .tape--tr { top: -10px; right: -22px; transform: rotate(calc(var(--angle) + 42deg)); }

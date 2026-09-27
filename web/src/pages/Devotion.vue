@@ -220,6 +220,10 @@ onBeforeUnmount(() => {
 }
 .plaque__credit { margin: 0.8rem 0 0; font-size: 0.8rem; color: var(--ink-soft); }
 
+@media (pointer: coarse), (max-width: 900px) {
+  .panel__item { min-height: 44px; }
+  .back { display: inline-block; padding: 0.6rem 0; }
+}
 @media (max-width: 900px) {
   .stage { grid-template-columns: 1fr; }
   .stage__view { height: 62svh; }

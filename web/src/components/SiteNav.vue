@@ -84,7 +84,7 @@ const href = (id: string) => (route.path === '/' ? `#${id}` : `/#${id}`)
 }
 
 @media (max-width: 720px) {
-  .nav__toggle { display: block; }
+  .nav__toggle { display: block; min-height: 44px; min-width: 64px; }
   .nav__links {
     display: none;
     position: absolute;
@@ -98,6 +98,6 @@ const href = (id: string) => (route.path === '/' ? `#${id}` : `/#${id}`)
     box-shadow: var(--paper-shadow);
   }
   .nav__links.open { display: flex; }
-  .nav__links a { display: block; padding: 0.5rem 0; }
+  .nav__links a { display: block; padding: 0.7rem 0; min-height: 44px; }
 }
 </style>

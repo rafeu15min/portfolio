@@ -21,8 +21,5 @@ withDefaults(defineProps<{ x?: string; angle?: number }>(), { x: '20%', angle: -
     opacity 0.2s ease calc(var(--reveal-delay, 0ms) + 500ms),
     translate 0.25s cubic-bezier(0.3, 1.6, 0.5, 1) calc(var(--reveal-delay, 0ms) + 500ms);
 }
-:global([data-reveal='out']) .staple {
-  opacity: 0;
-  translate: 0 -14px;
-}
+
 </style>
