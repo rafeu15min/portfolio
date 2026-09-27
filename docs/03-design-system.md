@@ -127,8 +127,9 @@ de 0.35rem a 0.9rem, calculado pra caber sem scroll horizontal.
 - Sem rótulos de hierarquia ("no alto", "arcanjos"…): a composição diz isso.
 - Hover: leve brilho dourado. Clique (na cena ou na lista): a câmera
   chega perto o bastante pra imagem ocupar ~¾ da altura da vista, e as
-  outras peças se afastam e **encolhem até sumir** — só a imagem clicada fica
-  na cena —
+  peças que apareceriam no enquadramento final (teste da caixa de cada uma
+  contra o frustum da câmera no fim do zoom) **desvanecem no lugar**; as que
+  ficariam fora do quadro não mudam —
   **ao mesmo tempo** que a câmera: uma única transição de 900 ms, mesma curva.
   "Visão geral" devolve tudo ao lugar. Com uma imagem em foco, girar só
   orbita em volta dela; afastar a câmera (zoom-out) além de 12% da

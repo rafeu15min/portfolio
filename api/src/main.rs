@@ -63,7 +63,8 @@ async fn redirect_host(State(s): State<Arc<AppState>>, req: Request, next: Next)
 
 /// Cache por tipo de recurso: o HTML sempre revalida (senão um deploy novo
 /// fica preso ao JS antigo), assets com hash no nome são imutáveis, modelos
-/// 3D duram um dia e a API nunca é cacheada.
+/// 3D revalidam sempre (nome fixo: um modelo trocado tem que chegar na hora;
+/// sem mudança, a resposta é um 304 sem corpo) e a API nunca é cacheada.
 async fn cache_control(req: Request, next: Next) -> Response {
     let path = req.uri().path();
     let policy = if path.starts_with("/api/") {
@@ -71,7 +72,7 @@ async fn cache_control(req: Request, next: Next) -> Response {
     } else if path.starts_with("/assets/") {
         "public, max-age=31536000, immutable"
     } else if path.starts_with("/models/") {
-        "public, max-age=86400"
+        "public, no-cache"
     } else {
         "no-cache"
     };
@@ -246,7 +247,7 @@ mod tests {
             ("/api/health", "no-store"),
             ("/", "no-cache"),
             ("/devocao", "no-cache"),
-            ("/models/x.glb", "public, max-age=86400"),
+            ("/models/x.glb", "public, no-cache"),
             ("/assets/x.js", "public, max-age=31536000, immutable"),
         ] {
             let res = test_app().oneshot(Request::get(path).body(Body::empty()).unwrap()).await.unwrap();

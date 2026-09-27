@@ -47,7 +47,7 @@
 
 **Cache-Control** (middleware `cache_control`): HTML `no-cache` (senão um
 deploy novo fica preso ao JS antigo), `/assets/*` imutável por 1 ano (nome
-com hash), `/models/*` 1 dia, `/api/*` `no-store`.
+com hash), `/models/*` `no-cache` (revalida; 304 se não mudou), `/api/*` `no-store`.
 
 ### Segurança (é vitrine, então é requisito)
 

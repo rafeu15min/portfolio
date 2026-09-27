@@ -102,7 +102,7 @@ export function createChapel(o: Options): Chapel {
   const stone = new THREE.MeshStandardMaterial({ color: '#4a2f1d', roughness: 0.8 })
   const trim = new THREE.MeshStandardMaterial({ color: GOLD, roughness: 0.35, metalness: 0.9 })
   // raios e glórias das imagens (faces rotuladas "gold" no pipeline)
-  const gilded = new THREE.MeshStandardMaterial({ color: '#c9962a', roughness: 0.32, metalness: 0.9, emissive: '#5a3a06', emissiveIntensity: 0.4 })
+  const gilded = new THREE.MeshStandardMaterial({ color: '#e8b41c', roughness: 0.42, metalness: 0.45, emissive: '#7a5200', emissiveIntensity: 0.35 })
   const disposables: { dispose(): void }[] = [stone, trim, gilded]
 
   // o vitral: textura de mosaico gerada por código, sem reagir às luzes da
@@ -236,12 +236,38 @@ export function createChapel(o: Options): Chapel {
   // posição original e posição-alvo de cada peça (as outras se afastam no foco)
   const home = new Map<string, THREE.Vector3>()
   const goal = new Map<string, THREE.Vector3>()
-  const goalScale = new Map<string, number>() // 1 = visível; HIDDEN = encolhida fora de cena
-  const HIDDEN = 0.001
+  const fade = new Map<string, number>() // opacidade atual de cada peça (1 = inteira)
+  const goalFade = new Map<string, number>()
+
+  /** Desvanece a peça inteira (materiais e luz própria) para a opacidade `a`. */
+  const setFade = (id: string, a: number) => {
+    const g = roots.get(id)!
+    fade.set(id, a)
+    g.visible = a > 0.01
+    g.traverse((n) => {
+      const light = n as THREE.PointLight
+      if (light.isPointLight) {
+        light.userData.base ??= light.intensity
+        light.intensity = light.userData.base * a
+      }
+      const m = (n as THREE.Mesh).material
+      if (!m || Array.isArray(m)) return
+      m.userData.base ??= { opacity: m.opacity, transparent: m.transparent, depthWrite: m.depthWrite }
+      const base = m.userData.base as { opacity: number; transparent: boolean; depthWrite: boolean }
+      m.opacity = base.opacity * a
+      m.transparent = base.transparent || a < 1
+      m.depthWrite = a >= 1 ? base.depthWrite : false
+    })
+  }
   const billboards: THREE.Group[] = []
   const materials = new Map<string, THREE.MeshStandardMaterial>()
 
   for (const p of o.pieces) {
+    // materiais próprios: a peça pode desvanecer sem afetar as outras
+    const pStone = stone.clone()
+    const pTrim = trim.clone()
+    const pGlow = glowMat.clone()
+    disposables.push(pStone, pTrim, pGlow)
     const group = new THREE.Group()
     group.position.set(...p.position)
     group.rotation.y = p.rotationY
@@ -249,6 +275,7 @@ export function createChapel(o: Options): Chapel {
     scene.add(group)
     roots.set(p.id, group)
     home.set(p.id, group.position.clone())
+    fade.set(p.id, 1)
     goal.set(p.id, group.position.clone())
     if (p.billboard) {
       group.userData.rotationY = p.rotationY // orientação original, usada fora da visão geral
@@ -257,31 +284,31 @@ export function createChapel(o: Options): Chapel {
 
     // base de cada peça conforme a hierarquia
     if (p.base === 'altar') {
-      const altar = new THREE.Mesh(new THREE.BoxGeometry(2, p.position[1], 1.2), stone)
+      const altar = new THREE.Mesh(new THREE.BoxGeometry(2, p.position[1], 1.2), pStone)
       altar.position.y = -p.position[1] / 2
       altar.castShadow = altar.receiveShadow = true
-      const band = new THREE.Mesh(new THREE.BoxGeometry(2.04, 0.05, 1.24), trim)
+      const band = new THREE.Mesh(new THREE.BoxGeometry(2.04, 0.05, 1.24), pTrim)
       band.position.y = -0.03
       group.add(altar, band)
       disposables.push(altar.geometry, band.geometry)
     } else if (p.base === 'corbel') {
-      const corbel = new THREE.Mesh(new THREE.CylinderGeometry(0.42, 0.22, 0.28, 48), stone)
+      const corbel = new THREE.Mesh(new THREE.CylinderGeometry(0.42, 0.22, 0.28, 48), pStone)
       corbel.position.y = -0.14
       corbel.castShadow = corbel.receiveShadow = true
-      const ring = new THREE.Mesh(new THREE.TorusGeometry(0.42, 0.018, 12, 64), trim)
+      const ring = new THREE.Mesh(new THREE.TorusGeometry(0.42, 0.018, 12, 64), pTrim)
       ring.rotation.x = Math.PI / 2
       // coluna da mísula até o piso do nicho, com base
       const floorY = -p.position[1] // piso do nicho, no referencial da peça
       const corbelBottom = -0.28
-      const shaft = new THREE.Mesh(new THREE.CylinderGeometry(0.1, 0.12, corbelBottom - floorY, 24), stone)
+      const shaft = new THREE.Mesh(new THREE.CylinderGeometry(0.1, 0.12, corbelBottom - floorY, 24), pStone)
       shaft.position.y = (floorY + corbelBottom) / 2
-      const plinth = new THREE.Mesh(new THREE.CylinderGeometry(0.2, 0.22, 0.12, 24), stone)
+      const plinth = new THREE.Mesh(new THREE.CylinderGeometry(0.2, 0.22, 0.12, 24), pStone)
       plinth.position.y = floorY + 0.06
       for (const m of [corbel, shaft, plinth]) m.castShadow = m.receiveShadow = true
       group.add(corbel, ring, shaft, plinth)
       disposables.push(corbel.geometry, ring.geometry, shaft.geometry, plinth.geometry)
     } else {
-      const glow = new THREE.Mesh(new THREE.PlaneGeometry(p.height * 2, p.height * 2), glowMat)
+      const glow = new THREE.Mesh(new THREE.PlaneGeometry(p.height * 2, p.height * 2), pGlow)
       glow.renderOrder = -1
       glow.position.set(0, p.height / 2, -0.35)
       const light = new THREE.PointLight('#ffd98a', 2.5, 4, 1.5)
@@ -292,6 +319,8 @@ export function createChapel(o: Options): Chapel {
 
     const mat = new THREE.MeshStandardMaterial({ color: IVORY, roughness: 0.55, metalness: 0, emissive: GOLD, emissiveIntensity: 0 })
     materials.set(p.id, mat)
+    const pGilded = gilded.clone()
+    disposables.push(pGilded)
     disposables.push(mat)
 
     loader.load(
@@ -302,7 +331,7 @@ export function createChapel(o: Options): Chapel {
           if ((n as THREE.Mesh).isMesh) {
             const m = n as THREE.Mesh
             const label = (Array.isArray(m.material) ? m.material[0] : m.material)?.name
-            m.material = label === 'gold' ? gilded : mat
+            m.material = label === 'gold' ? pGilded : mat
             m.castShadow = m.receiveShadow = true
             disposables.push(m.geometry)
           }
@@ -380,7 +409,7 @@ export function createChapel(o: Options): Chapel {
     from: [THREE.Vector3, THREE.Vector3]
     to: [THREE.Vector3, THREE.Vector3]
     pieces: Map<string, THREE.Vector3>
-    scales: Map<string, number>
+    fades: Map<string, number>
     t0: number
   } | null = null
   function focus(id: string | null) {
@@ -398,38 +427,32 @@ export function createChapel(o: Options): Chapel {
       focusDistance = fit + 0.2
     }
 
-    // com uma imagem em foco, SÓ ela fica na cena: as outras se afastam e
-    // encolhem até sumir, na mesma curva do zoom (podem atravessar parede e
-    // piso — somem antes de chegar lá). Na visão geral, voltam ao lugar.
+    // com uma imagem em foco, some só o que apareceria no enquadramento
+    // final: calcula o quadro da câmera no fim do zoom e desvanece (no lugar,
+    // na mesma curva) cada peça cuja caixa entra nele. As outras não mudam.
+    const probe = camera.clone()
+    probe.position.copy(to[1])
+    probe.lookAt(to[0])
+    probe.updateMatrixWorld()
+    const frustum = new THREE.Frustum().setFromProjectionMatrix(
+      new THREE.Matrix4().multiplyMatrices(probe.projectionMatrix, probe.matrixWorldInverse),
+    )
     for (const q of o.pieces) {
-      const base = home.get(q.id)!
-      const keep = !p || q.id === p.id
-      goalScale.set(q.id, keep ? 1 : HIDDEN)
-      if (keep) {
-        goal.get(q.id)!.copy(base)
-        continue
-      }
-      const away = new THREE.Vector2(base.x - p.position[0], base.y - p.position[1])
-      if (away.lengthSq() < 1e-6) away.set(0, 1)
-      away.normalize()
-      goal.get(q.id)!.set(base.x + away.x * 1.3, base.y + away.y * 0.9, base.z - 0.8)
+      const g = roots.get(q.id)!
+      goal.get(q.id)!.copy(home.get(q.id)!)
+      const inView = p && q.id !== p.id && frustum.intersectsBox(new THREE.Box3().setFromObject(g))
+      goalFade.set(q.id, inView ? 0 : 1)
+      if (!inView) g.visible = true // reaparece desvanecendo de volta
     }
-    for (const [id, g] of roots) g.visible = true // as que vão reaparecer já entram crescendo
-    if (o.reducedMotion) {
-      for (const [id, g] of roots) {
-        g.position.copy(goal.get(id)!)
-        g.scale.setScalar(goalScale.get(id)!)
-        g.visible = goalScale.get(id)! > HIDDEN
-      }
-    }
+    if (o.reducedMotion) for (const q of o.pieces) setFade(q.id, goalFade.get(q.id)!)
     if (o.reducedMotion) {
       controls.target.copy(to[0])
       camera.position.copy(to[1])
       tween = null
     } else {
       const pieces = new Map([...roots].map(([id, g]) => [id, g.position.clone()]))
-      const scales = new Map([...roots].map(([id, g]) => [id, g.scale.x]))
-      tween = { from: [controls.target.clone(), camera.position.clone()], to, pieces, scales, t0: performance.now() }
+      const fades = new Map(fade)
+      tween = { from: [controls.target.clone(), camera.position.clone()], to, pieces, fades, t0: performance.now() }
     }
   }
 
@@ -463,9 +486,7 @@ export function createChapel(o: Options): Chapel {
       camera.position.lerpVectors(tween.from[1], tween.to[1], e)
       for (const [id, g] of roots) {
         g.position.lerpVectors(tween.pieces.get(id)!, goal.get(id)!, e)
-        g.scale.setScalar(THREE.MathUtils.lerp(tween.scales.get(id)!, goalScale.get(id)!, e))
-        // encolhida por completo: fica invisível (e fora do clique)
-        if (t === 1) g.visible = goalScale.get(id)! > HIDDEN
+        setFade(id, THREE.MathUtils.lerp(tween.fades.get(id)!, goalFade.get(id)!, e))
       }
       if (t === 1) tween = null
     }
