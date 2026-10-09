@@ -13,6 +13,7 @@ services:
     domains:
       - portfolio.rafeu.dev
       - portifolio.rafeu.dev
+      - www.rafeu.dev
     envVars:
       # contato por e-mail via API do Resend (o plano gratuito bloqueia SMTP)
       - key: RESEND_API_KEY

@@ -7,6 +7,7 @@ export const router = createRouter({
     { path: '/', component: Home },
     { path: '/devocao', component: () => import('./pages/Devotion.vue') },
     { path: '/projetos/:slug', component: () => import('./pages/ProjectDetail.vue'), props: true },
+    { path: '/privacidade', component: () => import('./pages/Privacy.vue') },
     { path: '/:rest(.*)*', redirect: '/' },
   ],
   scrollBehavior(to, _from, saved) {
