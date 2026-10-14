@@ -200,18 +200,29 @@
   {
     "slug": "token-econ-plugins",
     "name": "Token Econ. Plugins",
-    "tagline": "Plugins para reduzir o consumo de tokens em chamadas de LLM.",
-    "summary": "Ambiente modular de plugins focado em otimização e economia de tokens em chamadas de LLM. Descrição detalhada em breve.",
-    "highlights": [],
-    "stack": [
-      "Claude API",
-      "Prompt Engineering"
+    "tagline": "Camada local que reduz o gasto de tokens do Claude Code e das ferramentas em volta dele.",
+    "summary": "Serviços e ajustes que rodam na minha máquina para gastar menos cota de LLM. As chamadas das ferramentas passam pelo Headroom, um proxy que otimiza o contexto, e chegam ao OmniRoute, um roteador self-hosted que distribui cada pedido entre contas e provedores com cota gratuita, em cascatas configuradas por tarefa. Em cima disso, um script próprio (executor) delega a execução de comandos a um modelo mais barato pelo OpenCode, e uma skill própria (yagni-enforcer) barra código desnecessário antes de ele ser gerado. Headroom e OmniRoute são projetos abertos de terceiros; a integração entre eles, as cascatas, o executor e a skill são meus.",
+    "highlights": [
+      "Cadeia ferramenta → Headroom → OmniRoute, com o Headroom como serviço systemd do usuário e o OmniRoute em Docker",
+      "Cascatas (combos) por tarefa no OmniRoute, com controle de cota por conta",
+      "executor: delega builds, varreduras e leitura de logs ao OpenCode; se um modelo falha antes de rodar qualquer comando, passa para o próximo da lista",
+      "Memória persistente do claude-mem roteada pela mesma cadeia, sem passar pelo serviço pago dele",
+      "Skill yagni-enforcer: antes de gerar código, confere se o sistema ou a biblioteca padrão já resolvem"
     ],
-    "status": "em construção",
+    "stack": [
+      "Claude Code",
+      "OmniRoute",
+      "Headroom",
+      "OpenCode",
+      "Bash",
+      "systemd",
+      "Docker"
+    ],
+    "status": "ativo",
     "visibility": "private",
     "repo": null,
     "accent": "pink",
-    "todo": "Confirmar descrição, stack e link com o Rafeu"
+    "updated": "2026-10"
   },
   {
     "slug": "biblia",

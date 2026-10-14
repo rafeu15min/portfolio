@@ -52,7 +52,8 @@
         {
           "name": "Bash",
           "projects": [
-            "rescue-backup"
+            "rescue-backup",
+            "token-econ-plugins"
           ]
         },
         {
@@ -129,7 +130,8 @@
             "portfolio",
             "personal-bank-suite",
             "kernel-heimdall",
-            "compiler"
+            "compiler",
+            "token-econ-plugins"
           ]
         },
         {
@@ -162,7 +164,8 @@
           "projects": [
             "vault-sync",
             "rescue-backup",
-            "anubis"
+            "anubis",
+            "token-econ-plugins"
           ]
         },
         {
