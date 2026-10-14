@@ -81,9 +81,9 @@
       "video": "/video/linux-env-hyprland.mp4",
       "width": 1280,
       "height": 720,
-      "duration": 23,
-      "caption": "O Hyprland com a minha configuração: troca de área de trabalho, o lançador do Rofi, o terminal translúcido com o fastfetch e o tiling dividindo e trocando as janelas de lugar.",
-      "alt": "Vídeo da área de trabalho Hyprland: papel de parede ilustrado, lançador Rofi, terminal Alacritty com fastfetch e duas janelas lado a lado"
+      "duration": 27,
+      "caption": "Do nvim com o próprio hyprland.lua para outra área de trabalho: o lançador do Rofi, o terminal translúcido com o fastfetch, o tiling dividindo a tela, o SUPER+R virando a divisão, o btop em tela cheia (o painel de processos foi desfocado) e a volta para o nvim.",
+      "alt": "Vídeo da área de trabalho Hyprland: nvim com a configuração em Lua, troca de área, lançador Rofi, terminais lado a lado e empilhados, btop em tela cheia e retorno ao nvim"
     }
   ]
 }
