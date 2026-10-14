@@ -1,6 +1,15 @@
 {
   "claudesktop": [
     {
+      "src": "/video/claudesktop-digitando.webp",
+      "video": "/video/claudesktop-digitando.mp4",
+      "width": 1040,
+      "height": 288,
+      "duration": 23,
+      "caption": "O Claude abre um terminal e digita três linhas pelo type_text: texto comum, acentos e símbolos do ABNT2, e caracteres que o teclado não tem, colados pela área de transferência. O programa confere cada linha recebida.",
+      "alt": "Vídeo de um terminal onde três linhas são digitadas sozinhas e o programa mostra cada uma recebida com a contagem de caracteres"
+    },
+    {
       "src": "/img/evidencias/claudesktop-type-text.webp",
       "width": 981,
       "height": 332,
@@ -9,6 +18,15 @@
     }
   ],
   "anubis": [
+    {
+      "src": "/video/anubis-navegando.webp",
+      "video": "/video/anubis-navegando.mp4",
+      "width": 1280,
+      "height": 800,
+      "duration": 22,
+      "caption": "Navegando pela vitrine: as fileiras de filmes, as abas Séries e Animes e, no fim, a leitura com o progresso de cada livro e as recomendações.",
+      "alt": "Vídeo da página do Anubis rolando as fileiras de pôsteres, trocando entre Filmes, Séries e Animes e abrindo a aba de leitura"
+    },
     {
       "src": "/img/evidencias/anubis-vitrine.webp",
       "width": 1000,
@@ -26,29 +44,46 @@
   ],
   "vault-sync": [
     {
-      "src": "/img/evidencias/vault-sync-menu.webp",
-      "width": 632,
-      "height": 576,
-      "caption": "O catálogo no SUPER+G, filtrado pelos jogos da Steam: cada jogo diz se está só no servidor ou também na máquina local.",
-      "alt": "Menu do vault-sync no rofi com a busca steam] e a lista de jogos marcados como Servidor ou Cliente+Servidor"
+      "src": "/video/vault-sync-menu.webp",
+      "video": "/video/vault-sync-menu.mp4",
+      "width": 640,
+      "height": 600,
+      "duration": 10,
+      "caption": "O catálogo do SUPER+G: a busca filtra enquanto se digita e cada jogo diz se está só no servidor ou também na máquina local.",
+      "alt": "Vídeo do menu do vault-sync filtrando cyber e depois a lista de jogos da Steam, com a seleção descendo pela lista"
     }
   ],
   "ship-n-click": [
     {
-      "src": "/img/evidencias/ship-n-click-run.webp",
-      "width": 1000,
-      "height": 563,
-      "caption": "Uma run aos 9 segundos: a nave, os meteoros, os meteorinhos dourados que dão moedas e o HUD com tempo, pontos, velocidade e XP.",
-      "alt": "Tela do jogo em traço branco sobre fundo preto: nave, meteoros, meteoros dourados e o HUD"
+      "src": "/video/ship-n-click-run.webp",
+      "video": "/video/ship-n-click-run.mp4",
+      "width": 1152,
+      "height": 648,
+      "duration": 15,
+      "caption": "Quinze segundos de uma run, gravados pelo modo Movie Maker da Godot: a nave desviando, os meteoros se partindo e os dourados que dão moedas.",
+      "alt": "Vídeo do jogo em traço branco sobre fundo preto com a nave, meteoros e o HUD com tempo, pontos, velocidade e XP"
     }
   ],
   "kernel-heimdall": [
     {
-      "src": "/img/evidencias/kernel-heimdall-boot.webp",
-      "width": 1024,
-      "height": 196,
-      "caption": "Boot no QEMU. A última linha veio do teclado PS/2, lida por interrupção.",
-      "alt": "Tela VGA em modo texto: Inicializando o Kernel Heimdall, offset de memória física, hardware ativado e a linha ola heimdall digitada"
+      "src": "/video/kernel-heimdall-boot.webp",
+      "video": "/video/kernel-heimdall-boot.mp4",
+      "width": 1440,
+      "height": 800,
+      "duration": 11,
+      "caption": "Boot no QEMU. As duas últimas linhas foram digitadas durante a gravação: o teclado PS/2 chega ao kernel por interrupção.",
+      "alt": "Vídeo da tela VGA em modo texto: mensagens de inicialização do Kernel Heimdall e as linhas ola heimdall e rust no metal sendo digitadas"
+    }
+  ],
+  "internal-linux-env": [
+    {
+      "src": "/video/linux-env-hyprland.webp",
+      "video": "/video/linux-env-hyprland.mp4",
+      "width": 1280,
+      "height": 720,
+      "duration": 23,
+      "caption": "O Hyprland com a minha configuração: troca de área de trabalho, o lançador do Rofi, o terminal translúcido com o fastfetch e o tiling dividindo e trocando as janelas de lugar.",
+      "alt": "Vídeo da área de trabalho Hyprland: papel de parede ilustrado, lançador Rofi, terminal Alacritty com fastfetch e duas janelas lado a lado"
     }
   ]
 }

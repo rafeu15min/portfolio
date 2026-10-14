@@ -2,10 +2,11 @@ import { createApp } from 'vue'
 import App from './App.vue'
 import { router } from './router'
 import { reveal } from './lib/reveal'
+import { loop } from './lib/loop'
 
 import './styles/tokens.css'
 import './styles/textures.css'
 import './styles/neon.css'
 import './styles/base.css'
 
-createApp(App).use(router).directive('reveal', reveal).mount('#app')
+createApp(App).use(router).directive('reveal', reveal).directive('loop', loop).mount('#app')

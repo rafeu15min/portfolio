@@ -79,6 +79,11 @@ cd web; npm run build     # inclui o type-check (vue-tsc)
   página do projeto de mesmo slug, com o `<title>` do SVG como legenda. Gerados
   por `python3 tools/gen-diagrams.py content/diagrams`. Só atributos de apresentação no SVG (a CSP
   bloqueia `style` inline); fontes e cores do design system.
+- Evidências (prints e vídeos colados no painel da página de cada projeto):
+  `content/evidencias.json`. Um item com `video` (MP4 em `web/public/video/`,
+  com um `.webm` VP9 de mesmo nome ao lado) toca em loop, sem som, só
+  enquanto está na tela; `src` é a capa. Com "reduzir movimento" no sistema,
+  fica parado na capa com o botão de play.
 - Trajetória: `content/timeline.json`.
 - Stack: `content/stack.json` — cada tecnologia aponta os projetos (slugs) onde aparece.
 - Devoção: `content/devocao.json` (textos, posição e altura de cada imagem).

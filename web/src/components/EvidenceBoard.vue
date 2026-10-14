@@ -2,6 +2,7 @@
 // Painel de evidências: prints do projeto impressos em papel e colados com fita num
 // quadro de cartaz escuro. Só o papel gira (docs/03); a imagem e a legenda ficam retas
 // dentro dele. Clicar abre o print em tamanho real.
+import { reactive } from 'vue'
 import Tape from './collage/Tape.vue'
 import type { Evidence } from '@/lib/content'
 
@@ -9,6 +10,8 @@ defineProps<{ items: Evidence[] }>()
 
 const tilts = [-1.6, 1.2, -0.8, 1.7]
 const tapes = ['tl', 'tr', 'top'] as const
+// vídeos que já começaram: a etiqueta da capa sai para não cobrir a imagem
+const started = reactive(new Set<string>())
 </script>
 
 <template>
@@ -18,7 +21,28 @@ const tapes = ['tl', 'tr', 'top'] as const
       <li v-for="(e, i) in items" :key="e.src" :class="{ wide: items.length === 1 || e.width / e.height > 2.5 }">
         <figure v-reveal class="print tex-newsprint" :style="{ '--tilt': `${tilts[i % tilts.length]}deg`, maxWidth: `calc(${e.width}px + 1.4rem)` }">
           <Tape :pos="tapes[i % tapes.length]" :angle="tilts[i % tilts.length]! * -3" width="92px" />
-          <a :href="e.src" target="_blank" rel="noopener" class="print__link">
+          <!-- vídeo em loop, como GIF, só enquanto está na tela (v-loop); sem áudio gravado -->
+          <div v-if="e.video" class="print__video">
+            <video
+              v-loop
+              :poster="e.src"
+              :width="e.width"
+              :height="e.height"
+              :aria-label="e.alt"
+              muted
+              loop
+              playsinline
+              disablepictureinpicture
+              preload="none"
+              @play="started.add(e.src)"
+            >
+              <!-- VP9 primeiro: Chromium sem codecs proprietários não toca H.264; Safari cai no MP4 -->
+              <source :src="e.video.replace(/\.mp4$/, '.webm')" type="video/webm" />
+              <source :src="e.video" type="video/mp4" />
+            </video>
+            <span v-if="e.duration && !started.has(e.src)" class="print__dur" aria-hidden="true">vídeo · {{ e.duration }} s</span>
+          </div>
+          <a v-else :href="e.src" target="_blank" rel="noopener" class="print__link">
             <img :src="e.src" :width="e.width" :height="e.height" :alt="e.alt" loading="lazy" decoding="async" />
           </a>
           <figcaption class="print__caption">{{ e.caption }}</figcaption>
@@ -71,7 +95,22 @@ const tapes = ['tl', 'tr', 'top'] as const
 .print:focus-within { rotate: 0deg; translate: 0 -3px; }
 .print[data-reveal='out'] { opacity: 0; translate: 0 -20px; }
 .print__link { display: block; }
-.print img { display: block; width: 100%; height: auto; border: 1px solid var(--ink); }
+.print img,
+.print video { display: block; width: 100%; height: auto; border: 1px solid var(--ink); background: var(--ink); }
+.print__video { position: relative; }
+/* etiqueta de fita-rótulo no canto da capa: avisa que é vídeo e quanto dura */
+.print__dur {
+  position: absolute;
+  top: 0.5rem;
+  left: 0.5rem;
+  padding: 0.1rem 0.45rem;
+  background: var(--tape);
+  color: var(--ink);
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  font-weight: 700;
+  pointer-events: none;
+}
 .print__caption {
   margin: 0.7rem 0.1rem 0;
   font-size: 0.9rem;

@@ -79,7 +79,12 @@ import evidenciasJson from '@content/evidencias.json'
 
 /** prints dos projetos, colados no painel da página de cada um */
 export interface Evidence {
+  /** imagem; num vídeo, é a capa */
   src: string
+  /** MP4 (H.264, sem áudio) — opcional */
+  video?: string
+  /** segundos, mostrado na capa do vídeo */
+  duration?: number
   width: number
   height: number
   caption: string
