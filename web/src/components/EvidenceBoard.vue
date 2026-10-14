@@ -15,8 +15,8 @@ const tapes = ['tl', 'tr', 'top'] as const
   <section class="board tex-poster" aria-labelledby="board-title">
     <h2 id="board-title" class="board__title stencil">Evidências</h2>
     <ul class="board__grid">
-      <li v-for="(e, i) in items" :key="e.src" :class="{ wide: e.width / e.height > 2.5 }">
-        <figure v-reveal class="print tex-newsprint" :style="{ '--tilt': `${tilts[i % tilts.length]}deg` }">
+      <li v-for="(e, i) in items" :key="e.src" :class="{ wide: items.length === 1 || e.width / e.height > 2.5 }">
+        <figure v-reveal class="print tex-newsprint" :style="{ '--tilt': `${tilts[i % tilts.length]}deg`, maxWidth: `calc(${e.width}px + 1.4rem)` }">
           <Tape :pos="tapes[i % tapes.length]" :angle="tilts[i % tilts.length]! * -3" width="92px" />
           <a :href="e.src" target="_blank" rel="noopener" class="print__link">
             <img :src="e.src" :width="e.width" :height="e.height" :alt="e.alt" loading="lazy" decoding="async" />
@@ -52,7 +52,8 @@ const tapes = ['tl', 'tr', 'top'] as const
   list-style: none;
   align-items: start;
 }
-/* print largo e baixo (tela de terminal): ocupa a linha inteira */
+/* print largo e baixo (tela de terminal), ou o único do projeto: ocupa a linha inteira,
+   até a largura natural da imagem (o max-width do figure) para não ampliar e borrar */
 .board__grid .wide { grid-column: 1 / -1; }
 
 .print {

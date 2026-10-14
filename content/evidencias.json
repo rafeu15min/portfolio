@@ -1,4 +1,13 @@
 {
+  "claudesktop": [
+    {
+      "src": "/img/evidencias/claudesktop-type-text.webp",
+      "width": 981,
+      "height": 332,
+      "caption": "As 23 ferramentas do servidor e uma linha digitada pelo Claude com type_text: acentos, / : ; pelo layout ABNT2 e os ideogramas pela área de transferência.",
+      "alt": "Terminal com a lista de ferramentas MCP do claudesktop e a linha Olá! Ação, café e pão: a/b:c;d com ideogramas, recebida com 49 caracteres"
+    }
+  ],
   "anubis": [
     {
       "src": "/img/evidencias/anubis-vitrine.webp",
@@ -13,6 +22,24 @@
       "height": 729,
       "caption": "Leitura: livros em andamento com o progresso do kosync, os temas de estudo editáveis e o Para você de livros.",
       "alt": "Página de leitura do Anubis: fileira Lendo agora com porcentagens, etiquetas de temas e fileira Para você com capas"
+    }
+  ],
+  "vault-sync": [
+    {
+      "src": "/img/evidencias/vault-sync-menu.webp",
+      "width": 632,
+      "height": 576,
+      "caption": "O catálogo no SUPER+G, filtrado pelos jogos da Steam: cada jogo diz se está só no servidor ou também na máquina local.",
+      "alt": "Menu do vault-sync no rofi com a busca steam] e a lista de jogos marcados como Servidor ou Cliente+Servidor"
+    }
+  ],
+  "ship-n-click": [
+    {
+      "src": "/img/evidencias/ship-n-click-run.webp",
+      "width": 1000,
+      "height": 563,
+      "caption": "Uma run aos 9 segundos: a nave, os meteoros, os meteorinhos dourados que dão moedas e o HUD com tempo, pontos, velocidade e XP.",
+      "alt": "Tela do jogo em traço branco sobre fundo preto: nave, meteoros, meteoros dourados e o HUD"
     }
   ],
   "kernel-heimdall": [
