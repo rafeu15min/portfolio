@@ -57,11 +57,11 @@
     {
       "src": "/video/ship-n-click-run.webp",
       "video": "/video/ship-n-click-run.mp4",
-      "width": 1152,
-      "height": 648,
-      "duration": 15,
-      "caption": "Quinze segundos de uma run, gravados pelo modo Movie Maker da Godot: a nave desviando, os meteoros se partindo e os dourados que dão moedas.",
-      "alt": "Vídeo do jogo em traço branco sobre fundo preto com a nave, meteoros e o HUD com tempo, pontos, velocidade e XP"
+      "width": 1280,
+      "height": 720,
+      "duration": 22,
+      "caption": "Uma run jogada por um script que mira com o mouse, atira nos meteoros mais próximos (os dourados primeiro) e liga o motor de vez em quando. A cada nível, a janela de power-ups oferece três cartas.",
+      "alt": "Vídeo do jogo: a nave atirando em meteoros, coletando moedas e escolhendo power-ups nas janelas de nível 1 a 5"
     }
   ],
   "kernel-heimdall": [
