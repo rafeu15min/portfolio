@@ -19,6 +19,10 @@ watchEffect(async () => {
   document.title = project.value ? `${project.value.name} · Rafeu` : 'Rafeu'
 })
 
+// diagramas de arquitetura (content/diagrams/<slug>.svg), embutidos no build
+const diagrams = import.meta.glob('@content/diagrams/*.svg', { query: '?raw', import: 'default', eager: true }) as Record<string, string>
+const diagram = computed(() => Object.entries(diagrams).find(([path]) => path.endsWith(`/${props.slug}.svg`))?.[1])
+
 const glow = computed(() => (project.value?.accent === 'rust' ? 'rust' : project.value?.accent ?? 'cyan'))
 const date = (iso: string) => new Date(iso).toLocaleDateString('pt-BR')
 </script>
@@ -69,6 +73,15 @@ const date = (iso: string) => new Date(iso).toLocaleDateString('pt-BR')
           </dl>
         </PaperCard>
       </div>
+
+      <PaperCard v-if="diagram" tag="figure" :tilt="-0.3" crop class="detail__arch">
+        <Tape pos="tr" :angle="5" />
+        <figcaption class="detail__arch-title stencil">Arquitetura</figcaption>
+        <!-- rolagem só dentro do papel em telas estreitas: abaixo de ~640px o texto do diagrama ficaria ilegível -->
+        <div class="detail__arch-scroll" tabindex="0" aria-label="Diagrama de arquitetura (role para os lados no celular)">
+          <div class="detail__arch-svg" v-html="diagram" />
+        </div>
+      </PaperCard>
     </template>
 
     <PaperCard v-else variant="notebook">
@@ -117,4 +130,9 @@ const date = (iso: string) => new Date(iso).toLocaleDateString('pt-BR')
 .detail__stack { display: flex; flex-wrap: wrap; gap: 0.35rem; }
 @media (max-width: 760px) { .detail__grid { grid-template-columns: minmax(0, 1fr); } }
 .detail__body, .detail__meta { overflow-wrap: anywhere; }
+.detail__arch { margin: 2.5rem 0 0; }
+.detail__arch-title { margin: 0 0 1rem; font-size: 1.5rem; }
+.detail__arch-scroll { overflow-x: auto; overscroll-behavior-x: contain; scrollbar-width: thin; scrollbar-color: var(--ink-soft) transparent; }
+.detail__arch-svg { min-width: 640px; }
+.detail__arch-svg :deep(svg) { display: block; width: 100%; height: auto; }
 </style>

@@ -100,6 +100,16 @@ de 0.35rem a 0.9rem, calculado pra caber sem scroll horizontal.
 | `FeaturedProject` | `project`, `tilt`, `seed` | papel caderno + tira de cartaz no topo com o nome em ASCII neon; até 3 destaques com losango; carimbo do mês |
 | `ProjectCard` | `project`, `tilt`, `tape`, `compact` | cartão de jornal da grade; `compact` para os "outros projetos" |
 
+## Diagramas de arquitetura
+
+Papel de jornal colado com fita, impresso a tinta: traço `--ink`, nomes em
+estêncil, detalhes em máquina de escrever, rótulos de seta em mono maiúsculo
+sobre máscara da cor do papel. Um nó focal só: rubi (`--glass-ruby`, texto
+claro) ou laranja quando o nó é Rust. Armazenamento em `--kraft`, serviço
+externo com borda tracejada. **Nada de neon no diagrama** (neon sobre papel
+não passa AA). Setas ortogonais com cantos de raio 8, grade de 4 px, até 9 nós.
+No celular, o papel rola para os lados (o SVG tem `min-width: 640px`).
+
 ## O vitral (hero)
 
 - **Forma:** janela gótica em arco ogival (dois arcos de raio 160 que se

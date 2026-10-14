@@ -74,6 +74,9 @@ cd web; npm run build     # inclui o type-check (vue-tsc)
   stats do GitHub; `featured: true` põe o projeto em destaque no topo;
   `updated: "AAAA-MM"` é o mês da última atividade, mostrado no carimbo e na
   página do projeto; o campo `todo` é nota interna e nunca sai pela API).
+- Diagramas de arquitetura: `content/diagrams/<slug>.svg` aparece sozinho na
+  página do projeto de mesmo slug. Só atributos de apresentação no SVG (a CSP
+  bloqueia `style` inline); fontes e cores do design system.
 - Trajetória: `content/timeline.json`.
 - Stack: `content/stack.json` — cada tecnologia aponta os projetos (slugs) onde aparece.
 - Devoção: `content/devocao.json` (textos, posição e altura de cada imagem).
