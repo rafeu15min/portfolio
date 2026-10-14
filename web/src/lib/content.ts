@@ -74,3 +74,16 @@ export const stack = stackJson as {
   main: StackItem & { text: string }
   groups: { title: string; items: StackItem[] }[]
 }
+
+import evidenciasJson from '@content/evidencias.json'
+
+/** prints dos projetos, colados no painel da página de cada um */
+export interface Evidence {
+  src: string
+  width: number
+  height: number
+  caption: string
+  alt: string
+}
+
+export const evidencias = evidenciasJson as Record<string, Evidence[]>

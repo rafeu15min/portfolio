@@ -4,7 +4,8 @@ import Poster from '@/components/collage/Poster.vue'
 import PaperCard from '@/components/collage/PaperCard.vue'
 import Tape from '@/components/collage/Tape.vue'
 import NeonAscii from '@/components/neon/NeonAscii.vue'
-import { findProject, monthLabel } from '@/lib/content'
+import EvidenceBoard from '@/components/EvidenceBoard.vue'
+import { evidencias, findProject, monthLabel } from '@/lib/content'
 import { fetchRepoStats, type RepoStats } from '@/lib/api'
 import { ascii } from '@/generated/ascii'
 
@@ -79,6 +80,8 @@ const date = (iso: string) => new Date(iso).toLocaleDateString('pt-BR')
           </dl>
         </PaperCard>
       </div>
+
+      <EvidenceBoard v-if="evidencias[project.slug]?.length" :items="evidencias[project.slug]!" />
 
       <PaperCard
         v-for="(d, i) in diagrams"

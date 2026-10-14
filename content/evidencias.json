@@ -1,0 +1,27 @@
+{
+  "anubis": [
+    {
+      "src": "/img/evidencias/anubis-vitrine.webp",
+      "width": 1000,
+      "height": 804,
+      "caption": "Vitrine de filmes: o que já está na biblioteca e o Para você, com as etiquetas de dublado e só legendado.",
+      "alt": "Página do Anubis com a aba Filmes: fileiras Prontos para assistir e Para você, com pôsteres e etiquetas de disponibilidade"
+    },
+    {
+      "src": "/img/evidencias/anubis-leitura.webp",
+      "width": 1000,
+      "height": 729,
+      "caption": "Leitura: livros em andamento com o progresso do kosync, os temas de estudo editáveis e o Para você de livros.",
+      "alt": "Página de leitura do Anubis: fileira Lendo agora com porcentagens, etiquetas de temas e fileira Para você com capas"
+    }
+  ],
+  "kernel-heimdall": [
+    {
+      "src": "/img/evidencias/kernel-heimdall-boot.webp",
+      "width": 1024,
+      "height": 196,
+      "caption": "Boot no QEMU. A última linha veio do teclado PS/2, lida por interrupção.",
+      "alt": "Tela VGA em modo texto: Inicializando o Kernel Heimdall, offset de memória física, hardware ativado e a linha ola heimdall digitada"
+    }
+  ]
+}
