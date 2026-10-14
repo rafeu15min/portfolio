@@ -23,9 +23,9 @@
       "video": "/video/anubis-navegando.mp4",
       "width": 1280,
       "height": 800,
-      "duration": 28,
-      "caption": "Navegando pela vitrine: as fileiras de filmes, as abas Séries e Animes e, no fim, a leitura com os pedidos de livros, o progresso de cada um e as recomendações.",
-      "alt": "Vídeo da página do Anubis rolando as fileiras de pôsteres, trocando entre Filmes, Séries e Animes e abrindo a aba de leitura com a lista de pedidos"
+      "duration": 29,
+      "caption": "Uma tomada só, sem cortes: as fileiras de filmes, as abas Séries e Animes e a leitura, com o progresso de cada livro, os temas de estudo e as recomendações.",
+      "alt": "Vídeo da página do Anubis rolando as fileiras de pôsteres, trocando entre Filmes, Séries e Animes e abrindo a aba de leitura"
     },
     {
       "src": "/img/evidencias/anubis-vitrine.webp",
@@ -40,13 +40,6 @@
       "height": 729,
       "caption": "Leitura: livros em andamento com o progresso do kosync, os temas de estudo editáveis e o Para você de livros.",
       "alt": "Página de leitura do Anubis: fileira Lendo agora com porcentagens, etiquetas de temas e fileira Para você com capas"
-    },
-    {
-      "src": "/img/evidencias/anubis-pedidos.webp",
-      "width": 1000,
-      "height": 804,
-      "caption": "Pedidos de livros: cada um procura a versão em português no LibGen, nos canais do Telegram e em torrents. Sem nenhuma, o botão baixa a versão em inglês.",
-      "alt": "Lista de pedidos da leitura no Anubis: três livros sem versão em português, com botão de baixar, e quatro já no Drive"
     }
   ],
   "vault-sync": [
@@ -54,10 +47,10 @@
       "src": "/video/vault-sync-menu.webp",
       "video": "/video/vault-sync-menu.mp4",
       "width": 640,
-      "height": 600,
-      "duration": 7,
-      "caption": "O catálogo do SUPER+G: a busca filtra enquanto se digita e cada jogo diz se está só no servidor ou também na máquina local.",
-      "alt": "Vídeo do menu do vault-sync filtrando cyber e depois a lista de jogos da Steam, com a seleção descendo um jogo por vez"
+      "height": 590,
+      "duration": 24,
+      "caption": "O catálogo do SUPER+G, sem cortes: a lista completa de jogos (Steam, non-Steam e Epic), cada um dizendo se está só no servidor ou também na máquina local, e a busca filtrando enquanto se digita.",
+      "alt": "Vídeo do menu do vault-sync descendo pela lista completa de jogos e depois filtrando cyber até sobrar Cyberpunk 2077"
     }
   ],
   "ship-n-click": [
