@@ -82,16 +82,18 @@
   {
     "slug": "ship-n-click",
     "name": "Ship'n'click",
-    "tagline": "Roguelike de sobrevivência entre meteoros, com a lógica em Rust na Godot.",
-    "summary": "Roguelike de sobrevivência sem final: a pontuação sobe a cada segundo vivo, os meteoros não param de nascer e as moedas pagam o respawn e os power-ups. Quando o dinheiro não cobre a taxa de renascer, a run acaba e o jogo recomeça do zero. A cena fica na Godot e a lógica do jogo roda em Rust via GDExtension (godot-rust).",
+    "tagline": "Roguelike de sobrevivência entre meteoros, feito na Godot com Rust e C#.",
+    "summary": "Roguelike de sobrevivência sem final: a pontuação sobe a cada segundo vivo, os meteoros não param de nascer e as moedas pagam o respawn e os power-ups. Quando o dinheiro não cobre a taxa de renascer, a run acaba e o jogo recomeça do zero. A nave, a física dela, os meteoros e os tiros são classes em Rust carregadas pela Godot via GDExtension (godot-rust); o fluxo da run, a interface e os power-ups ficam em C#.",
     "highlights": [
-      "Lógica em Rust compilada como cdylib e carregada pela Godot (gdext 0.5)",
+      "Nave, meteoros e pool de tiros em Rust, compilados como cdylib e carregados pela Godot (gdext 0.5)",
+      "Run, interface, barra de XP e janela de power-ups em C#",
       "Respawn pago: a taxa cresce com o tempo de run e metade do que sobra fica no cadáver",
       "Power-ups definidos em JSON, com regras que respeitam conservação de energia, massa e momento",
       "Assets vetoriais próprios (SVG)"
     ],
     "stack": [
       "Rust",
+      "C#",
       "Godot",
       "GDExtension"
     ],

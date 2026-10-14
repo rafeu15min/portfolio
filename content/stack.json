@@ -38,6 +38,12 @@
           ]
         },
         {
+          "name": "C#",
+          "projects": [
+            "ship-n-click"
+          ]
+        },
+        {
           "name": "Dart",
           "projects": [
             "biblia"
