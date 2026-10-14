@@ -3,11 +3,11 @@
     {
       "src": "/video/claudesktop-digitando.webp",
       "video": "/video/claudesktop-digitando.mp4",
-      "width": 1040,
-      "height": 288,
-      "duration": 23,
-      "caption": "O Claude abre um terminal e digita três linhas pelo type_text: texto comum, acentos e símbolos do ABNT2, e caracteres que o teclado não tem, colados pela área de transferência. O programa confere cada linha recebida.",
-      "alt": "Vídeo de um terminal onde três linhas são digitadas sozinhas e o programa mostra cada uma recebida com a contagem de caracteres"
+      "width": 640,
+      "height": 400,
+      "duration": 15,
+      "caption": "O Claude digita três linhas pelo type_text: texto comum, acentos e símbolos do ABNT2, e caracteres que o teclado não tem, colados pela área de transferência. O programa confirma cada linha recebida.",
+      "alt": "Vídeo de um terminal onde três linhas são digitadas sozinhas e o programa confirma cada uma com a contagem de caracteres"
     },
     {
       "src": "/img/evidencias/claudesktop-type-text.webp",
@@ -68,8 +68,8 @@
     {
       "src": "/video/kernel-heimdall-boot.webp",
       "video": "/video/kernel-heimdall-boot.mp4",
-      "width": 1440,
-      "height": 800,
+      "width": 1008,
+      "height": 248,
       "duration": 11,
       "caption": "Boot no QEMU. As duas últimas linhas foram digitadas durante a gravação: o teclado PS/2 chega ao kernel por interrupção.",
       "alt": "Vídeo da tela VGA em modo texto: mensagens de inicialização do Kernel Heimdall e as linhas ola heimdall e rust no metal sendo digitadas"

@@ -9,7 +9,8 @@ import type { Evidence } from '@/lib/content'
 defineProps<{ items: Evidence[] }>()
 
 const tilts = [-1.6, 1.2, -0.8, 1.7]
-const tapes = ['tl', 'tr', 'top'] as const
+// meio e canto direito: o texto dos prints e vídeos começa à esquerda, a fita não o cobre
+const tapes = ['top', 'tr'] as const
 // vídeos que já começaram: a etiqueta da capa sai para não cobrir a imagem
 const started = reactive(new Set<string>())
 </script>
@@ -116,6 +117,14 @@ const started = reactive(new Set<string>())
   font-size: 0.9rem;
   line-height: 1.45;
   color: var(--ink);
+}
+/* celular: o quadro vai de borda a borda e o papel gira menos — cada pixel de
+   largura conta para o texto dos vídeos e prints ficar legível */
+@media (max-width: 600px) {
+  .board { margin-inline: calc(-1 * var(--gutter)); padding: 1.25rem 0.75rem 1.5rem; }
+  .board__grid { gap: 1.75rem; }
+  .print { padding: 0.45rem 0.45rem 0.7rem; rotate: calc(var(--tilt) * 0.5); }
+  .print__caption { font-size: 0.86rem; }
 }
 @media (prefers-reduced-motion: reduce) {
   .print { transition: none; }
