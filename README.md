@@ -71,7 +71,9 @@ cd web; npm run build     # inclui o type-check (vue-tsc)
 ## Editar conteúdo
 
 - Projetos: `content/projects.json` (`visibility: "public"` libera o link e as
-  stats do GitHub; o campo `todo` é nota interna e nunca sai pela API).
+  stats do GitHub; `featured: true` põe o projeto em destaque no topo;
+  `updated: "AAAA-MM"` é o mês da última atividade, mostrado no carimbo e na
+  página do projeto; o campo `todo` é nota interna e nunca sai pela API).
 - Trajetória: `content/timeline.json`.
 - Stack: `content/stack.json` — cada tecnologia aponta os projetos (slugs) onde aparece.
 - Devoção: `content/devocao.json` (textos, posição e altura de cada imagem).

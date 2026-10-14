@@ -70,19 +70,32 @@ No celular, o vitral sobe (menor) e o texto centraliza embaixo.
 
 ## Projetos
 
+Duas camadas: os projetos com `featured: true` em destaque e o resto numa
+grade compacta.
+
 ```
- ┌─═══──────────────┐  ┌──────────────═══─┐  ┌─═══──────────────┐
- │ vault-sync   ● ativo│ │ claudesktop  ● ativo│ │ Anubis   ◐ em constr.│
- │ O SSD vira zona... │  │ Os braços do...  │  │ Triagem estrut...│
- │ [Rust][rsync][SSH] │  │ [Python][MCP]... │  │ [Rust]           │
- │ 🔒 repo privado  → │  │ 🔒 repo privado →│  │ 🔒 privado     → │
- └────────────────────┘  └──────────────────┘  └──────────────────┘
-   gira +0.8°              gira -1.2°            gira +0.4°
- (mesma grade para os outros 3; um card com acento Rust leva borda laranja)
+ ┌─═══──────────────────────────┐  ┌──────────────────────────═══─┐
+ │▓▓ NOME EM ASCII NEON ▓▓ ativo│  │▓▓ NOME EM ASCII NEON ▓▓ ativo│  ← tira de cartaz,
+ │▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓│  │▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓│    rasgada embaixo
+ │ tagline em negrito  ╔ATUALIZ.╗│  │ tagline em negrito ╔ATUALIZ.╗│  ← carimbo rubi
+ │                     ╚10/2026═╝│  │                    ╚10/2026═╝│
+ │ ◆ destaque 1                  │  │ ◆ destaque 1                 │  ← até 3, losango
+ │ ◆ destaque 2                  │  │ ◆ destaque 2                 │    na cor do projeto
+ │ [Rust][rsync][SSH]            │  │ [Python][MCP]...             │
+ │ repositório privado detalhes →│  │ código ↗          detalhes → │
+ └───────────────────────────────┘  └──────────────────────────────┘
+   2 colunas (1 no celular)
+
+ OUTROS PROJETOS E ESTUDOS
+ ┌──────────┐ ┌──────────┐ ┌──────────┐ ┌──────────┐
+ │ nome  st.│ │ nome  st.│ │ nome  st.│ │ nome  st.│   cartões compactos,
+ │ tagline  │ │ tagline  │ │ tagline  │ │ tagline  │   até 4 colunas
+ └──────────┘ └──────────┘ └──────────┘ └──────────┘
 ```
 
-Desktop: 3 colunas · tablet: 2 · mobile: 1. **A grade é rígida e só o card
-gira.** Clicar leva a `/projetos/:slug`.
+**A grade é rígida e só o card gira.** O cartão inteiro leva a
+`/projetos/:slug` (o "detalhes →" se estende por ele; o título continua sendo
+o link para teclado e leitor de tela).
 
 ### `/projetos/:slug`
 
@@ -94,6 +107,7 @@ gira.** Clicar leva a `/projetos/:slug`.
  ┌──────────────────────┐  ┌──────────────┐
  │ resumo (typewriter)  │  │ STACK        │
  │                      │  │ STATUS       │
+ │                      │  │ ATUALIZADO   │  mês do campo `updated`
  │ • destaque 1         │  │ ★ stars*     │  * só repos públicos, via /api/github
  │ • destaque 2         │  │ último commit│
  └──────────────────────┘  └──────────────┘

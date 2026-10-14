@@ -46,6 +46,14 @@ Implementação: `web/src/styles/tokens.css` (fonte da verdade dos valores).
 laranja, significa Rust. Rust tem destaque (card principal do Stack), mas
 não é o centro da composição.
 
+**Carimbo** (data de atualização dos projetos em destaque): tinta
+`--glass-ruby` em borda dupla, estêncil, girado −5° e com `mix-blend-mode:
+multiply` sobre o papel. É a única exceção à regra de texto sem rotação: é um
+rótulo curto de duas linhas, e o mesmo mês aparece reto na página do projeto.
+
+**Etiqueta do Rust:** tinta (`--ink`) sobre `--rust`. Texto branco sobre o
+laranja dava 3:1, abaixo do AA para texto de 0.75rem.
+
 **Contraste:** o neon é sempre usado sobre `--poster`, nunca sobre papel
 (neon sobre papel claro não passa AA). Dentro dos cards, o texto é `--ink`;
 direto sobre o fundo escuro, é `--on-bg` (6.5:1).
@@ -89,6 +97,8 @@ de 0.35rem a 0.9rem, calculado pra caber sem scroll horizontal.
 | `RustCore` | `size`, `pulse` | engrenagem do Rust em SVG, `--rust`, glow pulsando 4s |
 | `StainedGlassCross` | — | ver abaixo |
 | `Poster` | — | painel escuro com bordas rasgadas; base de todo neon |
+| `FeaturedProject` | `project`, `tilt`, `seed` | papel caderno + tira de cartaz no topo com o nome em ASCII neon; até 3 destaques com losango; carimbo do mês |
+| `ProjectCard` | `project`, `tilt`, `tape`, `compact` | cartão de jornal da grade; `compact` para os "outros projetos" |
 
 ## O vitral (hero)
 

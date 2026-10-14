@@ -4,7 +4,7 @@ import Poster from '@/components/collage/Poster.vue'
 import PaperCard from '@/components/collage/PaperCard.vue'
 import Tape from '@/components/collage/Tape.vue'
 import NeonAscii from '@/components/neon/NeonAscii.vue'
-import { findProject } from '@/lib/content'
+import { findProject, monthLabel } from '@/lib/content'
 import { fetchRepoStats, type RepoStats } from '@/lib/api'
 import { ascii } from '@/generated/ascii'
 
@@ -34,7 +34,7 @@ const date = (iso: string) => new Date(iso).toLocaleDateString('pt-BR')
       </Poster>
 
       <div class="detail__grid">
-        <PaperCard variant="notebook" :tilt="0.5" class="detail__body">
+        <PaperCard variant="notebook" :tilt="0.5" class="detail__body" :style="{ '--accent': `var(--${glow === 'rust' ? 'rust' : `neon-${glow}`})` }">
           <Tape pos="tl" />
           <p>{{ project.summary }}</p>
           <ul v-if="project.highlights.length" class="detail__hl">
@@ -50,12 +50,16 @@ const date = (iso: string) => new Date(iso).toLocaleDateString('pt-BR')
             </dd>
             <dt class="stencil">Status</dt>
             <dd>{{ project.status }}</dd>
+            <template v-if="project.updated">
+              <dt class="stencil">Atualizado</dt>
+              <dd><time :datetime="project.updated">{{ monthLabel(project.updated) }}</time></dd>
+            </template>
             <dt class="stencil">Código</dt>
             <dd>
               <a v-if="project.visibility === 'public' && project.repo" :href="`https://github.com/${project.repo}`" target="_blank" rel="noopener">
                 github.com/{{ project.repo }} ↗
               </a>
-              <span v-else-if="project.repo">🔒 repositório privado</span>
+              <span v-else-if="project.repo">repositório privado</span>
               <span v-else>sem repositório público</span>
             </dd>
             <template v-if="stats">
@@ -91,8 +95,21 @@ const date = (iso: string) => new Date(iso).toLocaleDateString('pt-BR')
   align-items: start;
 }
 .detail__body p { margin-top: 0; }
-.detail__hl { margin: 0; padding-left: 1.2rem; }
+.detail__hl { margin: 0; padding: 0; list-style: none; }
+.detail__hl li { position: relative; padding-left: 1.3rem; }
 .detail__hl li + li { margin-top: 0.4rem; }
+/* mesmo marcador dos cartões de destaque: losango do vitral na cor do projeto */
+.detail__hl li::before {
+  content: '';
+  position: absolute;
+  left: 0.15rem;
+  top: 0.45em;
+  width: 0.55rem;
+  height: 0.55rem;
+  background: var(--accent, var(--neon-cyan));
+  border: 1.5px solid var(--ink);
+  rotate: 45deg;
+}
 .detail__meta dl { margin: 0; }
 .detail__meta dt { font-size: 1.15rem; margin-top: 0.9rem; }
 .detail__meta dt:first-child { margin-top: 0; }

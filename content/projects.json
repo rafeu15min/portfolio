@@ -1,13 +1,69 @@
 [
   {
+    "slug": "claudesktop",
+    "name": "claudesktop",
+    "tagline": "Servidor MCP que dá ao Claude controle de mouse e teclado no Linux.",
+    "summary": "Servidor MCP local que dá ao Claude Code controle de mouse e teclado no Hyprland (Wayland). Antes de recorrer a print e clique, localiza elementos pela árvore de acessibilidade (AT-SPI) e pelo DOM (Chrome DevTools Protocol); em terminais e jogos, que não têm essa árvore, lê o texto da tela por OCR. Toda ação que muda estado devolve um screenshot para confirmação.",
+    "highlights": [
+      "Eventos reais via /dev/uinput (ydotool), direto no compositor Wayland",
+      "Digitação pelo layout ativo do teclado (libxkbcommon), com teclas mortas para os acentos; emoji e CJK vão pela área de transferência, restaurada em seguida",
+      "OCR com Tesseract que devolve a posição de cada palavra na tela",
+      "Espera por janela, elemento ou mudança numa região da tela, sem prints repetidos",
+      "Medição do áudio que está saindo, para saber se um jogo ou vídeo tem som",
+      "AT-SPI para apps GTK/Qt, CDP para navegadores Chromium"
+    ],
+    "stack": [
+      "Python",
+      "MCP",
+      "AT-SPI",
+      "CDP",
+      "Wayland",
+      "Tesseract"
+    ],
+    "status": "ativo",
+    "visibility": "public",
+    "repo": "rafeu15min/claudesktop",
+    "accent": "cyan",
+    "updated": "2026-10",
+    "featured": true
+  },
+  {
+    "slug": "anubis",
+    "name": "Anubis",
+    "tagline": "Orquestrador do meu servidor de mídia em casa, escrito em Rust.",
+    "summary": "Serviço em Rust (Tokio + Axum) que coordena a stack de mídia do meu servidor (Sonarr, Radarr, qBittorrent e Jellyfin) e serve um app em Vue para descobrir, pedir e assistir filmes, séries e animes, além de uma biblioteca de leitura. Também cuida do disco: acima de 85% de uso do RAID0, apaga os vídeos mais antigos que ninguém está assistindo. Como download e biblioteca são hardlinks do mesmo dado, cada arquivo é identificado pelo inode.",
+    "highlights": [
+      "Limpeza de disco por inode: só conta como espaço liberado o dado que perde todos os nomes",
+      "Player próprio que começa a tocar enquanto o vídeo ainda está chegando ao servidor",
+      "Recomendações pelo que se assiste no Jellyfin, com histórico importado da Netflix, da Crunchyroll e do AniList",
+      "Faixa de áudio em português juntada ao arquivo da biblioteca com FFmpeg",
+      "Plugin do KOReader no Kindle: livros do Drive baixados ao abrir e progresso de leitura sincronizado"
+    ],
+    "stack": [
+      "Rust",
+      "Tokio",
+      "Axum",
+      "Vue",
+      "FFmpeg",
+      "Lua"
+    ],
+    "status": "ativo",
+    "visibility": "private",
+    "repo": "rafeu15min/anubis",
+    "accent": "rust",
+    "updated": "2026-10",
+    "featured": true
+  },
+  {
     "slug": "vault-sync",
     "name": "vault-sync",
     "tagline": "Sincroniza jogos entre o SSD local e um servidor próprio via SSH/rsync.",
-    "summary": "Sincroniza a biblioteca de jogos entre o NVMe local e um servidor próprio via SSH/rsync: baixa o jogo para jogar, envia de volta ao fechar e libera o espaço local. Integra Steam e Heroic (Epic), acorda o servidor via Wake-on-LAN e roda como serviço systemd no boot e no desligamento.",
+    "summary": "Sincroniza a biblioteca de jogos entre o NVMe local e um servidor próprio via SSH/rsync: baixa o jogo para jogar, envia de volta ao fechar e libera o espaço local. Integra Steam e Heroic (Epic), acorda o servidor via Wake-on-LAN e roda como serviço systemd no boot e no desligamento. Um menu de catálogo (SUPER+G) lista os jogos locais e os do servidor, mesmo com o servidor desligado.",
     "highlights": [
       "Binário único em Rust, sem nome de máquina cravado no código",
       "Wake-on-LAN automático antes de qualquer operação remota",
       "Comandos run / pull / ingest / purge / doctor com diagnóstico só-leitura",
+      "Catálogo no SUPER+G com jogos locais e remotos, e a opção de só baixar sem abrir",
       "Integração com systemd para sincronizar no desligamento"
     ],
     "stack": [
@@ -19,29 +75,57 @@
     "status": "ativo",
     "visibility": "private",
     "repo": "rafeu15min/vault-sync",
-    "accent": "rust"
+    "accent": "rust",
+    "updated": "2026-10",
+    "featured": true
   },
   {
-    "slug": "claudesktop",
-    "name": "claudesktop",
-    "tagline": "Servidor MCP que dá ao Claude controle de mouse e teclado no Linux.",
-    "summary": "Servidor MCP local que dá ao Claude Code controle de mouse e teclado com consciência de geometria de janela. Localiza elementos por árvore de acessibilidade (AT-SPI) e DOM (Chrome DevTools Protocol) antes de recorrer a print+clique. Toda ação que muda estado devolve um screenshot pra confirmação.",
+    "slug": "ship-n-click",
+    "name": "Ship'n'click",
+    "tagline": "Roguelike de sobrevivência entre meteoros, com a lógica em Rust na Godot.",
+    "summary": "Roguelike de sobrevivência sem final: a pontuação sobe a cada segundo vivo, os meteoros não param de nascer e as moedas pagam o respawn e os power-ups. Quando o dinheiro não cobre a taxa de renascer, a run acaba e o jogo recomeça do zero. A cena fica na Godot e a lógica do jogo roda em Rust via GDExtension (godot-rust).",
     "highlights": [
-      "Eventos reais via /dev/uinput (ydotool), direto no compositor Wayland",
-      "AT-SPI para apps GTK/Qt, CDP para navegadores Chromium",
-      "Diagnóstico de ambiente só-leitura antes de agir"
+      "Lógica em Rust compilada como cdylib e carregada pela Godot (gdext 0.5)",
+      "Respawn pago: a taxa cresce com o tempo de run e metade do que sobra fica no cadáver",
+      "Power-ups definidos em JSON, com regras que respeitam conservação de energia, massa e momento",
+      "Assets vetoriais próprios (SVG)"
     ],
     "stack": [
-      "Python",
-      "MCP",
-      "AT-SPI",
-      "CDP",
-      "Wayland"
+      "Rust",
+      "Godot",
+      "GDExtension"
     ],
-    "status": "ativo",
+    "status": "em construção",
     "visibility": "public",
-    "repo": "rafeu15min/claudesktop",
-    "accent": "cyan"
+    "repo": "rafeu15min/click-n-ship",
+    "accent": "rust",
+    "updated": "2026-10",
+    "featured": true
+  },
+  {
+    "slug": "personal-bank-suite",
+    "name": "Personal Bank Suite",
+    "tagline": "Microsserviços de Open Finance com fluxo de consentimento OAuth 2.0.",
+    "summary": "Microsserviços que agregam dados financeiros de várias instituições seguindo o fluxo do Open Finance Brasil. O ms-consent conduz o consentimento OAuth 2.0 com o banco e guarda os tokens criptografados; depois publica um evento no Kafka, e os serviços de transações, cartões e investimentos buscam cada domínio e gravam no PostgreSQL. O fluxo completo roda contra um banco simulado que imita as APIs do Open Finance.",
+    "highlights": [
+      "Consentimento e carga inicial testados de ponta a ponta contra um banco simulado",
+      "Tokens criptografados com AES-256-GCM; pelo Kafka passa só o ID do consentimento",
+      "Arquitetura orientada a eventos, com um consumer group por serviço",
+      "Maven multi-módulo com biblioteca comum e clientes REST dinâmicos por banco"
+    ],
+    "stack": [
+      "Java",
+      "Quarkus",
+      "Kafka",
+      "PostgreSQL",
+      "OAuth 2.0",
+      "Docker"
+    ],
+    "status": "protótipo",
+    "visibility": "public",
+    "repo": "rafeu15min/personalbank-suite",
+    "accent": "pink",
+    "updated": "2026-09"
   },
   {
     "slug": "kernel-heimdall",
@@ -63,7 +147,8 @@
     "status": "em construção",
     "visibility": "public",
     "repo": "rafeu15min/kernel-heimdall",
-    "accent": "rust"
+    "accent": "rust",
+    "updated": "2026-05"
   },
   {
     "slug": "portfolio",
@@ -87,30 +172,8 @@
     "status": "ativo",
     "visibility": "public",
     "repo": "rafeu15min/portfolio",
-    "accent": "purple"
-  },
-  {
-    "slug": "personal-bank-suite",
-    "name": "Personal Bank Suite",
-    "tagline": "Microsserviços de Open Finance com fluxo de consentimento OAuth 2.0.",
-    "summary": "Ecossistema de microsserviços que agrega dados financeiros de várias instituições pelo padrão Open Finance. O ms-consent orquestra o fluxo OAuth 2.0 com os bancos e guarda os tokens; após o consentimento, publica eventos no Kafka e os serviços de transações, cartões e investimentos consomem e processam cada domínio.",
-    "highlights": [
-      "Arquitetura orientada a eventos (Kafka, pub/sub)",
-      "Consentimento OAuth 2.0 como porta de entrada",
-      "Maven multi-módulo com biblioteca comum e clientes REST dinâmicos por banco",
-      "Dev Containers e Docker Compose"
-    ],
-    "stack": [
-      "Java",
-      "Quarkus",
-      "Kafka",
-      "OAuth 2.0",
-      "Docker"
-    ],
-    "status": "protótipo",
-    "visibility": "public",
-    "repo": "rafeu15min/personalbank-suite",
-    "accent": "pink"
+    "accent": "purple",
+    "updated": "2026-10"
   },
   {
     "slug": "esp32-wake-on-lan",
@@ -131,22 +194,8 @@
     "status": "ativo",
     "visibility": "public",
     "repo": "rafeu15min/esp32-wake-on-lan",
-    "accent": "cyan"
-  },
-  {
-    "slug": "anubis",
-    "name": "Anubis",
-    "tagline": "Sistema de triagem estrutural seguro.",
-    "summary": "Sistema de triagem estrutural seguro. Descrição detalhada em breve.",
-    "highlights": [],
-    "stack": [
-      "Rust"
-    ],
-    "status": "em construção",
-    "visibility": "private",
-    "repo": null,
-    "accent": "purple",
-    "todo": "Confirmar descrição, stack e link com o Rafeu"
+    "accent": "cyan",
+    "updated": "2026-09"
   },
   {
     "slug": "token-econ-plugins",
@@ -182,7 +231,8 @@
     "status": "protótipo",
     "visibility": "public",
     "repo": "rafeu15min/bible",
-    "accent": "purple"
+    "accent": "purple",
+    "updated": "2025-09"
   },
   {
     "slug": "rescue-backup",
@@ -202,26 +252,8 @@
     "status": "ativo",
     "visibility": "public",
     "repo": "rafeu15min/rescue-backup",
-    "accent": "cyan"
-  },
-  {
-    "slug": "ship-n-click",
-    "name": "Ship'n'click",
-    "tagline": "Jogo clicker com gestão de recursos, lógica em Rust na Godot.",
-    "summary": "Jogo interativo que combina mecânicas de clicker com gestão de recursos. A cena e o render ficam na Godot; a lógica de jogo roda em Rust via GDExtension (godot-rust).",
-    "highlights": [
-      "Lógica em Rust compilada como cdylib e carregada pela Godot",
-      "Assets vetoriais próprios (SVG)"
-    ],
-    "stack": [
-      "Rust",
-      "Godot",
-      "GDExtension"
-    ],
-    "status": "protótipo",
-    "visibility": "public",
-    "repo": "rafeu15min/click-n-ship",
-    "accent": "rust"
+    "accent": "cyan",
+    "updated": "2026-09"
   },
   {
     "slug": "internal-linux-env",
@@ -243,7 +275,8 @@
     "status": "ativo",
     "visibility": "public",
     "repo": "rafeu15min/rice",
-    "accent": "cyan"
+    "accent": "cyan",
+    "updated": "2026-09"
   },
   {
     "slug": "compiler",
@@ -257,7 +290,8 @@
     "status": "estudo",
     "visibility": "public",
     "repo": "rafeu15min/compiler",
-    "accent": "rust"
+    "accent": "rust",
+    "updated": "2026-09"
   },
   {
     "slug": "tab-plus",
@@ -274,7 +308,8 @@
     "status": "protótipo",
     "visibility": "public",
     "repo": "rafeu15min/tabplusBackend",
-    "accent": "pink"
+    "accent": "pink",
+    "updated": "2024-08"
   },
   {
     "slug": "autopark",
@@ -291,7 +326,8 @@
     "status": "protótipo",
     "visibility": "public",
     "repo": "rafeu15min/AutoParkBackend",
-    "accent": "cyan"
+    "accent": "cyan",
+    "updated": "2025-09"
   },
   {
     "slug": "theme-shuffler",
@@ -306,6 +342,7 @@
     "status": "concluído",
     "visibility": "public",
     "repo": "rafeu15min/ytmdesktop-theme-shuffler",
-    "accent": "rust"
+    "accent": "rust",
+    "updated": "2024-10"
   }
 ]

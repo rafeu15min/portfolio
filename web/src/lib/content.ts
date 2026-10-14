@@ -15,6 +15,10 @@ export interface Project {
   visibility: 'public' | 'private'
   repo: string | null
   accent: Accent
+  /** mês da última atividade, "AAAA-MM" */
+  updated?: string
+  /** cartão grande no topo da seção */
+  featured?: boolean
   todo?: string
 }
 
@@ -30,6 +34,9 @@ export const projects = projectsJson as Project[]
 export const timeline = timelineJson as TimelineEntry[]
 
 export const findProject = (slug: string) => projects.find((p) => p.slug === slug)
+
+/** "2026-10" → "10/2026" */
+export const monthLabel = (ym: string) => ym.split('-').reverse().join('/')
 
 import devocaoJson from '@content/devocao.json'
 

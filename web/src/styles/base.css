@@ -26,6 +26,10 @@ body {
 img, svg { display: block; max-width: 100%; }
 a { color: inherit; }
 :focus-visible { outline: 3px solid var(--neon-purple); outline-offset: 3px; }
+/* superfícies do navegador também seguem a paleta */
+::selection { background: var(--neon-pink); color: var(--ink); }
+input, textarea { caret-color: var(--neon-cyan); }
+a { text-underline-offset: 0.18em; }
 
 .wrap {
   width: 100%;
@@ -79,7 +83,8 @@ a { color: inherit; }
   letter-spacing: 0.02em;
   background: var(--notebook);
 }
-.tag--rust { border-color: var(--rust); color: #fff; background: var(--rust); }
+/* tinta sobre o laranja: branco dava 3:1, abaixo do AA para texto pequeno */
+.tag--rust { border-color: var(--rust); color: var(--ink); background: var(--rust); }
 
 .btn {
   display: inline-block;

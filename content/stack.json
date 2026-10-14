@@ -4,6 +4,7 @@
     "text": "Minha linguagem principal. Uso quando o projeto precisa de desempenho e segurança de memória, do kernel bare-metal à API deste site.",
     "projects": [
       "vault-sync",
+      "anubis",
       "kernel-heimdall",
       "portfolio",
       "compiler",
@@ -57,7 +58,8 @@
         {
           "name": "Lua",
           "projects": [
-            "internal-linux-env"
+            "internal-linux-env",
+            "anubis"
           ]
         }
       ]
@@ -81,13 +83,15 @@
         {
           "name": "Axum · Tokio",
           "projects": [
+            "anubis",
             "portfolio"
           ]
         },
         {
           "name": "Vue 3 · Vite",
           "projects": [
-            "portfolio"
+            "portfolio",
+            "anubis"
           ]
         },
         {
@@ -148,10 +152,17 @@
           ]
         },
         {
+          "name": "PostgreSQL",
+          "projects": [
+            "personal-bank-suite"
+          ]
+        },
+        {
           "name": "systemd",
           "projects": [
             "vault-sync",
-            "rescue-backup"
+            "rescue-backup",
+            "anubis"
           ]
         },
         {
@@ -178,6 +189,12 @@
             "internal-linux-env",
             "claudesktop"
           ]
+        },
+        {
+          "name": "FFmpeg",
+          "projects": [
+            "anubis"
+          ]
         }
       ]
     },
@@ -189,6 +206,12 @@
           "projects": [
             "claudesktop",
             "token-econ-plugins"
+          ]
+        },
+        {
+          "name": "Tesseract (OCR)",
+          "projects": [
+            "claudesktop"
           ]
         },
         {

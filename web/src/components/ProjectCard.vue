@@ -3,11 +3,11 @@ import PaperCard from './collage/PaperCard.vue'
 import Tape from './collage/Tape.vue'
 import type { Project } from '@/lib/content'
 
-defineProps<{ project: Project; tilt: number; tape: 'tl' | 'tr' | 'top' }>()
+defineProps<{ project: Project; tilt: number; tape: 'tl' | 'tr' | 'top'; compact?: boolean }>()
 </script>
 
 <template>
-  <PaperCard tag="article" :tilt="tilt" class="card" :class="`card--${project.accent}`" crop>
+  <PaperCard tag="article" :tilt="tilt" class="card" :class="[`card--${project.accent}`, { 'card--compact': compact }]" crop>
     <Tape :pos="tape" :angle="tilt * 2" />
     <header class="card__head">
       <h3 class="card__name stencil">
@@ -21,7 +21,7 @@ defineProps<{ project: Project; tilt: number; tape: 'tl' | 'tr' | 'top' }>()
     </ul>
     <footer class="card__foot">
       <a v-if="project.visibility === 'public' && project.repo" :href="`https://github.com/${project.repo}`" target="_blank" rel="noopener">código ↗</a>
-      <span v-else-if="project.repo" class="card__private">🔒 repo privado</span>
+      <span v-else-if="project.repo" class="card__private">repo privado</span>
       <span v-else class="card__private">sem repo público</span>
       <span aria-hidden="true" class="card__more">detalhes →</span>
     </footer>
@@ -63,11 +63,19 @@ defineProps<{ project: Project; tilt: number; tape: 'tl' | 'tr' | 'top' }>()
 .card__stack { display: flex; flex-wrap: wrap; gap: 0.4rem; margin: 0; padding: 0; list-style: none; }
 .card__foot {
   display: flex;
+  flex-wrap: wrap;
   justify-content: space-between;
+  gap: 0.3rem 1rem;
   font-family: var(--font-mono);
   font-size: 0.85rem;
   font-weight: 700;
 }
 .card__foot a { position: relative; z-index: 2; }
+.card__foot > * { white-space: nowrap; }
 .card__private { color: var(--ink-soft); }
+
+/* grade dos "outros": papel menor, mesmo vocabulário */
+.card--compact { gap: 0.6rem; border-top-width: 4px; }
+.card--compact .card__name { font-size: 1.35rem; }
+.card--compact .card__tagline { font-size: 0.92rem; }
 </style>

@@ -23,6 +23,12 @@ pub struct Project {
     pub visibility: Visibility,
     pub repo: Option<String>,
     pub accent: String,
+    /// Mês da última atividade, "AAAA-MM".
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub updated: Option<String>,
+    /// Aparece em destaque, num cartão maior, no topo da seção de projetos.
+    #[serde(default)]
+    pub featured: bool,
     /// Nota interna — nunca sai pela API.
     #[serde(default, skip_serializing)]
     pub todo: Option<String>,
@@ -80,6 +86,14 @@ impl Content {
                     return Err(format!("{}: repo deve ser \"dono/nome\", veio {repo:?}", p.slug));
                 }
             }
+            if let Some(month) = &p.updated {
+                let valid = month.split_once('-').is_some_and(|(y, m)| {
+                    y.len() == 4 && y.bytes().all(|b| b.is_ascii_digit()) && m.len() == 2 && matches!(m.parse::<u8>(), Ok(1..=12))
+                });
+                if !valid {
+                    return Err(format!("{}: updated deve ser \"AAAA-MM\", veio {month:?}", p.slug));
+                }
+            }
             if p.visibility == Visibility::Public && p.repo.is_none() {
                 return Err(format!("{}: projeto público sem repo", p.slug));
             }
@@ -113,6 +127,18 @@ mod tests {
         let c = Content::load(&dir).unwrap();
         assert!(c.public_repo("vault-sync").is_none());
         assert!(c.public_repo("nao-existe").is_none());
+    }
+
+    #[test]
+    fn updated_must_be_year_month() {
+        let dir = Path::new(env!("CARGO_MANIFEST_DIR")).join("../content");
+        let mut c = Content::load(&dir).unwrap();
+        for bad in ["2026-13", "2026-1", "26-10", "outubro"] {
+            c.projects[0].updated = Some(bad.into());
+            assert!(c.validate().is_err(), "{bad} deveria ser recusado");
+        }
+        c.projects[0].updated = Some("2026-10".into());
+        assert!(c.validate().is_ok());
     }
 
     #[test]
