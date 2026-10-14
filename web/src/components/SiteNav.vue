@@ -3,9 +3,9 @@ import { ref } from 'vue'
 import { useRoute } from 'vue-router'
 
 const links = [
+  ['projetos', 'projetos'],
   ['manifesto', 'manifesto'],
   ['stack', 'stack'],
-  ['projetos', 'projetos'],
   ['trajetoria', 'trajetória'],
   ['devocao', 'devoção'],
   ['contato', 'contato'],

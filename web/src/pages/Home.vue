@@ -10,9 +10,10 @@ import Contact from '@/sections/Contact.vue'
 
 <template>
   <Hero />
+  <!-- projetos primeiro: são o que o visitante veio ver -->
+  <Projects />
   <Manifesto />
   <Stack />
-  <Projects />
   <Trajectory />
   <Devotion />
   <Contact />

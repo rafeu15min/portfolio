@@ -6,9 +6,9 @@ Legenda: `▓` painel escuro colado (cartaz preto) · `░` papel/jornal ·
 ```
 /                       single-page
 ├── #inicio             Hero
+├── #projetos           Projetos  ──▶ /projetos/:slug
 ├── #manifesto          Manifesto
 ├── #stack              Stack
-├── #projetos           Projetos  ──▶ /projetos/:slug
 ├── #trajetoria         Trajetória
 ├── #devocao           Devoção  ──▶ /devocao (exposição 3D)
 └── #contato            Contato
@@ -18,7 +18,7 @@ Legenda: `▓` painel escuro colado (cartaz preto) · `░` papel/jornal ·
 
 ```
 ┌────────────────────────────────────────────────────────────────────────┐
-│ [RAFEU]      manifesto stack projetos trajetória devoção contato       │
+│ [RAFEU]      projetos manifesto stack trajetória devoção contato       │
 │                                                                        │  fundo #141019
 │     ___      ___                                   ╭────╮              │
 │    | _ \__ _| __|__ _  _     (neon ciano,        ╱ ◇◇◇◇ ╲             │  ← vitral gótico:
