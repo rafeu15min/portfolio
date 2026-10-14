@@ -31,12 +31,14 @@
     "slug": "anubis",
     "name": "Anubis",
     "tagline": "Orquestrador do meu servidor de mídia em casa, escrito em Rust.",
-    "summary": "Serviço em Rust (Tokio + Axum) que coordena a stack de mídia do meu servidor (Sonarr, Radarr, qBittorrent e Jellyfin) e serve um app em Vue para descobrir, pedir e assistir filmes, séries e animes, além de uma biblioteca de leitura. Também cuida do disco: acima de 85% de uso do RAID0, apaga os vídeos mais antigos que ninguém está assistindo. Como download e biblioteca são hardlinks do mesmo dado, cada arquivo é identificado pelo inode.",
+    "summary": "Serviço em Rust (Tokio + Axum) que coordena a stack de mídia do meu servidor (Sonarr, Radarr, Prowlarr, qBittorrent e Jellyfin) e serve um app em Vue para descobrir, pedir e assistir filmes, séries e animes, além de uma biblioteca de leitura. Na leitura, um pedido procura primeiro a versão em português no Library Genesis, em canais do Telegram e em torrents, valida o EPUB ou PDF e salva no Google Drive. Também cuida do disco: acima de 85% de uso do RAID0, apaga os vídeos mais antigos que ninguém está assistindo. Como download e biblioteca são hardlinks do mesmo dado, cada arquivo é identificado pelo inode.",
     "highlights": [
       "Limpeza de disco por inode: só conta como espaço liberado o dado que perde todos os nomes",
-      "Player próprio que começa a tocar enquanto o vídeo ainda está chegando ao servidor",
+      "Player próprio que começa a tocar enquanto o torrent ainda está baixando (librqbit), priorizando as peças da posição do player",
       "Recomendações pelo que se assiste no Jellyfin, com histórico importado da Netflix, da Crunchyroll e do AniList",
+      "Busca direta nos indexadores do Prowlarr, com as faixas reais de cada torrent de anime consultadas no Anime Tosho",
       "Faixa de áudio em português juntada ao arquivo da biblioteca com FFmpeg",
+      "Livros: cadeia Library Genesis → Telegram (cliente MTProto) → torrent, português primeiro, com validador de EPUB/PDF",
       "Plugin do KOReader no Kindle: livros do Drive baixados ao abrir e progresso de leitura sincronizado"
     ],
     "stack": [

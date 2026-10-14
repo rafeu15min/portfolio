@@ -23,9 +23,9 @@
       "video": "/video/anubis-navegando.mp4",
       "width": 1280,
       "height": 800,
-      "duration": 22,
-      "caption": "Navegando pela vitrine: as fileiras de filmes, as abas Séries e Animes e, no fim, a leitura com o progresso de cada livro e as recomendações.",
-      "alt": "Vídeo da página do Anubis rolando as fileiras de pôsteres, trocando entre Filmes, Séries e Animes e abrindo a aba de leitura"
+      "duration": 28,
+      "caption": "Navegando pela vitrine: as fileiras de filmes, as abas Séries e Animes e, no fim, a leitura com os pedidos de livros, o progresso de cada um e as recomendações.",
+      "alt": "Vídeo da página do Anubis rolando as fileiras de pôsteres, trocando entre Filmes, Séries e Animes e abrindo a aba de leitura com a lista de pedidos"
     },
     {
       "src": "/img/evidencias/anubis-vitrine.webp",
@@ -40,6 +40,13 @@
       "height": 729,
       "caption": "Leitura: livros em andamento com o progresso do kosync, os temas de estudo editáveis e o Para você de livros.",
       "alt": "Página de leitura do Anubis: fileira Lendo agora com porcentagens, etiquetas de temas e fileira Para você com capas"
+    },
+    {
+      "src": "/img/evidencias/anubis-pedidos.webp",
+      "width": 1000,
+      "height": 804,
+      "caption": "Pedidos de livros: cada um procura a versão em português no LibGen, nos canais do Telegram e em torrents. Sem nenhuma, o botão baixa a versão em inglês.",
+      "alt": "Lista de pedidos da leitura no Anubis: três livros sem versão em português, com botão de baixar, e quatro já no Drive"
     }
   ],
   "vault-sync": [
