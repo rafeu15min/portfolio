@@ -5,7 +5,6 @@
       "video": "/video/claudesktop-digitando.mp4",
       "width": 640,
       "height": 400,
-      "duration": 15,
       "caption": "O Claude digita três linhas pelo type_text: texto comum, acentos e símbolos do ABNT2, e caracteres que o teclado não tem, colados pela área de transferência. O programa confirma cada linha recebida.",
       "alt": "Vídeo de um terminal onde três linhas são digitadas sozinhas e o programa confirma cada uma com a contagem de caracteres"
     },
@@ -23,7 +22,6 @@
       "video": "/video/anubis-navegando.mp4",
       "width": 1280,
       "height": 800,
-      "duration": 29,
       "caption": "Uma tomada só, sem cortes: as fileiras de filmes, as abas Séries e Animes e a leitura, com o progresso de cada livro, os temas de estudo e as recomendações.",
       "alt": "Vídeo da página do Anubis rolando as fileiras de pôsteres, trocando entre Filmes, Séries e Animes e abrindo a aba de leitura"
     },
@@ -48,7 +46,6 @@
       "video": "/video/vault-sync-menu.mp4",
       "width": 640,
       "height": 590,
-      "duration": 24,
       "caption": "O catálogo do SUPER+G, sem cortes: a lista completa de jogos (Steam, non-Steam e Epic), cada um dizendo se está só no servidor ou também na máquina local, e a busca filtrando enquanto se digita.",
       "alt": "Vídeo do menu do vault-sync descendo pela lista completa de jogos e depois filtrando cyber até sobrar Cyberpunk 2077"
     }
@@ -59,7 +56,6 @@
       "video": "/video/ship-n-click-run.mp4",
       "width": 1280,
       "height": 720,
-      "duration": 22,
       "caption": "Uma run jogada por um script que mira com o mouse, atira nos meteoros mais próximos (os dourados primeiro) e liga o motor de vez em quando. A cada nível, a janela de power-ups oferece três cartas.",
       "alt": "Vídeo do jogo: a nave atirando em meteoros, coletando moedas e escolhendo power-ups nas janelas de nível 1 a 5"
     }
@@ -70,7 +66,6 @@
       "video": "/video/kernel-heimdall-boot.mp4",
       "width": 1008,
       "height": 248,
-      "duration": 11,
       "caption": "Boot no QEMU. As duas últimas linhas foram digitadas durante a gravação: o teclado PS/2 chega ao kernel por interrupção.",
       "alt": "Vídeo da tela VGA em modo texto: mensagens de inicialização do Kernel Heimdall e as linhas ola heimdall e rust no metal sendo digitadas"
     }
@@ -81,7 +76,6 @@
       "video": "/video/linux-env-hyprland.mp4",
       "width": 1280,
       "height": 720,
-      "duration": 27,
       "caption": "Do nvim com o próprio hyprland.lua para outra área de trabalho: o lançador do Rofi, o terminal translúcido com o fastfetch, o tiling dividindo a tela, o SUPER+R virando a divisão, o btop em tela cheia (o painel de processos foi desfocado) e a volta para o nvim.",
       "alt": "Vídeo da área de trabalho Hyprland: nvim com a configuração em Lua, troca de área, lançador Rofi, terminais lado a lado e empilhados, btop em tela cheia e retorno ao nvim"
     }

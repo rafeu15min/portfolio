@@ -83,8 +83,6 @@ export interface Evidence {
   src: string
   /** MP4 (H.264, sem áudio) — opcional */
   video?: string
-  /** segundos, mostrado na capa do vídeo */
-  duration?: number
   width: number
   height: number
   caption: string
