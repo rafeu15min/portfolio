@@ -43,7 +43,9 @@ import { ascii } from '@/generated/ascii'
   padding-block: clamp(2.5rem, 6vw, 4rem);
 }
 .hero__text { display: grid; gap: 1.75rem; justify-items: start; }
-.hero__card { width: min(100%, 540px); }
+/* as fitas sobem ~25px além da borda do papel: a margem afasta o cartão (e o
+   que vem depois) do nome, no PC e no celular */
+.hero__card { width: min(100%, 540px); margin-top: 1.75rem; }
 .hero__role { margin: 0; font-size: clamp(1.3rem, 3vw, 1.9rem); line-height: 1.15; }
 .hero__claim { margin: 0.6rem 0 0; }
 .hero__cta { display: flex; flex-wrap: wrap; gap: 1rem; }
