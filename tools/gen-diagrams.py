@@ -1,5 +1,5 @@
 # Gera os diagramas de arquitetura do portfólio em SVG (só atributos de apresentação:
-# a CSP do site bloqueia style inline). Uso: python3 gen_diagrams.py <pasta-de-saída>
+# a CSP do site bloqueia style inline). Uso: python3 tools/gen-diagrams.py content/diagrams
 import sys
 from html import escape
 
@@ -119,40 +119,109 @@ def personal_bank():
     return d
 
 
-def anubis():
-    d = D(
-        "anubis", 880, 384,
-        "Arquitetura do Anubis",
-        "O Anubis, em Rust, atende o app em Vue e o Kindle e coordena Sonarr e Radarr, qBittorrent, "
-        "Jellyfin, as listas do TMDB e do AniList e a limpeza do disco RAID0.",
-    )
-    # portas no lado direito do Anubis (x=448, y 136..224), da de cima para a de baixo
-    d.arrow("M448,148 H468 Q476,148 476,140 V56 Q476,48 484,48 H578")       # → Sonarr·Radarr
-    d.arrow("M448,168 H492 Q500,168 500,160 V128 Q500,120 508,120 H578")    # → qBittorrent
-    d.arrow("M448,192 H578")                                                # → Jellyfin
-    d.arrow("M448,208 H492 Q500,208 500,216 V256 Q500,264 508,264 H578")    # → TMDB·AniList
-    d.arrow("M448,220 H468 Q476,220 476,228 V328 Q476,336 484,336 H578")    # → disco
-    d.arrow("M176,180 H254")                                                # app → Anubis
-    d.arrow("M176,292 H272 Q280,292 280,284 V226")                          # Kindle → Anubis
-    d.label(531, 34, "pedidos")
-    d.label(543, 106, "downloads")
-    d.label(513, 178, "biblioteca")
-    d.label(543, 250, "vitrine")
-    d.label(531, 322, "limpeza")
-    d.label(214, 166, "HTTP")
-    d.label(226, 278, "kosync")
-    d.node(24, 152, 152, 56, "App", "Vue 3 · player")
-    d.node(24, 264, 152, 56, "Kindle", "plugin KOReader")
-    d.node(256, 136, 192, 88, "Anubis", "Rust · Tokio · Axum", "focal-rust")
-    d.node(580, 24, 276, 48, "Sonarr · Radarr", None)
-    d.node(580, 96, 276, 48, "qBittorrent", None)
-    d.node(580, 168, 276, 48, "Jellyfin", None)
-    d.node(580, 240, 276, 48, "TMDB · AniList", None, "external")
-    d.node(580, 312, 276, 48, "Disco", "RAID0 · hardlinks", "store")
+def hub(slug, title, desc, inputs, modules, zone_label="Anubis · Rust"):
+    """Clientes à esquerda, módulos do Anubis numa zona no meio, serviços à direita.
+    Cada saída de um módulo fica na altura do serviço: setas retas, sem cruzamento."""
+    ZX, MX, MW, EX, EW = 208, 232, 256, 600, 256
+    y = 56
+    placed = []
+    for name, sub, outs in modules:
+        n = len(outs)
+        h = max(88, 44 * n)
+        ports = [y + h / 2] if n == 1 else [y + 22 + 44 * k for k in range(n)]
+        placed.append((y, h, name, sub, list(zip(ports, outs))))
+        y += h + 16
+    total_h = y - 16 + 40
+    d = D(slug, 880, int(total_h), title, desc)
+    d.zone(ZX, 32, 304, total_h - 56, zone_label)
+    for my, h, name, sub, outs in placed:
+        for py, (ename, esub, kind, label) in outs:
+            d.arrow(f"M{MX + MW},{py:.0f} H{EX - 2}")
+            d.label((MX + MW + EX) / 2, py - 14, label)
+    for name, sub, mi, label in inputs:
+        my, h = placed[mi][0], placed[mi][1]
+        cy = my + h / 2
+        d.arrow(f"M160,{cy:.0f} H{MX - 2}")
+        if label:
+            d.label(196, cy - 14, label)
+        d.node(24, cy - 28, 136, 56, name, sub)
+    for my, h, name, sub, outs in placed:
+        d.node(MX, my, MW, h, name, sub)
+        for py, (ename, esub, kind, label) in outs:
+            d.node(EX, py - 18, EW, 36, ename, esub, kind)
     return d
 
 
+def anubis_video():
+    return hub(
+        "anubis-video", "Anubis: descobrir e assistir",
+        "O app em Vue fala com o Anubis; a vitrine usa TMDB, AniList e o histórico importado, a busca "
+        "consulta o Prowlarr e as faixas reais no Anime Tosho e no bitmagnet, o Assistir agora baixa com "
+        "o librqbit, importa no Radarr e no Sonarr e passa o torrent ao qBittorrent, e a central de estado "
+        "acompanha o Jellyfin.",
+        [("App", "Vue 3 · player", 1, "HTTP")],
+        [
+            ("Vitrine e Para você", "listas e recomendações", [
+                ("TMDB · AniList", None, "external", "listas"),
+                ("Netflix · Crunchyroll", None, "external", "histórico")]),
+            ("Busca", "disponibilidade por título", [
+                ("Prowlarr", None, "plain", "indexadores"),
+                ("Anime Tosho · bitmagnet", None, "external", "faixas reais")]),
+            ("Assistir agora", "librqbit · legendas · FFmpeg", [
+                ("Radarr · Sonarr", None, "plain", "importa"),
+                ("qBittorrent", None, "plain", "semeia")]),
+            ("Central de estado", "pedidos e downloads", [
+                ("Jellyfin", None, "plain", "assistidos")]),
+        ],
+    )
+
+
+def anubis_biblioteca():
+    return hub(
+        "anubis-biblioteca", "Anubis: manutenção da biblioteca",
+        "Um timer e os webhooks disparam a limpeza de disco, que apaga pelo Radarr e pelo Sonarr, remove o "
+        "torrent no qBittorrent, avisa o Jellyfin e confere os inodes no RAID0; a dublagem automática acha "
+        "faixas em português pelo Prowlarr e as junta ao arquivo com o FFmpeg.",
+        [("Gatilhos", "timer e hooks", 0, None),
+         ("Webhook", "arquivo sem PT-BR", 1, None)],
+        [
+            ("Limpeza de disco", "inventário → plano → execução", [
+                ("Radarr · Sonarr", None, "plain", "apaga"),
+                ("qBittorrent", None, "plain", "remove torrent"),
+                ("Jellyfin", None, "plain", "avisa"),
+                ("Disco do servidor", None, "store", "inode")]),
+            ("Dublagem automática", "autodub · dubsync · mux", [
+                ("Prowlarr", None, "plain", "acha dublagem"),
+                ("FFmpeg", None, "plain", "junta faixa")]),
+        ],
+    )
+
+
+def anubis_leitura():
+    return hub(
+        "anubis-leitura", "Anubis: leitura",
+        "A página de leitura mostra a estante e as fileiras montadas com Open Library, Amazon Brasil e "
+        "AniList; a cadeia de download tenta Library Genesis, Bookshelf e Telegram, valida o EPUB ou PDF e "
+        "salva no Google Drive; o kosync guarda o progresso único do Kindle, do KOReader e da página.",
+        [("App", "/leitura", 0, "HTTP"),
+         ("Kindle", "KOReader · celular", 2, None)],
+        [
+            ("Estante e fileiras", "gosto comum filmes ↔ livros", [
+                ("Open Library", None, "external", "obras"),
+                ("Amazon Brasil", None, "external", "mais vendidos"),
+                ("AniList", None, "external", "mangás")]),
+            ("Cadeia de download", "PT primeiro · valida EPUB/PDF", [
+                ("Library Genesis", None, "external", "1ª fonte"),
+                ("Bookshelf", None, "plain", "2ª fonte"),
+                ("Telegram", None, "external", "canais PT-BR"),
+                ("Google Drive", None, "store", "salva")]),
+            ("kosync", "progresso de leitura único", []),
+        ],
+    )
+
+
 out = sys.argv[1]
-for d, name in [(personal_bank(), "personal-bank-suite"), (anubis(), "anubis")]:
+for d, name in [(personal_bank(), "personal-bank-suite"), (anubis_video(), "anubis--1-video"),
+                (anubis_biblioteca(), "anubis--2-biblioteca"), (anubis_leitura(), "anubis--3-leitura")]:
     open(f"{out}/{name}.svg", "w").write(d.svg())
     print(name, "ok")

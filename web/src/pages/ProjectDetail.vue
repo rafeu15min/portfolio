@@ -19,9 +19,15 @@ watchEffect(async () => {
   document.title = project.value ? `${project.value.name} · Rafeu` : 'Rafeu'
 })
 
-// diagramas de arquitetura (content/diagrams/<slug>.svg), embutidos no build
-const diagrams = import.meta.glob('@content/diagrams/*.svg', { query: '?raw', import: 'default', eager: true }) as Record<string, string>
-const diagram = computed(() => Object.entries(diagrams).find(([path]) => path.endsWith(`/${props.slug}.svg`))?.[1])
+// diagramas de arquitetura, embutidos no build: content/diagrams/<slug>.svg ou, quando
+// são vários, <slug>--1-nome.svg, <slug>--2-nome.svg… A legenda é o <title> do SVG.
+const allDiagrams = import.meta.glob('@content/diagrams/*.svg', { query: '?raw', import: 'default', eager: true }) as Record<string, string>
+const diagrams = computed(() =>
+  Object.entries(allDiagrams)
+    .filter(([path]) => path.endsWith(`/${props.slug}.svg`) || path.includes(`/${props.slug}--`))
+    .sort(([a], [b]) => a.localeCompare(b))
+    .map(([path, svg]) => ({ path, svg, title: /<title[^>]*>([^<]*)<\/title>/.exec(svg)?.[1] ?? 'Arquitetura' })),
+)
 
 const glow = computed(() => (project.value?.accent === 'rust' ? 'rust' : project.value?.accent ?? 'cyan'))
 const date = (iso: string) => new Date(iso).toLocaleDateString('pt-BR')
@@ -74,12 +80,19 @@ const date = (iso: string) => new Date(iso).toLocaleDateString('pt-BR')
         </PaperCard>
       </div>
 
-      <PaperCard v-if="diagram" tag="figure" :tilt="-0.3" crop class="detail__arch">
-        <Tape pos="tr" :angle="5" />
-        <figcaption class="detail__arch-title stencil">Arquitetura</figcaption>
+      <PaperCard
+        v-for="(d, i) in diagrams"
+        :key="d.path"
+        tag="figure"
+        :tilt="[-0.3, 0.4, -0.5][i % 3]"
+        crop
+        class="detail__arch"
+      >
+        <Tape :pos="i % 2 ? 'tl' : 'tr'" :angle="i % 2 ? -5 : 5" />
+        <figcaption class="detail__arch-title stencil">{{ d.title }}</figcaption>
         <!-- rolagem só dentro do papel em telas estreitas: abaixo de ~640px o texto do diagrama ficaria ilegível -->
-        <div class="detail__arch-scroll" tabindex="0" aria-label="Diagrama de arquitetura (role para os lados no celular)">
-          <div class="detail__arch-svg" v-html="diagram" />
+        <div class="detail__arch-scroll" tabindex="0" :aria-label="`${d.title} (role para os lados no celular)`">
+          <div class="detail__arch-svg" v-html="d.svg" />
         </div>
       </PaperCard>
     </template>
