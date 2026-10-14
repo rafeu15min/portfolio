@@ -308,7 +308,7 @@
     "slug": "tab-plus",
     "name": "Tab+",
     "tagline": "Backend de um jogo de tabuada com histórico por aluno.",
-    "summary": "Backend de um jogo educativo de tabuada: registra cada partida por jogador, série e ano — contas, respostas e acertos — e expõe consultas por jogador e por partida. Acompanha um serviço de analytics em Python.",
+    "summary": "Backend de um jogo educativo de tabuada: registra cada partida por jogador, série e ano (contas, respostas e acertos) e expõe consultas por jogador e por partida. Acompanha um serviço de analytics em Python.",
     "highlights": [],
     "stack": [
       "Java",

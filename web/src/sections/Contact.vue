@@ -9,9 +9,9 @@ const state = ref<'idle' | 'sending' | ContactResult>('idle')
 
 const messages: Record<ContactResult, string> = {
   ok: 'Recebido. Respondo em breve.',
-  rate_limited: 'Calma — muitas mensagens em pouco tempo. Tenta de novo em um minuto.',
-  invalid: 'Confere os campos: nome, e-mail válido e uma mensagem de até 4000 caracteres.',
-  error: 'Não deu pra enviar agora. Me chama direto pelo GitHub.',
+  rate_limited: 'Muitas mensagens em pouco tempo. Tente de novo em um minuto.',
+  invalid: 'Confira os campos: nome, e-mail válido e uma mensagem de até 4000 caracteres.',
+  error: 'Não foi possível enviar agora. Tente de novo mais tarde ou fale comigo pelo GitHub.',
 }
 
 async function submit() {
@@ -24,7 +24,7 @@ async function submit() {
 <template>
   <section id="contato" class="section wrap">
     <SectionTitle title="Contato" color="pink" />
-    <p class="lede">Projeto, vaga ou problema cabeludo de infraestrutura? Escreve.</p>
+    <p class="lede">Para falar sobre um projeto, uma vaga ou um problema de infraestrutura, mande uma mensagem pelo formulário.</p>
 
     <Poster class="term" :tilt="-0.4" :seed="17" :torn="['top', 'bottom']">
       <form class="term__form" @submit.prevent="submit">
