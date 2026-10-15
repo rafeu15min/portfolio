@@ -5,6 +5,9 @@ html {
   /* sem barra de rolagem visível: rola por roda/touchpad/teclado/toque, e a
      barra neon do topo (App.vue) mostra o progresso */
   scrollbar-width: none;
+  /* sem o retângulo azul que o Android/iOS desenham ao tocar um link; o foco de
+     teclado continua no :focus-visible abaixo */
+  -webkit-tap-highlight-color: transparent;
 }
 html::-webkit-scrollbar,
 body::-webkit-scrollbar { display: none; }
