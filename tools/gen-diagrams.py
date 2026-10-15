@@ -148,8 +148,9 @@ def anubis():
         "no Jellyfin. Biblioteca: a limpeza acha cada arquivo pelo inode, planeja e apaga pelo Radarr, "
         "Sonarr e qBittorrent; a dublagem acha uma faixa em português, sincroniza em três pontos e junta "
         "com o FFmpeg; o Jellyfin é avisado. Leitura: o pedido tenta em ordem LibGen, Telegram e torrent "
-        "em português; só com o seu clique tenta LibGen, Bookshelf e torrent em inglês; o arquivo é "
-        "validado e vai ao Google Drive, que o Kindle lê.",
+        "em português; só com o seu clique tenta LibGen, Bookshelf e torrent em inglês; o Anubis confere "
+        "idioma e formato e salva no Google Drive, de onde o KOReader do Kindle abre o livro e sincroniza "
+        "o progresso pelo kosync.",
     )
     NH, ROW, Y0 = 52, 86, 84          # altura do nó, passo entre linhas, topo da 1ª linha
     LW, GAP, PAD = 272, 16, 14        # largura da coluna, espaço entre colunas, respiro interno
@@ -183,7 +184,7 @@ def anubis():
     n(F, 0, "Vitrine", "TMDB · AniList · histórico", "external")
     n(F, 1, "App", "você escolhe o título")
     n(F, 2, "Busca", "Prowlarr · Anime Tosho")
-    n(L, 3, "Assistir", "agora · librqbit", "focal-rust")
+    n(L, 3, "Assistir agora", "librqbit", "focal-rust", size=14, sub_size=11)
     n(R, 3, "Pedir", "Radarr · Sonarr")
     n(L, 4, "Player", "enquanto baixa")
     n(R, 4, "qBittorrent", "baixa e semeia")
@@ -224,7 +225,7 @@ def anubis():
                                (3, "Torrent", "Prowlarr", "plain")]:
         n(R, r, name, sub, kind)
     n(F, 4, "Valida", "idioma · EPUB ou PDF")
-    n(F, 5, "Google Drive", "o Kindle lê daqui", "store")
+    n(F, 5, "Google Drive", "Kindle lê daqui · kosync", "store")
 
     # ---- legenda ----
     ly = H - 30
@@ -234,7 +235,7 @@ def anubis():
         f'<rect x="{GAP + 200}" y="{ly - 9}" width="26" height="14" rx="3" fill="{KRAFT}" stroke="{INK}" stroke-width="1.2"/>'
         f'<text x="{GAP + 234}" y="{ly + 2}" font-family="{TYPE}" font-size="12" fill="{SOFT}">onde o resultado fica</text>'
         f'<path d="M{GAP + 430},{ly - 2} H{GAP + 462}" stroke="{INK}" stroke-width="1.5" stroke-dasharray="5,4" marker-end="url(#anubis-arrow)"/>'
-        f'<text x="{GAP + 472}" y="{ly + 2}" font-family="{TYPE}" font-size="12" fill="{SOFT}">só se nada vier em português (e você pedir)</text>'
+        f'<text x="{GAP + 472}" y="{ly + 2}" font-family="{TYPE}" font-size="12" fill="{SOFT}">só com o seu clique, sem versão em português</text>'
     )
     return d
 
