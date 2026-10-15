@@ -47,7 +47,25 @@ class D:
             f'font-weight="700" letter-spacing="0.04em" fill="{SOFT}">{escape(text)}</text>'
         )
 
-    def node(self, x, y, w, h, name, sub, kind="plain"):
+    def caption(self, x, y, text):
+        """Título de sub-coluna: mono maiúsculo, centrado em x, sem máscara."""
+        self.labels.append(
+            f'<text x="{x}" y="{y}" text-anchor="middle" font-family="{MONO}" font-size="10" font-weight="700" '
+            f'letter-spacing="0.08em" fill="{SOFT}">{escape(text.upper())}</text>'
+        )
+
+    def elbow(self, x1, y1, x2, y2, dashed=False, r=8):
+        """Seta que desce de (x1,y1), anda na horizontal no meio do caminho e desce até (x2,y2)."""
+        if x1 == x2:
+            return self.arrow(f"M{x1},{y1} V{y2 - 2}", dashed)
+        my = (y1 + y2) / 2
+        s = 1 if x2 > x1 else -1
+        self.arrow(
+            f"M{x1},{y1} V{my - r} Q{x1},{my} {x1 + s * r},{my} H{x2 - s * r} Q{x2},{my} {x2},{my + r} V{y2 - 2}",
+            dashed,
+        )
+
+    def node(self, x, y, w, h, name, sub, kind="plain", size=19, sub_size=12):
         fill, stroke, text, dash, sw = {
             "plain": (NODE, INK, INK, "", 1.6),
             "store": (KRAFT, INK, INK, "", 1.6),
@@ -56,15 +74,15 @@ class D:
             "focal-rust": (RUST, INK, INK, "", 2),
         }[kind]
         cy = y + h / 2
-        name_y, sub_y = (cy - 2, cy + 15) if sub else (cy + 6, None)
+        name_y, sub_y = (cy - 2, cy + sub_size + 3) if sub else (cy + round(size * 0.32), None)
         out = (
             f'<rect x="{x}" y="{y}" width="{w}" height="{h}" rx="6" fill="{fill}" stroke="{stroke}" stroke-width="{sw}"{dash}/>'
-            f'<text x="{x + w / 2}" y="{name_y}" text-anchor="middle" font-family="{STENCIL}" font-size="19" '
+            f'<text x="{x + w / 2}" y="{name_y}" text-anchor="middle" font-family="{STENCIL}" font-size="{size}" '
             f'font-weight="800" letter-spacing="0.03em" fill="{text}">{escape(name)}</text>'
         )
         if sub:
             out += (
-                f'<text x="{x + w / 2}" y="{sub_y}" text-anchor="middle" font-family="{TYPE}" font-size="12" '
+                f'<text x="{x + w / 2}" y="{sub_y}" text-anchor="middle" font-family="{TYPE}" font-size="{sub_size}" '
                 f'fill="{text}">{escape(sub)}</text>'
             )
         self.nodes.append(out)
@@ -119,109 +137,109 @@ def personal_bank():
     return d
 
 
-def hub(slug, title, desc, inputs, modules, zone_label="Anubis · Rust"):
-    """Clientes à esquerda, módulos do Anubis numa zona no meio, serviços à direita.
-    Cada saída de um módulo fica na altura do serviço: setas retas, sem cruzamento."""
-    ZX, MX, MW, EX, EW = 208, 232, 256, 600, 256
-    y = 56
-    placed = []
-    for name, sub, outs in modules:
-        n = len(outs)
-        h = max(88, 44 * n)
-        ports = [y + h / 2] if n == 1 else [y + 22 + 44 * k for k in range(n)]
-        placed.append((y, h, name, sub, list(zip(ports, outs))))
-        y += h + 16
-    total_h = y - 16 + 40
-    d = D(slug, 880, int(total_h), title, desc)
-    d.zone(ZX, 32, 304, total_h - 56, zone_label)
-    for my, h, name, sub, outs in placed:
-        for py, (ename, esub, kind, label) in outs:
-            d.arrow(f"M{MX + MW},{py:.0f} H{EX - 2}")
-            d.label((MX + MW + EX) / 2, py - 14, label)
-    for name, sub, mi, label in inputs:
-        my, h = placed[mi][0], placed[mi][1]
-        cy = my + h / 2
-        d.arrow(f"M160,{cy:.0f} H{MX - 2}")
-        if label:
-            d.label(196, cy - 14, label)
-        d.node(24, cy - 28, 136, 56, name, sub)
-    for my, h, name, sub, outs in placed:
-        d.node(MX, my, MW, h, name, sub)
-        for py, (ename, esub, kind, label) in outs:
-            d.node(EX, py - 18, EW, 36, ename, esub, kind)
+def anubis():
+    """Três colunas que descem: vídeo, biblioteca e leitura. Cada uma começa no gatilho e
+    termina onde o resultado fica (caixa kraft). Tracejado = serviço na internet."""
+    W, H = 880, 640
+    d = D(
+        "anubis", W, H, "Anubis: vídeo, biblioteca e leitura",
+        "Vídeo: o app busca o título no Prowlarr e no Anime Tosho; Assistir agora baixa com o librqbit e "
+        "abre o player enquanto baixa, Pedir manda ao Radarr ou Sonarr e ao qBittorrent; os dois terminam "
+        "no Jellyfin. Biblioteca: a limpeza acha cada arquivo pelo inode, planeja e apaga pelo Radarr, "
+        "Sonarr e qBittorrent; a dublagem acha uma faixa em português, sincroniza em três pontos e junta "
+        "com o FFmpeg; o Jellyfin é avisado. Leitura: o pedido tenta em ordem LibGen, Telegram e torrent "
+        "em português; só com o seu clique tenta LibGen, Bookshelf e torrent em inglês; o arquivo é "
+        "validado e vai ao Google Drive, que o Kindle lê.",
+    )
+    NH, ROW, Y0 = 52, 86, 84          # altura do nó, passo entre linhas, topo da 1ª linha
+    LW, GAP, PAD = 272, 16, 14        # largura da coluna, espaço entre colunas, respiro interno
+    SUBW = (LW - 2 * PAD - 10) / 2    # sub-coluna (ramos lado a lado)
+    ys = [Y0 + i * ROW for i in range(6)]
+    bot = lambda r: ys[r] + NH
+
+    def lane(i, label):
+        lx = GAP + i * (LW + GAP)
+        d.zone(lx, 40, LW, ys[5] + NH + 22 - 40, label)
+        ix = lx + PAD
+        full = (ix, LW - 2 * PAD)
+        left = (ix, SUBW)
+        right = (ix + SUBW + 10, SUBW)
+        return full, left, right
+
+    cx = lambda col: col[0] + col[1] / 2
+    big = dict(size=19, sub_size=11)
+    small = dict(size=16, sub_size=11)
+
+    def n(col, r, name, sub, kind="plain", **kw):
+        d.node(col[0], ys[r], col[1], NH, name, sub, kind, **(kw or (big if col[1] > 150 else small)))
+
+    # ---- vídeo ----
+    F, L, R = lane(0, "vídeo")
+    d.arrow(f"M{cx(F)},{bot(0)} V{ys[1] - 2}"); d.label(cx(F) + 8, (bot(0) + ys[1]) / 2, "fileiras", "start")
+    d.arrow(f"M{cx(F)},{bot(1)} V{ys[2] - 2}")
+    d.elbow(cx(F) - 24, bot(2), cx(L), ys[3]); d.elbow(cx(F) + 24, bot(2), cx(R), ys[3])
+    d.arrow(f"M{cx(L)},{bot(3)} V{ys[4] - 2}"); d.arrow(f"M{cx(R)},{bot(3)} V{ys[4] - 2}")
+    d.elbow(cx(L), bot(4), cx(F) - 24, ys[5]); d.elbow(cx(R), bot(4), cx(F) + 24, ys[5])
+    n(F, 0, "Vitrine", "TMDB · AniList · histórico", "external")
+    n(F, 1, "App", "você escolhe o título")
+    n(F, 2, "Busca", "Prowlarr · Anime Tosho")
+    n(L, 3, "Assistir", "agora · librqbit", "focal-rust")
+    n(R, 3, "Pedir", "Radarr · Sonarr")
+    n(L, 4, "Player", "enquanto baixa")
+    n(R, 4, "qBittorrent", "baixa e semeia")
+    n(F, 5, "Jellyfin", "fica na biblioteca", "store")
+
+    # ---- biblioteca ----
+    F, L, R = lane(1, "biblioteca")
+    d.caption(cx(L), 68, "limpeza"); d.caption(cx(R), 68, "dublagem")
+    for col in (L, R):
+        for r in range(4):
+            d.arrow(f"M{cx(col)},{bot(r)} V{ys[r + 1] - 2}")
+    d.elbow(cx(L), bot(4), cx(F) - 24, ys[5]); d.elbow(cx(R), bot(4), cx(F) + 24, ys[5])
+    for r, name, sub in [(0, "Timer", "e webhooks"), (1, "Inventário", "acha pelo inode"),
+                         (2, "Plano", "o que pode sair"), (3, "Apaga", "Radarr · Sonarr"),
+                         (4, "Remove", "o torrent")]:
+        n(L, r, name, sub)
+    for r, name, sub in [(0, "Webhook", "chegou sem PT-BR"), (1, "Acha", "uma dublagem"),
+                         (2, "Sincroniza", "20 · 50 · 80%"), (3, "Junta", "FFmpeg"),
+                         (4, "Importa", "Radarr · Sonarr")]:
+        n(R, r, name, sub)
+    n(F, 5, "Jellyfin", "avisado da mudança", "store")
+
+    # ---- leitura ----
+    F, L, R = lane(2, "leitura")
+    d.elbow(cx(F) - 24, bot(0), cx(L), ys[1])
+    d.elbow(cx(F) + 24, bot(0), cx(R), ys[1], dashed=True)
+    for col in (L, R):
+        for r in (1, 2):
+            d.arrow(f"M{cx(col)},{bot(r)} V{ys[r + 1] - 2}")
+            d.label(cx(col) + 6, (bot(r) + ys[r + 1]) / 2, "senão", "start")
+    d.elbow(cx(L), bot(3), cx(F) - 24, ys[4]); d.elbow(cx(R), bot(3), cx(F) + 24, ys[4])
+    d.arrow(f"M{cx(F)},{bot(4)} V{ys[5] - 2}")
+    n(F, 0, "Pedido", "estante · /leitura")
+    for r, name, sub, kind in [(1, "LibGen", "em português", "external"), (2, "Telegram", "canais PT-BR", "external"),
+                               (3, "Torrent", "marcado PT-BR", "plain")]:
+        n(L, r, name, sub, kind)
+    for r, name, sub, kind in [(1, "LibGen", "em inglês", "external"), (2, "Bookshelf", "*arr de livros", "plain"),
+                               (3, "Torrent", "Prowlarr", "plain")]:
+        n(R, r, name, sub, kind)
+    n(F, 4, "Valida", "idioma · EPUB ou PDF")
+    n(F, 5, "Google Drive", "o Kindle lê daqui", "store")
+
+    # ---- legenda ----
+    ly = H - 30
+    d.labels.append(
+        f'<rect x="{GAP}" y="{ly - 9}" width="26" height="14" rx="3" fill="{NODE}" stroke="{INK}" stroke-width="1.2" stroke-dasharray="4,3"/>'
+        f'<text x="{GAP + 34}" y="{ly + 2}" font-family="{TYPE}" font-size="12" fill="{SOFT}">serviço na internet</text>'
+        f'<rect x="{GAP + 200}" y="{ly - 9}" width="26" height="14" rx="3" fill="{KRAFT}" stroke="{INK}" stroke-width="1.2"/>'
+        f'<text x="{GAP + 234}" y="{ly + 2}" font-family="{TYPE}" font-size="12" fill="{SOFT}">onde o resultado fica</text>'
+        f'<path d="M{GAP + 430},{ly - 2} H{GAP + 462}" stroke="{INK}" stroke-width="1.5" stroke-dasharray="5,4" marker-end="url(#anubis-arrow)"/>'
+        f'<text x="{GAP + 472}" y="{ly + 2}" font-family="{TYPE}" font-size="12" fill="{SOFT}">só se nada vier em português (e você pedir)</text>'
+    )
     return d
 
 
-def anubis_video():
-    return hub(
-        "anubis-video", "Anubis: descobrir e assistir",
-        "O app em Vue fala com o Anubis; a vitrine usa TMDB, AniList e o histórico importado, a busca "
-        "consulta o Prowlarr e as faixas reais no Anime Tosho e no bitmagnet, o Assistir agora baixa com "
-        "o librqbit, importa no Radarr e no Sonarr e passa o torrent ao qBittorrent, e a central de estado "
-        "acompanha o Jellyfin.",
-        [("App", "Vue 3 · player", 1, "HTTP")],
-        [
-            ("Vitrine e Para você", "listas e recomendações", [
-                ("TMDB · AniList", None, "external", "listas"),
-                ("Netflix · Crunchyroll", None, "external", "histórico")]),
-            ("Busca", "disponibilidade por título", [
-                ("Prowlarr", None, "plain", "indexadores"),
-                ("Anime Tosho · bitmagnet", None, "external", "faixas reais")]),
-            ("Assistir agora", "librqbit · legendas · FFmpeg", [
-                ("Radarr · Sonarr", None, "plain", "importa"),
-                ("qBittorrent", None, "plain", "semeia")]),
-            ("Central de estado", "pedidos e downloads", [
-                ("Jellyfin", None, "plain", "assistidos")]),
-        ],
-    )
-
-
-def anubis_biblioteca():
-    return hub(
-        "anubis-biblioteca", "Anubis: manutenção da biblioteca",
-        "Um timer e os webhooks disparam a limpeza de disco, que apaga pelo Radarr e pelo Sonarr, remove o "
-        "torrent no qBittorrent, avisa o Jellyfin e confere os inodes no RAID0; a dublagem automática acha "
-        "faixas em português pelo Prowlarr e as junta ao arquivo com o FFmpeg.",
-        [("Gatilhos", "timer e hooks", 0, None),
-         ("Webhook", "arquivo sem PT-BR", 1, None)],
-        [
-            ("Limpeza de disco", "inventário → plano → execução", [
-                ("Radarr · Sonarr", None, "plain", "apaga"),
-                ("qBittorrent", None, "plain", "remove torrent"),
-                ("Jellyfin", None, "plain", "avisa"),
-                ("Disco do servidor", None, "store", "inode")]),
-            ("Dublagem automática", "autodub · dubsync · mux", [
-                ("Prowlarr", None, "plain", "acha dublagem"),
-                ("FFmpeg", None, "plain", "junta faixa")]),
-        ],
-    )
-
-
-def anubis_leitura():
-    return hub(
-        "anubis-leitura", "Anubis: leitura",
-        "A página de leitura mostra a estante e as fileiras montadas com Open Library, Amazon Brasil e "
-        "AniList; a cadeia de download tenta Library Genesis, Bookshelf e Telegram, valida o EPUB ou PDF e "
-        "salva no Google Drive; o kosync guarda o progresso único do Kindle, do KOReader e da página.",
-        [("App", "/leitura", 0, "HTTP"),
-         ("Kindle", "KOReader · celular", 2, None)],
-        [
-            ("Estante e fileiras", "gosto comum filmes ↔ livros", [
-                ("Open Library", None, "external", "obras"),
-                ("Amazon Brasil", None, "external", "mais vendidos"),
-                ("AniList", None, "external", "mangás")]),
-            ("Cadeia de download", "PT primeiro · valida EPUB/PDF", [
-                ("Library Genesis", None, "external", "1ª fonte"),
-                ("Bookshelf", None, "plain", "2ª fonte"),
-                ("Telegram", None, "external", "canais PT-BR"),
-                ("Google Drive", None, "store", "salva")]),
-            ("kosync", "progresso de leitura único", []),
-        ],
-    )
-
-
 out = sys.argv[1]
-for d, name in [(personal_bank(), "personal-bank-suite"), (anubis_video(), "anubis--1-video"),
-                (anubis_biblioteca(), "anubis--2-biblioteca"), (anubis_leitura(), "anubis--3-leitura")]:
+for d, name in [(personal_bank(), "personal-bank-suite"), (anubis(), "anubis")]:
     open(f"{out}/{name}.svg", "w").write(d.svg())
     print(name, "ok")
