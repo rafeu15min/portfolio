@@ -240,7 +240,231 @@ def anubis():
     return d
 
 
+class Grid:
+    """Linhas de altura fixa para os diagramas verticais: posição das caixas por (x, w, linha)."""
+    NH, ROW = 52, 86
+
+    def __init__(self, d, y0):
+        self.d, self.y0 = d, y0
+
+    def y(self, r):
+        return self.y0 + r * self.ROW
+
+    def bot(self, r):
+        return self.y(r) + self.NH
+
+    def mid(self, r):
+        return self.y(r) + self.NH / 2
+
+    def n(self, x, w, r, name, sub, kind="plain", h=None, **kw):
+        size = kw or (dict(size=19, sub_size=11) if w > 200 else dict(size=16, sub_size=11))
+        self.d.node(x, self.y(r), w, h or self.NH, name, sub, kind, **size)
+
+    def down(self, cx, r1, r2, label=None, dashed=False):
+        self.d.arrow(f"M{cx},{self.bot(r1)} V{self.y(r2) - 2}", dashed)
+        if label:
+            self.d.label(cx + 8, (self.bot(r1) + self.y(r1 + 1)) / 2, label, "start")
+
+
+def legend(d, y, items):
+    """Legenda numa linha: [(tipo, texto)] com tipo em 'internet', 'kraft', 'dashed-arrow'."""
+    x = 24
+    out = []
+    for kind, text in items:
+        if kind == "internet":
+            out.append(f'<rect x="{x}" y="{y - 9}" width="26" height="14" rx="3" fill="{NODE}" stroke="{INK}" stroke-width="1.2" stroke-dasharray="4,3"/>')
+        elif kind == "kraft":
+            out.append(f'<rect x="{x}" y="{y - 9}" width="26" height="14" rx="3" fill="{KRAFT}" stroke="{INK}" stroke-width="1.2"/>')
+        else:
+            out.append(f'<path d="M{x},{y - 2} H{x + 22}" stroke="{INK}" stroke-width="1.5" stroke-dasharray="5,4" marker-end="url(#{d.slug}-arrow)"/>')
+        out.append(f'<text x="{x + 34}" y="{y + 2}" font-family="{TYPE}" font-size="12" fill="{SOFT}">{escape(text)}</text>')
+        x += 34 + len(text) * 7.2 + 28
+    d.labels.append("".join(out))
+
+
+def claudesktop():
+    g_rows = 5
+    d = D(
+        "claudesktop", 880, 40 + g_rows * 86 + 10, "Claudesktop: como o Claude age na tela",
+        "O Claude Code chama o servidor MCP, que escolhe o caminho pelo alvo: AT-SPI para apps GTK ou Qt, "
+        "CDP para páginas no Chromium, e OCR seguido de mouse e teclado reais (ydotool) para terminais e "
+        "jogos. A ação acontece ao vivo na tela do Hyprland, e cada ação devolve um print ao Claude.",
+    )
+    g = Grid(d, 40)
+    d.arrow(f"M440,{g.bot(0)} V{g.y(1) - 2}")
+    for a, c in ((400, 160), (440, 440), (480, 720)):
+        d.elbow(a, g.bot(1), c, g.y(2))
+    g.down(160, 2, 4, "clica pelo nome")
+    g.down(440, 2, 4, "clica pelo DOM")
+    g.down(720, 2, 3, "acha a posição")
+    g.down(720, 3, 4)
+    yt, y0 = g.mid(4), g.mid(0)
+    d.arrow(f"M840,{yt} H856 Q864,{yt} 864,{yt - 8} V{y0 + 8} Q864,{y0} 856,{y0} H592", dashed=True)
+    d.label(856, g.bot(0) + 17, "print de cada ação", "end")
+    g.n(290, 300, 0, "Claude Code", "pede uma ação")
+    g.n(290, 300, 1, "Servidor MCP", "escolhe o caminho pelo alvo", "focal-rust")
+    g.n(40, 240, 2, "AT-SPI", "app GTK ou Qt")
+    g.n(320, 240, 2, "CDP", "página no Chromium")
+    g.n(600, 240, 2, "OCR", "terminal ou jogo")
+    g.n(600, 240, 3, "ydotool", "mouse e teclado reais")
+    g.n(40, 800, 4, "Tela do Hyprland", "a ação acontece ao vivo", "store")
+    return d
+
+
+def vault_sync():
+    d = D(
+        "vault-sync", 880, 40 + 6 * 86 + 50, "vault-sync: o caminho de um jogo",
+        "O botão Jogar da Steam ou do Heroic, ou o catálogo no SUPER+G, chama o vault-sync. Se o servidor "
+        "estiver desligado, ele manda o ESP32 acordá-lo por MQTT com TLS e Wake-on-LAN. Então baixa o jogo "
+        "e os saves por rsync, espera você fechar o jogo, sobe de volta só o que mudou e libera o SSD. No "
+        "desligamento do PC, o systemd sobe o que tiver ficado pendente.",
+    )
+    g = Grid(d, 40)
+    d.elbow(130, g.bot(0), 200, g.y(1)); d.elbow(330, g.bot(0), 260, g.y(1))
+    d.arrow(f"M420,{g.mid(1)} H498"); d.label(459, g.mid(1) - 14, "desligado?")
+    d.arrow(f"M670,{g.bot(1)} V{g.y(2) - 2}"); d.label(678, (g.bot(1) + g.y(2)) / 2, "acorda", "start")
+    d.arrow(f"M500,{g.mid(2)} H422"); d.label(461, g.mid(2) - 14, "rsync")
+    d.arrow(f"M420,{g.mid(4)} H498"); d.label(459, g.mid(4) - 14, "rsync")
+    d.arrow(f"M670,{g.y(5)} V{g.bot(4) + 2}", dashed=True); d.label(678, (g.bot(4) + g.y(5)) / 2, "sobe o que ficou", "start")
+    for r in range(1, 5):
+        g.down(230, r, r + 1)
+    g.n(40, 180, 0, "Steam · Heroic", "botão Jogar")
+    g.n(240, 180, 0, "Catálogo", "SUPER+G")
+    g.n(40, 380, 1, "vault-sync run", "um binário em Rust", "focal-rust")
+    g.n(500, 340, 1, "ESP32", "MQTT com TLS → Wake-on-LAN")
+    g.n(500, 340, 2, "Servidor", "onde os jogos ficam", "store", h=g.bot(4) - g.y(2))
+    g.n(40, 380, 2, "Baixa", "jogo e saves")
+    g.n(40, 380, 3, "Você joga", "o vault-sync espera fechar")
+    g.n(40, 380, 4, "Sobe de volta", "só o que mudou")
+    g.n(40, 380, 5, "Libera o SSD", "o espaço local volta")
+    g.n(500, 340, 5, "systemd", "no desligamento do PC")
+    legend(d, g.bot(5) + 34, [("kraft", "onde o resultado fica"), ("dashed-arrow", "só se algo ficou pendente")])
+    return d
+
+
+def token_econ():
+    d = D(
+        "token-econ-plugins", 880, 40 + 5 * 86 + 50, "Token Econ. Plugins: por onde passa cada chamada",
+        "O Claude Code escreve o código, com a skill yagni-enforcer conferindo antes se o código é preciso. "
+        "A memória do claude-mem passa pelo Headroom, que enxuga o contexto, e chega ao OmniRoute. Os "
+        "comandos vão pelo script executor ao OpenCode, que usa um modelo mais barato pelo OmniRoute e, se "
+        "ele falhar, os modelos grátis do próprio OpenCode. O OmniRoute distribui os pedidos entre contas "
+        "com cota grátis. Headroom e OmniRoute são projetos abertos de terceiros.",
+    )
+    g = Grid(d, 40)
+    d.arrow(f"M590,{g.mid(0)} H648", dashed=True)
+    d.elbow(410, g.bot(0), 260, g.y(1)); d.elbow(470, g.bot(0), 620, g.y(1))
+    g.down(260, 1, 2); g.down(620, 1, 2)
+    d.elbow(260, g.bot(2), 410, g.y(3)); d.elbow(620, g.bot(2), 470, g.y(3))
+    d.arrow(f"M720,{g.bot(2)} V{g.y(3) - 2}", dashed=True); d.label(728, (g.bot(2) + g.y(3)) / 2, "se falhar", "start")
+    g.down(440, 3, 4)
+    g.n(290, 300, 0, "Claude Code", "o Opus escreve o código")
+    g.n(650, 210, 0, "yagni-enforcer", "skill: barra código a mais")
+    g.n(130, 260, 1, "claude-mem", "memória entre sessões")
+    g.n(490, 260, 1, "executor", "script que delega comandos")
+    g.n(130, 260, 2, "Headroom", "projeto aberto · enxuga contexto")
+    g.n(490, 260, 2, "OpenCode", "modelo mais barato")
+    g.n(290, 300, 3, "OmniRoute", "projeto aberto · cascatas minhas", "focal-rust")
+    g.n(640, 200, 3, "Grátis", "do próprio OpenCode", "external")
+    g.n(290, 300, 4, "Provedores", "contas com cota grátis", "external")
+    legend(d, g.bot(4) + 34, [("internet", "serviço na internet"), ("dashed-arrow", "reserva ou verificação")])
+    return d
+
+
+def portfolio():
+    d = D(
+        "portfolio", 880, 40 + 4 * 86 + 60, "Portfólio: publicar e visitar",
+        "Um push na main dispara a GitHub Action, que monta o site em Vue e a API em Rust numa imagem Docker "
+        "pública no GHCR. Na VM da Oracle em São Paulo, um timer puxa a imagem nova a cada 5 minutos. O "
+        "visitante chega pelo Caddy, com HTTPS do Let's Encrypt, até a API, que serve o site, manda o "
+        "e-mail do contato pelo Resend e busca estrelas e pushes na API do GitHub.",
+    )
+    g = Grid(d, 64)
+    d.zone(464, g.y(1) - 22, 392, g.bot(2) - g.y(1) + 40, "VM Oracle · São Paulo")
+    d.caption(220, 50, "publicar"); d.caption(660, 50, "visitar")
+    g.down(220, 0, 1); g.down(220, 1, 2)
+    g.down(660, 0, 1); g.down(660, 1, 2)
+    d.arrow(f"M400,{g.mid(2)} H478"); d.label(439, g.mid(2) - 14, "5 min")
+    d.elbow(620, g.bot(2), 565, g.y(3)); d.elbow(700, g.bot(2), 755, g.y(3))
+    g.n(40, 360, 0, "Push na main", "GitHub")
+    g.n(40, 360, 1, "GitHub Action", "monta Vue e Rust numa imagem")
+    g.n(40, 360, 2, "GHCR", "imagem Docker pública", "store")
+    g.n(480, 360, 0, "Visitante", "navegador")
+    g.n(480, 360, 1, "Caddy", "HTTPS do Let's Encrypt")
+    g.n(480, 360, 2, "API em Rust", "serve o site e o /api", "focal-rust")
+    g.n(480, 170, 3, "Resend", "e-mail do contato", "external")
+    g.n(670, 170, 3, "GitHub API", "estrelas e pushes", "external")
+    legend(d, g.bot(3) + 34, [("internet", "serviço na internet"), ("kraft", "onde a imagem fica")])
+    return d
+
+
+def ship_n_click():
+    d = D(
+        "ship-n-click", 880, 64 + 5 * 86 + 20, "Ship'n'click: Rust e C# dentro da Godot",
+        "A nave, os meteoros e os tiros são classes em Rust carregadas pela Godot via GDExtension. Elas "
+        "avisam o GameManager em C# por sinais: morte, quase-colisão, moedas coletadas e dano causado. O "
+        "GameManager cuida da run, das moedas e do respawn pago, e responde chamando métodos do Rust, como "
+        "respawn e níveis da nave. Os power-ups vêm de um JSON e aparecem na janela de power-ups; o HUD "
+        "mostra XP, setas e o cadáver.",
+    )
+    g = Grid(d, 64)
+    d.zone(24, 40, 400, g.bot(2) - 40 + 22, "Rust · GDExtension")
+    d.zone(456, 40, 400, g.bot(4) - 40 + 22, "C#")
+    y = g.mid(0)
+    d.arrow(f"M400,{y - 10} H478"); d.label(439, y - 24, "morreu")
+    d.arrow(f"M480,{y + 12} H402"); d.label(441, y + 26, "renasce")
+    d.arrow(f"M400,{g.mid(1)} H478"); d.label(439, g.mid(1) - 14, "moedas")
+    d.arrow(f"M400,{g.mid(2)} H478"); d.label(439, g.mid(2) - 14, "dano")
+    d.elbow(620, g.bot(2), 565, g.y(3)); d.elbow(700, g.bot(2), 755, g.y(3))
+    d.arrow(f"M565,{g.y(4)} V{g.bot(3) + 2}"); d.label(573, (g.bot(3) + g.y(4)) / 2, "lê", "start")
+    g.n(48, 352, 0, "Nave", "física, tiro, mina")
+    g.n(48, 352, 1, "Meteoros", "nascem, racham, dão moedas")
+    g.n(48, 352, 2, "Tiros", "pool reaproveitado")
+    g.n(480, 352, 0, "GameManager", "run, moedas, respawn pago", "focal-rust", h=g.bot(2) - g.y(0))
+    g.n(480, 170, 3, "Power-ups", "janela e efeitos")
+    g.n(670, 162, 3, "HUD", "XP, setas, cadáver")
+    g.n(480, 170, 4, "powerups.json", "regras em dados", "store")
+    return d
+
+
+def kernel():
+    d = D(
+        "kernel-heimdall", 880, 64 + 6 * 86 + 20, "Kernel Heimdall: o boot e uma tecla",
+        "No boot, o bootloader entrega o controle ao kernel, que carrega a GDT com uma pilha extra para o "
+        "double fault, a IDT com quem atende cada interrupção, inicia o PIC 8259, liga as interrupções com "
+        "sti e dorme com hlt. Uma tecla vai do teclado PS/2 ao PIC, que avisa a CPU pela IRQ 1; a IDT aponta "
+        "o tratador, que lê a porta 0x60, decodifica e imprime com a macro print! no buffer VGA em 0xb8000, "
+        "e então avisa o PIC que terminou.",
+    )
+    g = Grid(d, 64)
+    d.zone(24, 40, 400, g.bot(5) - 40 + 22, "boot")
+    d.zone(456, 40, 400, g.bot(4) - 40 + 22, "uma tecla")
+    for r in range(5):
+        g.down(224, r, r + 1)
+    for r in range(4):
+        g.down(656, r, r + 1)
+    d.arrow(f"M400,{g.mid(2)} H478", dashed=True); d.label(439, g.mid(2) - 14, "aponta")
+    yh, yp = g.mid(2) + 8, g.mid(1) + 8
+    d.arrow(f"M832,{yh} H840 Q848,{yh} 848,{yh - 8} V{yp + 8} Q848,{yp} 840,{yp} H834", dashed=True)
+    d.label(842, (g.bot(1) + g.y(2)) / 2, "terminei", "end")
+    g.n(48, 352, 0, "Bootloader", "QEMU · imagem do bootimage")
+    g.n(48, 352, 1, "GDT", "pilha extra para o double fault")
+    g.n(48, 352, 2, "IDT", "quem atende cada interrupção")
+    g.n(48, 352, 3, "PIC 8259", "liga as linhas de hardware")
+    g.n(48, 352, 4, "sti", "interrupções ligadas")
+    g.n(48, 352, 5, "hlt", "dorme até a próxima")
+    g.n(480, 352, 0, "Teclado PS/2", "você aperta uma tecla")
+    g.n(480, 352, 1, "PIC 8259", "IRQ 1 avisa a CPU")
+    g.n(480, 352, 2, "Tratador", "lê a porta 0x60 e decodifica", "focal-rust")
+    g.n(480, 352, 3, "print!", "macro própria")
+    g.n(480, 352, 4, "VGA 0xb8000", "o caractere aparece", "store")
+    return d
+
+
+
 out = sys.argv[1]
-for d, name in [(personal_bank(), "personal-bank-suite"), (anubis(), "anubis")]:
+for d, name in [(personal_bank(), "personal-bank-suite"), (anubis(), "anubis"), (claudesktop(), "claudesktop"),
+                (vault_sync(), "vault-sync"), (token_econ(), "token-econ-plugins"), (portfolio(), "portfolio"),
+                (ship_n_click(), "ship-n-click"), (kernel(), "kernel-heimdall")]:
     open(f"{out}/{name}.svg", "w").write(d.svg())
     print(name, "ok")
