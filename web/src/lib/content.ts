@@ -19,6 +19,8 @@ export interface Project {
   updated?: string
   /** cartão grande no topo da seção */
   featured?: boolean
+  /** outros projetos ligados a este, com o motivo */
+  related?: { slug: string; why: string }[]
   todo?: string
 }
 

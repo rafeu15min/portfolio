@@ -29,9 +29,18 @@ pub struct Project {
     /// Aparece em destaque, num cartão maior, no topo da seção de projetos.
     #[serde(default)]
     pub featured: bool,
+    /// Outros projetos ligados a este, com o motivo (mostrado na página do projeto).
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    pub related: Vec<Related>,
     /// Nota interna — nunca sai pela API.
     #[serde(default, skip_serializing)]
     pub todo: Option<String>,
+}
+
+#[derive(Debug, Clone, Deserialize, Serialize)]
+pub struct Related {
+    pub slug: String,
+    pub why: String,
 }
 
 #[derive(Debug, Clone, Deserialize, Serialize)]
@@ -98,6 +107,17 @@ impl Content {
                 return Err(format!("{}: projeto público sem repo", p.slug));
             }
         }
+        let slugs: HashSet<&str> = self.projects.iter().map(|p| p.slug.as_str()).collect();
+        for p in &self.projects {
+            for r in &p.related {
+                if r.slug == p.slug || !slugs.contains(r.slug.as_str()) {
+                    return Err(format!("{}: related aponta para {:?}, que não é outro projeto", p.slug, r.slug));
+                }
+                if r.why.trim().is_empty() {
+                    return Err(format!("{}: related {} sem o motivo (why)", p.slug, r.slug));
+                }
+            }
+        }
         Ok(())
     }
 
@@ -138,6 +158,22 @@ mod tests {
             assert!(c.validate().is_err(), "{bad} deveria ser recusado");
         }
         c.projects[0].updated = Some("2026-10".into());
+        assert!(c.validate().is_ok());
+    }
+
+    #[test]
+    fn related_must_point_to_another_project() {
+        let dir = Path::new(env!("CARGO_MANIFEST_DIR")).join("../content");
+        let mut c = Content::load(&dir).unwrap();
+        let own = c.projects[0].slug.clone();
+        for bad in ["nao-existe", own.as_str()] {
+            c.projects[0].related = vec![Related { slug: bad.into(), why: "motivo".into() }];
+            assert!(c.validate().is_err(), "{bad} deveria ser recusado");
+        }
+        let other = c.projects[1].slug.clone();
+        c.projects[0].related = vec![Related { slug: other.clone(), why: " ".into() }];
+        assert!(c.validate().is_err(), "motivo vazio deveria ser recusado");
+        c.projects[0].related = vec![Related { slug: other, why: "motivo".into() }];
         assert!(c.validate().is_ok());
     }
 

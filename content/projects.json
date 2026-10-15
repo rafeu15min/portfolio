@@ -25,7 +25,21 @@
     "repo": "rafeu15min/claudesktop",
     "accent": "cyan",
     "updated": "2026-10",
-    "featured": true
+    "featured": true,
+    "related": [
+      {
+        "slug": "internal-linux-env",
+        "why": "o setup Hyprland que ele controla"
+      },
+      {
+        "slug": "vault-sync",
+        "why": "ele testa cada mudança abrindo os jogos de verdade"
+      },
+      {
+        "slug": "token-econ-plugins",
+        "why": "outra peça em volta do Claude Code"
+      }
+    ]
   },
   {
     "slug": "anubis",
@@ -79,7 +93,21 @@
     "repo": "rafeu15min/vault-sync",
     "accent": "rust",
     "updated": "2026-10",
-    "featured": true
+    "featured": true,
+    "related": [
+      {
+        "slug": "esp32-wake-on-lan",
+        "why": "acorda o servidor antes de cada sincronização"
+      },
+      {
+        "slug": "internal-linux-env",
+        "why": "o setup onde fica o atalho SUPER+G do catálogo"
+      },
+      {
+        "slug": "claudesktop",
+        "why": "abre os jogos de verdade para testar cada mudança"
+      }
+    ]
   },
   {
     "slug": "ship-n-click",
@@ -135,7 +163,7 @@
     "slug": "kernel-heimdall",
     "name": "Kernel Heimdall",
     "tagline": "Kernel x86_64 bare-metal escrito do zero em Rust.",
-    "summary": "Kernel bare-metal (#![no_std], #![no_main]) escrito como estudo documentado: driver de vídeo VGA em modo texto, macros print!/println! próprias, GDT, IDT com tratamento de exceções e double fault, interrupções de hardware via PIC 8259 e teclado PS/2. Boota no QEMU a partir de uma imagem gerada pelo bootimage.",
+    "summary": "O objetivo é aprender como um sistema operacional funciona por baixo, peça por peça. É um kernel bare-metal (#![no_std], #![no_main]) escrito como estudo documentado: driver de vídeo VGA em modo texto, macros print!/println! próprias, GDT, IDT com tratamento de exceções e double fault, interrupções de hardware via PIC 8259 e teclado PS/2. Boota no QEMU a partir de uma imagem gerada pelo bootimage.",
     "highlights": [
       "Driver VGA em 0xb8000 com cores e escrita volátil",
       "IDT, double fault com pilha dedicada (IST) e PIC encadeado",
@@ -199,7 +227,13 @@
     "visibility": "public",
     "repo": "rafeu15min/esp32-wake-on-lan",
     "accent": "cyan",
-    "updated": "2026-09"
+    "updated": "2026-09",
+    "related": [
+      {
+        "slug": "vault-sync",
+        "why": "chama este firmware para acordar o servidor antes de sincronizar os jogos"
+      }
+    ]
   },
   {
     "slug": "token-econ-plugins",
@@ -226,7 +260,13 @@
     "visibility": "private",
     "repo": null,
     "accent": "pink",
-    "updated": "2026-10"
+    "updated": "2026-10",
+    "related": [
+      {
+        "slug": "claudesktop",
+        "why": "outra peça em volta do Claude Code"
+      }
+    ]
   },
   {
     "slug": "biblia",
@@ -291,7 +331,17 @@
     "visibility": "public",
     "repo": "rafeu15min/rice",
     "accent": "cyan",
-    "updated": "2026-09"
+    "updated": "2026-09",
+    "related": [
+      {
+        "slug": "claudesktop",
+        "why": "o servidor MCP que opera este Hyprland"
+      },
+      {
+        "slug": "vault-sync",
+        "why": "o catálogo de jogos no SUPER+G"
+      }
+    ]
   },
   {
     "slug": "compiler",

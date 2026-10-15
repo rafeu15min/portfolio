@@ -12,6 +12,13 @@ import { ascii } from '@/generated/ascii'
 const props = defineProps<{ slug: string }>()
 const project = computed(() => findProject(props.slug))
 const art = computed(() => (ascii.projects as Record<string, string>)[props.slug] ?? '')
+// projetos ligados a este (content/projects.json → related), com o nome de cada um
+const related = computed(() =>
+  (project.value?.related ?? []).flatMap((r) => {
+    const p = findProject(r.slug)
+    return p ? [{ ...r, name: p.name }] : []
+  }),
+)
 const stats = ref<RepoStats | null>(null)
 
 watchEffect(async () => {
@@ -76,6 +83,17 @@ const date = (iso: string) => new Date(iso).toLocaleDateString('pt-BR')
             <template v-if="stats">
               <dt class="stencil">GitHub</dt>
               <dd>★ {{ stats.stars }} · último push {{ date(stats.pushed_at) }}</dd>
+            </template>
+            <template v-if="related.length">
+              <dt class="stencil">Ligado a</dt>
+              <dd>
+                <ul class="detail__rel">
+                  <li v-for="r in related" :key="r.slug">
+                    <RouterLink :to="`/projetos/${r.slug}`">{{ r.name }}</RouterLink>
+                    <span>{{ r.why }}</span>
+                  </li>
+                </ul>
+              </dd>
             </template>
           </dl>
         </PaperCard>
@@ -146,6 +164,10 @@ const date = (iso: string) => new Date(iso).toLocaleDateString('pt-BR')
 .detail__stack { display: flex; flex-wrap: wrap; gap: 0.35rem; }
 @media (max-width: 760px) { .detail__grid { grid-template-columns: minmax(0, 1fr); } }
 .detail__body, .detail__meta { overflow-wrap: anywhere; }
+.detail__rel { margin: 0; padding: 0; list-style: none; }
+.detail__rel li + li { margin-top: 0.6rem; }
+.detail__rel a { font-weight: 700; }
+.detail__rel span { display: block; font-size: 0.9em; line-height: 1.4; }
 .detail__arch { margin: 2.5rem 0 0; }
 .detail__arch-title { margin: 0 0 1rem; font-size: 1.5rem; }
 .detail__arch-scroll { overflow-x: auto; overscroll-behavior-x: contain; scrollbar-width: thin; scrollbar-color: var(--ink-soft) transparent; }
