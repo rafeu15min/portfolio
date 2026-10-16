@@ -239,19 +239,21 @@
     "slug": "token-econ-plugins",
     "name": "Token Econ. Plugins",
     "tagline": "Camada local que reduz o gasto de tokens do Claude Code e das ferramentas em volta dele.",
-    "summary": "Serviços e ajustes que rodam na minha máquina para gastar menos cota de LLM. As chamadas das ferramentas passam pelo Headroom, um proxy que otimiza o contexto, e chegam ao OmniRoute, um roteador self-hosted que distribui cada pedido entre contas e provedores com cota gratuita, em cascatas configuradas por tarefa. Em cima disso, um script próprio (executor) delega a execução de comandos a um modelo mais barato pelo OpenCode, e uma skill própria (yagni-enforcer) barra código desnecessário antes de ele ser gerado. Headroom e OmniRoute são projetos abertos de terceiros; a integração entre eles, as cascatas, o executor e a skill são meus.",
+    "summary": "Serviços e ajustes que rodam na minha máquina para gastar menos cota de LLM. Um roteador de modelos classifica o risco de cada pedido: o Sonnet coordena e faz o trabalho comum, e as tarefas simples ou delicadas vão para agentes em Haiku ou em Opus. As chamadas das ferramentas passam pelo Headroom, um proxy que otimiza o contexto, e chegam ao OmniRoute, um roteador self-hosted que distribui cada pedido entre contas e provedores com cota gratuita, em cascatas configuradas por tarefa. Em cima disso, um script próprio (executor) delega a execução de comandos a um modelo mais barato pelo OpenCode, e uma skill própria (yagni-enforcer) barra código desnecessário antes de ele ser gerado; o código que passa por ela segue SOLID. Headroom e OmniRoute são projetos abertos de terceiros; a integração entre eles, as cascatas, o roteador, os agentes, o executor e a skill são meus.",
     "highlights": [
+      "Roteador de modelos: um hook classifica o risco de cada pedido em cinco faixas e o Sonnet delega a agentes em Haiku ou em Opus, com o esforço certo para cada faixa",
       "Cadeia ferramenta → Headroom → OmniRoute, com o Headroom como serviço systemd do usuário e o OmniRoute em Docker",
       "Cascatas (combos) por tarefa no OmniRoute, com controle de cota por conta",
       "executor: delega builds, varreduras e leitura de logs ao OpenCode; se um modelo falha antes de rodar qualquer comando, passa para o próximo da lista",
       "Memória persistente do claude-mem roteada pela mesma cadeia, sem passar pelo serviço pago dele",
-      "Skill yagni-enforcer: antes de gerar código, confere se o sistema ou a biblioteca padrão já resolvem"
+      "Skill yagni-enforcer: antes de gerar código, confere se o sistema ou a biblioteca padrão já resolvem; o que passa segue SOLID, sem abstração que o YAGNI não justifique"
     ],
     "stack": [
       "Claude Code",
       "OmniRoute",
       "Headroom",
       "OpenCode",
+      "Python",
       "Bash",
       "systemd",
       "Docker"

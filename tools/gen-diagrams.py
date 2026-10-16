@@ -92,8 +92,8 @@ class D:
         return (
             f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {self.w} {self.h}" role="img" '
             f'aria-labelledby="{s}-title {s}-desc">'
-            f'<title id="{s}-title">{escape(self.title)}</title>'
-            f'<desc id="{s}-desc">{escape(self.desc)}</desc>'
+            f'<title id="{s}-title">{escape(self.title, quote=False)}</title>'
+            f'<desc id="{s}-desc">{escape(self.desc, quote=False)}</desc>'
             f'<defs><marker id="{s}-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" '
             f'orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="{INK}"/></marker></defs>'
             + "".join(self.zones + self.arrows + self.labels + self.nodes)
@@ -344,30 +344,35 @@ def vault_sync():
 
 def token_econ():
     d = D(
-        "token-econ-plugins", 880, 40 + 5 * 86 + 50, "Token Econ. Plugins: por onde passa cada chamada",
-        "O Claude Code escreve o código, com a skill yagni-enforcer conferindo antes se o código é preciso. "
-        "A memória do claude-mem passa pelo Headroom, que enxuga o contexto, e chega ao OmniRoute. Os "
-        "comandos vão pelo script executor ao OpenCode, que usa um modelo mais barato pelo OmniRoute e, se "
-        "ele falhar, os modelos grátis do próprio OpenCode. O OmniRoute distribui os pedidos entre contas "
-        "com cota grátis. Headroom e OmniRoute são projetos abertos de terceiros.",
+        "token-econ-plugins", 880, 40 + 6 * 86 + 50, "Token Econ. Plugins: por onde passa cada chamada",
+        "Um hook classifica o risco de cada pedido e o Claude Code, em Sonnet, faz as tarefas comuns ou delega às "
+        "faixas baixa e alta, que rodam em Haiku e em Opus. Antes de escrever código, a skill yagni-enforcer confere "
+        "se ele é preciso e, passando, o código segue SOLID. A memória do claude-mem passa pelo Headroom, que enxuga "
+        "o contexto, e chega ao OmniRoute. Os comandos vão pelo script executor ao OpenCode, que usa um modelo mais "
+        "barato pelo OmniRoute e, se ele falhar, os modelos grátis do próprio OpenCode. O OmniRoute distribui os "
+        "pedidos entre contas com cota grátis. Headroom e OmniRoute são projetos abertos de terceiros.",
     )
     g = Grid(d, 40)
-    d.arrow(f"M590,{g.mid(0)} H648", dashed=True)
-    d.elbow(410, g.bot(0), 260, g.y(1)); d.elbow(470, g.bot(0), 620, g.y(1))
-    g.down(260, 1, 2); g.down(620, 1, 2)
-    d.elbow(260, g.bot(2), 410, g.y(3)); d.elbow(620, g.bot(2), 470, g.y(3))
-    d.arrow(f"M720,{g.bot(2)} V{g.y(3) - 2}", dashed=True); d.label(728, (g.bot(2) + g.y(3)) / 2, "se falhar", "start")
-    g.down(440, 3, 4)
-    g.n(290, 300, 0, "Claude Code", "o Opus escreve o código")
-    g.n(650, 210, 0, "yagni-enforcer", "skill: barra código a mais")
-    g.n(130, 260, 1, "claude-mem", "memória entre sessões")
-    g.n(490, 260, 1, "executor", "script que delega comandos")
-    g.n(130, 260, 2, "Headroom", "projeto aberto · enxuga contexto")
-    g.n(490, 260, 2, "OpenCode", "modelo mais barato")
-    g.n(290, 300, 3, "OmniRoute", "projeto aberto · cascatas minhas", "focal-rust")
-    g.n(640, 200, 3, "Grátis", "do próprio OpenCode", "external")
-    g.n(290, 300, 4, "Provedores", "contas com cota grátis", "external")
-    legend(d, g.bot(4) + 34, [("internet", "serviço na internet"), ("dashed-arrow", "reserva ou verificação")])
+    d.elbow(260, g.bot(0), 410, g.y(1)); d.label(335, (g.bot(0) + g.y(1)) / 2, "risco")
+    d.arrow(f"M520,{g.y(1)} V{g.bot(0) + 2}"); d.label(528, (g.bot(0) + g.y(1)) / 2, "delega", "start")
+    d.arrow(f"M590,{g.mid(1)} H648", dashed=True)
+    d.elbow(410, g.bot(1), 260, g.y(2)); d.elbow(470, g.bot(1), 620, g.y(2))
+    g.down(260, 2, 3); g.down(620, 2, 3)
+    d.elbow(260, g.bot(3), 410, g.y(4)); d.elbow(620, g.bot(3), 470, g.y(4))
+    d.arrow(f"M720,{g.bot(3)} V{g.y(4) - 2}", dashed=True); d.label(728, (g.bot(3) + g.y(4)) / 2, "se falhar", "start")
+    g.down(440, 4, 5)
+    g.n(130, 260, 0, "Roteador", "hook: classifica o risco")
+    g.n(490, 260, 0, "Agentes", "risco-baixo e risco-alto")
+    g.n(290, 300, 1, "Claude Code", "Sonnet coordena e escreve")
+    g.n(650, 210, 1, "yagni-enforcer", "barra código a mais · SOLID")
+    g.n(130, 260, 2, "claude-mem", "memória entre sessões")
+    g.n(490, 260, 2, "executor", "script que delega comandos")
+    g.n(130, 260, 3, "Headroom", "projeto aberto · enxuga contexto")
+    g.n(490, 260, 3, "OpenCode", "modelo mais barato")
+    g.n(290, 300, 4, "OmniRoute", "projeto aberto · cascatas minhas", "focal-rust")
+    g.n(640, 200, 4, "Grátis", "do próprio OpenCode", "external")
+    g.n(290, 300, 5, "Provedores", "contas com cota grátis", "external")
+    legend(d, g.bot(5) + 34, [("internet", "serviço na internet"), ("dashed-arrow", "reserva ou verificação")])
     return d
 
 
