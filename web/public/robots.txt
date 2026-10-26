@@ -1,0 +1,9 @@
+# portfolio.rafeu.dev
+# Conteúdo público: todos os robôs, inclusive os de IA, podem ler o site.
+# O HTML já sai pré-renderizado (web/scripts/prerender.ts).
+# /api/ fica de fora: o contato é POST e /api/github consome a cota do GitHub.
+# Este arquivo é público: não liste aqui caminho que deva ficar escondido.
+
+User-agent: *
+Allow: /
+Disallow: /api/
