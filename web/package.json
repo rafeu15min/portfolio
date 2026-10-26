@@ -11,7 +11,7 @@
     "build": "vue-tsc --noEmit && vite build",
     "preview": "vite preview",
     "models": "node scripts/build-models.ts",
-    "postbuild": "node scripts/precompress.ts"
+    "postbuild": "node scripts/prerender.ts && node scripts/precompress.ts"
   },
   "dependencies": {
     "three": "^0.186.1",

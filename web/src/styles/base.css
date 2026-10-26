@@ -114,3 +114,8 @@ a { text-underline-offset: 0.18em; }
   box-shadow: 0 0 0 1px var(--neon-pink), 0 0 16px color-mix(in srgb, var(--neon-pink) 60%, transparent);
 }
 .btn--neon:hover { box-shadow: 0 0 0 1px var(--neon-pink), 0 0 28px var(--neon-pink); }
+
+/* HTML estático do build (scripts/prerender.ts): legível no instante antes
+   do Vue montar e para quem lê a página sem JavaScript */
+.prerender { max-width: 72ch; margin: 0 auto; padding: 2rem 1rem; }
+.prerender article { margin-block: 1.5rem; }
