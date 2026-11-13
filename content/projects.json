@@ -67,7 +67,7 @@
     "visibility": "public",
     "repo": "rafeu15min/anubis",
     "accent": "rust",
-    "updated": "2026-10",
+    "updated": "2026-11",
     "featured": true
   },
   {
@@ -132,7 +132,66 @@
     "repo": "rafeu15min/click-n-ship",
     "accent": "rust",
     "updated": "2026-10",
-    "featured": true
+    "featured": true,
+    "related": [
+      {
+        "slug": "slideglide",
+        "why": "o SlideGlide importa as peças de power-up daqui"
+      }
+    ]
+  },
+  {
+    "slug": "jobber",
+    "name": "Jobber",
+    "tagline": "App pessoal de busca de vagas: API em Go e app Flutter.",
+    "summary": "App de uso pessoal para acompanhar vagas e candidaturas. A API em Go, com SQLite, roda em container Docker no meu servidor; o app em Flutter mostra a lista e as pendências. O módulo 1 registra candidaturas e desfechos. O módulo 2 coleta vagas de 8 fontes (Gupy, Greenhouse, Lever, SmartRecruiters, Ashby, Workable, RemoteOK e We Work Remotely) e extrai os dados de cada anúncio com o Claude Haiku, a partir de um perfil de busca em YAML. O módulo 3, a lista com swipe, está em andamento.",
+    "highlights": [
+      "Registro de candidaturas e desfechos (módulo 1)",
+      "Coleta em 8 fontes, com as empresas de cada ATS listadas em arquivos YAML",
+      "Extração dos dados da vaga por LLM (Claude Haiku)",
+      "Build, testes e deploy em Docker, sem toolchain de Go ou Flutter na máquina"
+    ],
+    "stack": [
+      "Go",
+      "SQLite",
+      "Flutter",
+      "Dart",
+      "Docker"
+    ],
+    "status": "em construção",
+    "visibility": "private",
+    "repo": null,
+    "accent": "cyan",
+    "updated": "2026-11"
+  },
+  {
+    "slug": "slideglide",
+    "name": "SlideGlide",
+    "tagline": "Roguelite de nave para Android, em Godot com C# e Rust.",
+    "summary": "Roguelite de nave para Android, com tela em pé e partida infinita dividida em ondas. Entre as ondas, o jogador organiza o porão da nave numa grade, compra peças na loja e funde peças em receitas. A simulação (inimigos, tiros, colisões) é em Rust; o porão, a loja e as fusões são em C#, sobre a Godot. O build do APK e o emulador Android rodam em Docker. As peças são geradas a partir dos power-ups do Ship'n'click.",
+    "highlights": [
+      "Controle por arrasto, com dash por deslize rápido",
+      "Porão em grade, loja, fusões, receitas e expansões",
+      "Testes em cargo test e dotnet test, mais um script que confere que quem não toca na tela morre na onda 1",
+      "Build do APK e emulador Android em Docker"
+    ],
+    "stack": [
+      "Rust",
+      "C#",
+      "Godot",
+      "Docker"
+    ],
+    "status": "protótipo",
+    "visibility": "private",
+    "repo": null,
+    "accent": "purple",
+    "updated": "2026-10",
+    "related": [
+      {
+        "slug": "ship-n-click",
+        "why": "as peças vêm dos power-ups dele"
+      }
+    ]
   },
   {
     "slug": "personal-bank-suite",
@@ -176,7 +235,7 @@
       "QEMU",
       "Docker"
     ],
-    "status": "em construção",
+    "status": "estudo",
     "visibility": "public",
     "repo": "rafeu15min/kernel-heimdall",
     "accent": "rust",
@@ -411,5 +470,26 @@
     "repo": "rafeu15min/ytmdesktop-theme-shuffler",
     "accent": "rust",
     "updated": "2024-10"
+  },
+  {
+    "slug": "ambilight",
+    "name": "Ambilight",
+    "tagline": "Luz de fundo que acompanha a cor das bordas do monitor, em Rust.",
+    "summary": "Programa em Rust que captura a tela, calcula a cor média das bordas e envia essa cor, a cada 50 ms, para uma lâmpada Tuya na rede local. Reconecta o socket quando a lâmpada recusa ou deixa de responder. Roda em Docker.",
+    "highlights": [
+      "Captura da tela com a crate scrap",
+      "Controle local da lâmpada pelo protocolo Tuya 3.3"
+    ],
+    "stack": [
+      "Rust",
+      "Tokio",
+      "Tuya",
+      "Docker"
+    ],
+    "status": "protótipo",
+    "visibility": "private",
+    "repo": null,
+    "accent": "rust",
+    "updated": "2026-01"
   }
 ]

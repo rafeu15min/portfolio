@@ -33,7 +33,7 @@ textos de interface e a copy das seções fixas.
 - **Título:** PROJETOS
 - **Subtítulo:** Projetos pessoais e de estudo, com link para o código quando ele é público.
 - **Rótulos:** `ativo` · `em construção` · `protótipo` · `estudo` · `concluído` · `código ↗` · `🔒 repo privado` · `sem repo público`
-- **Dados:** `content/projects.json` (16 projetos, levantados do GitHub e de `~/Projetos`).
+- **Dados:** `content/projects.json` (19 projetos, levantados do GitHub e de `/mnt/Utilitarios/Projetos`).
 
 ## Trajetória
 

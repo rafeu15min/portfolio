@@ -9,13 +9,21 @@
       "portfolio",
       "compiler",
       "ship-n-click",
-      "theme-shuffler"
+      "theme-shuffler",
+      "slideglide",
+      "ambilight"
     ]
   },
   "groups": [
     {
       "title": "Linguagens",
       "items": [
+        {
+          "name": "Go",
+          "projects": [
+            "jobber"
+          ]
+        },
         {
           "name": "Java",
           "projects": [
@@ -40,13 +48,15 @@
         {
           "name": "C#",
           "projects": [
-            "ship-n-click"
+            "ship-n-click",
+            "slideglide"
           ]
         },
         {
           "name": "Dart",
           "projects": [
-            "biblia"
+            "biblia",
+            "jobber"
           ]
         },
         {
@@ -110,13 +120,15 @@
         {
           "name": "Flutter",
           "projects": [
-            "biblia"
+            "biblia",
+            "jobber"
           ]
         },
         {
           "name": "Godot · GDExtension",
           "projects": [
-            "ship-n-click"
+            "ship-n-click",
+            "slideglide"
           ]
         },
         {
@@ -137,7 +149,10 @@
             "personal-bank-suite",
             "kernel-heimdall",
             "compiler",
-            "token-econ-plugins"
+            "token-econ-plugins",
+            "jobber",
+            "slideglide",
+            "ambilight"
           ]
         },
         {
@@ -156,7 +171,8 @@
         {
           "name": "SQLite",
           "projects": [
-            "biblia"
+            "biblia",
+            "jobber"
           ]
         },
         {
