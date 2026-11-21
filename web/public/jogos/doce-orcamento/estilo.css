@@ -309,9 +309,11 @@ h1, h2, h3 { font-family: var(--titulo); font-weight: 500; margin: 0; }
 .vitrine-item img { height: 140px; max-width: 100%; object-fit: contain; }
 .vitrine-item strong { font-family: var(--titulo); font-weight: 500; font-size: 30px; color: var(--ambar); }
 
-/* Item feito em destaque (screen vitrine_destaque): grande no centro, depois no
-   canto, sem moldura; as posições e a escala vêm da animação (paineis.js). */
-.destaque { position: absolute; inset: 0; z-index: 32; pointer-events: none; }   /* à frente da caixa de fala, como a zorder 40 do Ren'Py */
+/* Item feito em destaque (screen vitrine_destaque): sozinho no centro, com o resto
+   escurecido, depois no canto, sem moldura; as posições e a escala vêm da animação
+   (paineis.js). Fica acima do HUD (o escuro cobre tudo), como a zorder 60 do Ren'Py. */
+.destaque { position: absolute; inset: 0; z-index: 52; pointer-events: none; }
+.destaque-escuro { position: absolute; inset: 0; background: #1c0f08; opacity: 0; }
 .destaque-item { position: absolute; left: 960px; top: 450px; height: 320px; width: auto; opacity: 0;
   transform: translate(-50%, -50%) scale(0.5); }
 .destaque-plaquinha { position: absolute; left: 50%; top: 668px; transform: translateX(-50%); opacity: 0; }

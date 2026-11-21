@@ -5,9 +5,10 @@ import { animar, botao, el, img, painel } from "./dom.js";
 import { avaliarCarrinho, brl, carrinhoPadrao } from "./motor.js";
 import { itemDaArte } from "./roteiro.js";
 
-// Destaque (transforms destaque_viagem e destaque_plaquinha): entra no centro (0,5 s),
-// fica parado (2,4 s) e viaja para o canto (1,0 s); a plaquinha some antes da viagem.
-const DESTAQUE = { entra: 500, parado: 2400, viaja: 1000, sai: 500,
+// Destaque (transforms destaque_viagem, destaque_plaquinha e destaque_fundo): entra no
+// centro (0,5 s), fica parado (2,4 s) e viaja para o canto (1,0 s); a plaquinha some
+// antes da viagem; o escuro em volta some durante a viagem. A cena espera tudo isso.
+const DESTAQUE = { entra: 500, parado: 2400, viaja: 1000, sai: 500, escuro: 0.6,
   centro: [960, 450], canto: [285, 345], zoom: { de: 0.5, centro: 1.35, canto: 0.85 } };
 
 /** Quadro do item em destaque: centro em (x, y), escala z. */
@@ -31,7 +32,8 @@ export class Vitrine {
     return !this.#raiz.hidden || !this.#destaque.hidden;
   }
 
-  /** Mostra os itens 'ids' com a arte do que foi comprado (itemDaArte) e o preço, se houver. */
+  /** Mostra os itens 'ids' com a arte do que foi comprado (itemDaArte) e o preço, se houver.
+   * Com 'destaque', devolve a promessa que resolve quando o item chega ao canto. */
   mostrar(ids, estado, destaque = false) {
     this.ocultar();
     if (destaque) return this.#destacar(itemDaArte(this.c.itens, estado, ids[0]));
@@ -43,28 +45,39 @@ export class Vitrine {
         Object.hasOwn(precos, id) ? el("strong", {}, brl(precos[id])) : null);
     }));
     this.#raiz.hidden = false;
-    return undefined;
+    return Promise.resolve();
   }
 
-  /** Item feito (ex.: os brigadeiros prontos): grande no centro, à frente, com a
-   * plaquinha do nome; depois viaja para o canto, maior que a vitrine e sem moldura. */
+  /** Item feito (ex.: os brigadeiros prontos): sozinho no centro, com o resto da tela
+   * escurecido e a plaquinha do nome; depois viaja para o canto (maior que a vitrine e
+   * sem moldura) enquanto a tela clareia. Resolve quando ele chega ao canto. */
   #destacar(arte) {
     const nome = this.c.itens[arte].nome;
+    const escuro = el("div", { class: "destaque-escuro" });
     const item = el("img", { class: "destaque-item", src: img(this.assets.itens[arte]), alt: nome, "data-arte": arte });
     const plaquinha = painel({ class: "destaque-plaquinha", "aria-hidden": "true" }, nome + "!");
-    this.#destaque.replaceChildren(item, plaquinha);
+    this.#destaque.replaceChildren(escuro, item, plaquinha);
     this.#destaque.hidden = false;
-    const { entra, parado, viaja, sai, centro, canto, zoom } = DESTAQUE;
+    const { entra, parado, viaja, sai, escuro: opacidade, centro, canto, zoom } = DESTAQUE;
     const total = entra + parado + viaja;
-    animar(item, [
-      quadroDestaque(centro, zoom.de, { opacity: 0, easing: "ease-out" }),
-      quadroDestaque(centro, zoom.centro, { opacity: 1, offset: entra / total }),
-      quadroDestaque(centro, zoom.centro, { opacity: 1, offset: (entra + parado) / total, easing: "ease-in-out" }),
-      quadroDestaque(canto, zoom.canto, { opacity: 1 }),
-    ], { duration: total });
     const fimPlaquinha = entra + parado;
     animar(plaquinha, [{ opacity: 0, easing: "ease-out" }, { opacity: 1, offset: entra / fimPlaquinha },
       { opacity: 1, offset: (fimPlaquinha - sai) / fimPlaquinha, easing: "ease-in" }, { opacity: 0 }], { duration: fimPlaquinha });
+    animar(escuro, [{ opacity: 0, easing: "ease-out" }, { opacity: opacidade, offset: entra / total },
+      { opacity: opacidade, offset: (fimPlaquinha - sai) / total, easing: "ease-in-out" }, { opacity: 0 }], { duration: total });
+    return animar(item, [
+      quadroDestaque(centro, zoom.de, { opacity: 0, easing: "ease-out" }),
+      quadroDestaque(centro, zoom.centro, { opacity: 1, offset: entra / total }),
+      quadroDestaque(centro, zoom.centro, { opacity: 1, offset: fimPlaquinha / total, easing: "ease-in-out" }),
+      quadroDestaque(canto, zoom.canto, { opacity: 1 }),
+    ], { duration: total });
+  }
+
+  /** Fim da cena do item feito: ele some devagar (o dissolve do Ren'Py) e a vitrine fecha. */
+  async fecharDestaque() {
+    const item = this.#destaque.querySelector(".destaque-item");
+    if (item) await animar(item, [{ opacity: 1 }, { opacity: 0 }], { duration: 250 });
+    this.ocultar();
   }
 
   ocultar() {

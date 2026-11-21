@@ -300,7 +300,7 @@
   "cozinha_minigame": {
    "id": "cozinha_minigame",
    "arquivo": "fundos/cozinha_minigame.jpg",
-   "descricao": "Cozinha com a bancada em primeiro plano: cenário do minigame da panela (fase futura; a história ainda não usa)."
+   "descricao": "Cozinha com a bancada em primeiro plano: cenário do minigame da panela. A mestre é retocada (tools/retoque_cozinha.py): sem a lata, o achocolatado e a manteiga pintados no balcão do fundo."
   },
   "patio_barraca": {
    "id": "patio_barraca",
@@ -700,7 +700,8 @@
     "acerto": "acerto",
     "erro": "erro",
     "moeda": "moeda",
-    "pagina": "pagina"
+    "pagina": "pagina",
+    "conquista": "conquista"
    }
   }
  },
@@ -796,6 +797,7 @@
     "f6_lucas_cobra",
     "f6_quiz_juros_lucas",
     "f6_lucas_recebe",
+    "f6_lucas_juros",
     "f6_devolve_lucas",
     "f6_revelacao",
     "f6_onibus",
@@ -1136,7 +1138,12 @@
    "falas": [
     {
      "quem": "lucas",
-     "se": "f_emprestimo_lucas and c_achocolatado_premium",
+     "se": "f_emprestimo_lucas and c_achocolatado_premium and c_leite_condensado",
+     "texto": "Chocolate premium e ainda o Leite da Moçinha? Aí não é só o chocolate, hein! Tá bom, eu empresto os <<brl(emprestimo_lucas)>>, mas com <<juros_pct>>% de juros simples. Depois da feira a gente acerta."
+    },
+    {
+     "quem": "lucas",
+     "se": "f_emprestimo_lucas and c_achocolatado_premium and not c_leite_condensado",
      "texto": "Valeu, Angélica! Depois da feira vocês me devolvem os <<brl(emprestimo_lucas)>>. Esse vai ser o melhor brigadeiro da escola!"
     },
     {
@@ -1278,7 +1285,7 @@
    "misturar": {
     "meias_voltas": 8,
     "cor_final": "#4a2412",
-    "descricao": "Segure o botão do mouse sobre a panela e gire no sentido do relógio até a massa virar brigadeiro."
+    "descricao": "Segure o botão do mouse sobre a panela e gire, para qualquer lado, até a massa virar brigadeiro."
    },
    "pergunta": "Como a equipe vai cuidar da panela?",
    "opcoes": [
@@ -1940,6 +1947,10 @@
      "seguir": "f6_lucas_cobra"
     },
     {
+     "se": "f_emprestimo_lucas and c_achocolatado_premium and c_leite_condensado",
+     "seguir": "f6_lucas_juros"
+    },
+    {
      "se": "f_emprestimo_lucas",
      "seguir": "f6_devolve_lucas"
     }
@@ -1955,11 +1966,11 @@
     {
      "quem": "lucas",
      "expressao": "alegria",
-     "texto": "Tesoureira! Lembra dos <<brl(emprestimo_lucas)>> que eu emprestei? Com o Diretor comprando o resto, o caixa tá cheio, então bora fechar essa conta direitinho!"
+     "texto": "Tesoureira! Lembra dos <<brl(emprestimo_lucas)>> que eu emprestei no mercado? Com o Diretor levando o resto, agora dá pra acertar."
     },
     {
      "quem": "lucas",
-     "texto": "Sem sustos, hein: é só um jeitinho de ensinar pra vocês. Eu cobro Juros Simples de <<juros_pct>>% sobre o que emprestei. Faz a conta aí: quanto vocês me devolvem?"
+     "texto": "Com os <<juros_pct>>% de juros simples que a gente combinou, quanto vocês me devolvem?"
     }
    ],
    "seguir": "f6_quiz_juros_lucas",
@@ -2032,6 +2043,21 @@
     }
    ],
    "seguir": "f6_revelacao",
+   "tipo": "cena",
+   "fase": "fase6",
+   "fundo": "patio_revelacao",
+   "musica": "wildflowers_by_the_river"
+  },
+  {
+   "id": "f6_lucas_juros",
+   "falas": [
+    {
+     "quem": "lucas",
+     "expressao": "alegria",
+     "texto": "Tesoureira! Lembra dos <<brl(emprestimo_lucas)>> que eu emprestei no mercado? Com os <<juros_pct>>% de juros que a gente combinou, são <<brl(juros_lucas)>> a mais: <<brl(emprestimo_lucas + juros_lucas)>> no total."
+    }
+   ],
+   "seguir": "f6_lucas_recebe",
    "tipo": "cena",
    "fase": "fase6",
    "fundo": "patio_revelacao",

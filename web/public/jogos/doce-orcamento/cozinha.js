@@ -9,8 +9,9 @@
 //   volta dela (anel ANEL) é o ato de mexer; sem apertar, nada conta. O que conta
 //   é o ângulo girado (a velocidade manda): cada meia volta (pi) vale uma mexida.
 //   Os botões "(sem girar o mouse)" dão uma mexida inteira (touchpad/acessibilidade).
-// Etapa 2 (misturar, FORA do fogo): sem calor; só o sentido do relógio mistura;
-//   'meias_voltas' fecham a massa; as cores somem sob 'cor_final' (marrom).
+// Etapa 2 (misturar, FORA do fogo): sem calor; qualquer sentido mistura (a massa
+//   gira para o lado do gesto); 'meias_voltas' fecham a massa; as cores somem sob
+//   'cor_final' (marrom).
 // Etapa 3 (mexer, NO fogo): a barra de calor do protótipo. Qualquer sentido sobe
 //   o calor ('passo' por meia volta); a panela esfria a cada 0,12 s; na zona verde
 //   o doce avança; acima de 'queima' ele queima (perde progresso).
@@ -283,33 +284,38 @@ export class Mexida {
   }
 }
 
-/** Etapa 2, fora do fogo (Misturada no Ren'Py): sem calor nem queima; só o sentido do
- * relógio mistura; 'meias_voltas' meias-voltas fecham a massa. */
+/** Etapa 2, fora do fogo (Misturada no Ren'Py): sem calor nem queima; mexer em
+ * QUALQUER sentido (horário ou anti-horário) mistura; 'meias_voltas' meias-voltas
+ * fecham a massa. A massa gira na tela para o lado do gesto. */
 export class Misturada extends Mexida {
   constructor(regras) {
     super(regras);
-    this.anguloVisual = 0;   // giro da massa (suavizado), em graus
+    this.anguloVisual = 0;   // giro da massa na tela (suavizado), em graus
+    this.giro = 0;           // alvo do giro: graus girados com sinal (+ = horário)
+    this.sentido = 1;        // lado do último gesto (o botão segue o mesmo lado)
   }
 
+  /** Qualquer sentido mistura; guarda o lado para a massa girar junto. */
   avanco(delta) {
-    if (delta > 0) super.avanco(delta);
+    if (delta) this.sentido = Math.sign(delta);
+    super.avanco(delta);
   }
 
-  /** Fora do fogo: a massa avança em proporção ao que foi girado. */
+  /** Fora do fogo: a massa avança em proporção ao que foi girado, e o giro na tela
+   * acompanha o avanço (180 graus por meia volta), no lado do gesto. */
   mexerPor(fracao) {
     if (this.pronto) return;
-    this.progresso = Math.min(100, this.progresso + (100 / this.regras.meias_voltas) * fracao);
-  }
-
-  alvo() {
-    return (this.progresso / 100) * this.regras.meias_voltas * 180;
+    const meias = this.regras.meias_voltas;
+    const ganho = Math.min(100 - this.progresso, (100 / meias) * fracao);
+    this.progresso += ganho;
+    this.giro += (this.sentido * ganho * meias * 180) / 100;
   }
 
   /** A cada 0,05 s: a massa gira até o alvo; pronta quando tudo chegou. */
   tique() {
-    this.anguloVisual += (this.alvo() - this.anguloVisual) * 0.25;
+    this.anguloVisual += (this.giro - this.anguloVisual) * 0.25;
     this.bolhas = this.bolhas.filter((b) => b.vida > 0.1).map((b) => ({ x: b.x, y: b.y - 5, vida: b.vida - 0.05 }));
-    this.pronto = this.progresso >= 100 && this.alvo() - this.anguloVisual < 2;
+    this.pronto = this.progresso >= 100 && Math.abs(this.giro - this.anguloVisual) < 2;
   }
 }
 

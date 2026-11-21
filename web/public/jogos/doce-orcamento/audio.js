@@ -11,7 +11,7 @@
 // pedida fica guardada e começa no primeiro gesto (desbloquear()).
 // Para os testes, <html data-musica="chave" data-audio="running|suspended">.
 
-const EFEITOS = ["clique", "acerto", "erro", "moeda", "pagina"];
+const EFEITOS = ["clique", "acerto", "erro", "moeda", "pagina", "conquista"];
 
 /** Lê o índice do jogo.pack e devolve {chave: Blob ogg}. */
 function abrirPacote(buffer) {

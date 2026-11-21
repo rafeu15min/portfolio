@@ -21,13 +21,19 @@ function linhaDaFala(fala, personagens) {
 const EXECUTORES = {
   async cena(j, no) {
     await j.cenario(no.fundo);
-    j.palco.abrir(no);
     j.avisar(roteiro.entrar(no, j.estado));
     // Depois dos efeitos (como o Ren'Py): o item feito já existe e tem a arte do que foi comprado.
-    if (no.vitrine?.length) j.vitrine.mostrar(no.vitrine, j.estado, Boolean(no.vitrine_destaque));
-    else j.vitrine.ocultar();
+    // O item em destaque aparece sozinho, com o som de conquista: o palco e as falas esperam
+    // ele ir para o canto.
+    if (no.vitrine?.length) {
+      const destaque = Boolean(no.vitrine_destaque);
+      if (destaque) j.som.efeito("conquista");
+      await j.aguardar(j.vitrine.mostrar(no.vitrine, j.estado, destaque));
+    } else j.vitrine.ocultar();
+    j.palco.abrir(no);
     await j.falas(no.falas);
-    await j.aguardar(j.palco.fechar());
+    // Fim da cena: quem falou sai e o item em destaque some junto (não segue para a próxima).
+    await j.aguardar(Promise.all([j.palco.fechar(), no.vitrine_destaque ? j.vitrine.fecharDestaque() : null]));
     return no.seguir;
   },
 
