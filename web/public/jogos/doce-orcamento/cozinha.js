@@ -25,7 +25,8 @@ const BANCADA = { centro: 900, passo: 270, y: 850 };          // Ren'Py: 900 + (
 const ANEL = { min: 40, max: 300 };                            // Mexida.r_min / r_max
 const DESLIZAR_MS = 350;
 const ARRASTO_MINIMO = 6;
-const POCAS = [[0.96, 0], [0.74, -34], [0.52, 30]];   // [zoom, deslocamento x] da k-ésima poça
+const ACHATA_MANCHA = 107 / 203;   // semieixos da boca da panela: o plano do círculo vira elipse
+const ANGULO_MANCHA = 70;          // cada mancha entra girada 70° em relação à anterior
 
 const imagemCozinha = (nome) => img("cozinha/" + nome);
 
@@ -41,19 +42,32 @@ export function casasDaBancada(itens) {
   return new Map(itens.map((item, k) => [item, { x: BANCADA.centro + Math.trunc((k - meio) * BANCADA.passo), y: BANCADA.y }]));
 }
 
-/** Poça de cor no formato da boca da panela: a forma branca img/cozinha/mistura_oval
- * (577x430, a peça da panela) vira máscara CSS de um fundo da cor; a escala é em
- * volta do centro da boca (290, 170), como o anchor do doce_oval no Ren'Py. */
-function poca(cor, zoom, dx = 0) {
-  return el("div", { class: "forma-oval", style: { background: corCss(cor), left: dx + "px", transform: `scale(${zoom})` } });
+/** Poça de cor que enche a boca da panela até a borda: a forma branca
+ * img/cozinha/mistura_oval (577x430, a peça da panela) vira máscara CSS de um fundo da cor. */
+function poca(cor) {
+  return el("div", { class: "forma-oval", style: { background: corCss(cor) } });
 }
 
-/** Panela 577x430 (com espaço para as poças), centrada em (960, y) e um pouco menor. */
+/** Mancha em espiral (2º e 3º ingredientes, k = 1 ou 2) da cor dada, girada 'graus': a
+ * forma (img/cozinha/mistura_mancha_k) fica no plano do círculo e é achatada na perspectiva. */
+function mancha(cor, k, graus) {
+  const mancha = el("div", { class: `forma-mancha forma-mancha-${Math.min(k, 2)}`, style: { background: corCss(cor) } });
+  posicionarMancha(mancha, graus);
+  return mancha;
+}
+
+function posicionarMancha(mancha, graus) {
+  mancha.style.transform = `scaleY(${ACHATA_MANCHA}) rotate(${graus}deg)`;
+}
+
+/** Panela 577x430 (com espaço para a massa), centrada em (960, y) e um pouco menor. 'sobre'
+ * põe camadas de massa por baixo da sombra interna da boca, que fica sempre por cima. */
 function panelaComMassa(y) {
   const imagem = el("img", { src: imagemCozinha("panela_0"), alt: "Panela", draggable: "false" });
+  const sombra = el("img", { class: "sombra-boca", src: imagemCozinha("mistura_sombra"), alt: "", draggable: "false" });
   const caixa = el("div", { class: "panela-caixa", style: { left: CENTRO.x + "px", top: y + "px",
-    transform: `translate(-50%, -50%) scale(${ZOOM_PANELA})` } }, imagem);
-  return { caixa, imagem };
+    transform: `translate(-50%, -50%) scale(${ZOOM_PANELA})` } }, imagem, sombra);
+  return { caixa, imagem, sobre: (...camadas) => sombra.before(...camadas) };
 }
 
 // --- etapa 1: arrastar ------------------------------------------------------------
@@ -142,10 +156,11 @@ class Bancada {
 
   /** O ingrediente tomba na boca da panela e some; a poça da cor dele aparece. */
   #cair(item) {
-    const [zoom, dx] = POCAS[Math.min(this.postos.length, POCAS.length - 1)];
+    const k = this.postos.length;
     this.postos.push(item);
-    const nova = poca(rgb(this.c.itens[item].cor), zoom, dx);
-    this.panela.caixa.append(nova);
+    const cor = rgb(this.c.itens[item].cor);
+    const nova = k === 0 ? poca(cor) : mancha(cor, k, ANGULO_MANCHA * k);
+    this.panela.sobre(nova);
     animar(nova, [{ opacity: 0 }, { opacity: 1 }], { duration: 600 });
     const queda = el("img", { class: "queda", src: img(this.assets.itens[item]), alt: "" });
     this.raiz.append(queda);
@@ -422,22 +437,21 @@ function rodarEtapa(deps, opcoes) {
   });
 }
 
-/** Visual da mistura (doce_mistura_giro): a cor do 1º ingrediente, discos das cores
- * girando e, por cima, a cor final do brigadeiro aparecendo com o progresso. */
+/** Visual da mistura (doce_mistura_giro): a cor do 1º ingrediente enche a boca; as manchas
+ * dos outros giram por cima e, por fim, a cor final do brigadeiro aparece com o progresso. */
 function visualMistura(cores, corFinal) {
-  const { caixa } = panelaComMassa(CENTRO.y);
-  const discos = el("div", { class: "discos" }, cores.map((cor, j) => {
-    const t = (120 * j * Math.PI) / 180;
-    return el("div", { class: "forma-disco", style: { background: corCss(cor), left: 200 + 85 * Math.cos(t) - 70 + "px", top: 200 + 85 * Math.sin(t) - 70 + "px" } });
-  }));
-  const uniforme = poca(rgb(corFinal), POCAS[0][0]);
+  const { caixa, sobre } = panelaComMassa(CENTRO.y);
+  const manchas = cores.slice(1).map((cor, j) => mancha(cor, j + 1, ANGULO_MANCHA * (j + 1)));
+  const uniforme = poca(rgb(corFinal));
   uniforme.classList.add("massa-final");
-  caixa.append(poca(cores[0], POCAS[0][0]), discos, uniforme);
+  sobre(poca(cores[0]), ...manchas, uniforme);
   const texto = el("p");
   const consistencia = barra("Consistência da massa");
   const desenhar = (m) => {
-    discos.style.transform = `scaleY(0.46) rotate(${m.anguloVisual}deg)`;
-    discos.style.opacity = 1 - 0.9 * (m.progresso / 100);
+    manchas.forEach((forma, j) => {
+      posicionarMancha(forma, m.anguloVisual + ANGULO_MANCHA * (j + 1));
+      forma.style.opacity = 1 - 0.9 * (m.progresso / 100);
+    });
     uniforme.style.opacity = m.progresso / 100;
     texto.textContent = `Consistência da massa: ${Math.round(m.progresso)}%`;
     medir(consistencia, m.progresso);

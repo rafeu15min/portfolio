@@ -97,7 +97,7 @@ const EXECUTORES = {
 
   async tela(j, no) {
     j.vitrine.ocultar();
-    await j.painel(() => mostrarTelaFinal(no.tela, j.deps()));
+    await j.painel(() => mostrarTelaFinal(no.tela, j.deps({ tentar: j.tentar })));
     return no.seguir;
   },
 
@@ -110,7 +110,7 @@ const EXECUTORES = {
 export class Jogo {
   #sessao = 0;
 
-  /** deps: {c, assets, tela, palco, dialogo, hud, vitrine, som, saves, esperas, aoTerminar} */
+  /** deps: {c, assets, tela, palco, dialogo, hud, vitrine, som, saves, esperas, aoTerminar, tentar: {carregar, zero}} */
   constructor(deps) {
     Object.assign(this, deps);
     this.porId = new Map(this.c.nos.map((no) => [no.id, no]));
@@ -191,7 +191,7 @@ export class Jogo {
   #entrar(no) {
     const titulo = this.titulos.get(no.fase);
     this.ponto = { no: no.id, estado: this.estado.paraDados(), fase: titulo, fundo: no.fundo ?? this.palco.fundo, dica_vista: this.dicaVista };
-    if (no.tipo !== "fim") this.saves.autosalvar(this.ponto);
+    if (no.tipo !== "fim" && !no.sem_autosave) this.saves.autosalvar(this.ponto);
     this.tela.dataset.no = no.id;
     this.hud.fase(titulo);
     this.atualizarHud();

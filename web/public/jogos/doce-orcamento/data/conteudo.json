@@ -41,6 +41,7 @@
     "dinheiro_garotinha": 150,
     "qtd_5b": 10,
     "caixa_5b": 1000,
+    "meta_lucro": 6000,
     "juros_pct": 20,
     "emprestimo_lucas": 2000
    },
@@ -49,7 +50,7 @@
      "200": 70,
      "201": 70,
      "202": 70,
-     "300": 30,
+     "300": 20,
      "301": 40,
      "302": 50
     }
@@ -369,7 +370,7 @@
   "achocolatado_premium": {
    "id": "achocolatado_premium",
    "nome": "Achocolatado Premium",
-   "preco": 30.0,
+   "preco": 26.0,
    "icone": {
     "regiao": [
      528,
@@ -797,8 +798,10 @@
     "f6_lucas_cobra",
     "f6_quiz_juros_lucas",
     "f6_lucas_recebe",
-    "f6_lucas_juros",
     "f6_devolve_lucas",
+    "f6_meta",
+    "f6_derrota",
+    "f6_tentar_novamente",
     "f6_revelacao",
     "f6_onibus",
     "f6_quem_chama",
@@ -827,6 +830,10 @@
     },
     {
      "narracao": "A turma conversa, vota e decide: a barraca da sala vai vender brigadeiros!"
+    },
+    {
+     "quem": "ana",
+     "texto": "Brigadeiros, ótima escolha! Mas atenção: para disputar a excursão, a barraca da sala precisa fechar a feira com pelo menos <<brl(meta_lucro)>> de Lucro Líquido. Abaixo disso, ninguém vai ao parque."
     },
     {
      "quem": "ana",
@@ -1139,7 +1146,7 @@
     {
      "quem": "lucas",
      "se": "f_emprestimo_lucas and c_achocolatado_premium and c_leite_condensado",
-     "texto": "Chocolate premium e ainda o Leite da Moçinha? Aí não é só o chocolate, hein! Tá bom, eu empresto os <<brl(emprestimo_lucas)>>, mas com <<juros_pct>>% de juros simples. Depois da feira a gente acerta."
+     "texto": "Chocolate premium e ainda o Leite da Moçinha? Aí não é só o chocolate, hein! Tá bom, eu empresto os <<brl(emprestimo_lucas)>>, mas com <<juros_pct>>% de juros simples. Se esse brigadeiro for tão bom assim, vocês dão conta. Depois da feira a gente acerta."
     },
     {
      "quem": "lucas",
@@ -1947,15 +1954,11 @@
      "seguir": "f6_lucas_cobra"
     },
     {
-     "se": "f_emprestimo_lucas and c_achocolatado_premium and c_leite_condensado",
-     "seguir": "f6_lucas_juros"
-    },
-    {
      "se": "f_emprestimo_lucas",
      "seguir": "f6_devolve_lucas"
     }
    ],
-   "senao": "f6_revelacao",
+   "senao": "f6_meta",
    "fase": "fase6",
    "fundo": "patio_revelacao",
    "musica": null
@@ -1966,11 +1969,12 @@
     {
      "quem": "lucas",
      "expressao": "alegria",
-     "texto": "Tesoureira! Lembra dos <<brl(emprestimo_lucas)>> que eu emprestei no mercado? Com o Diretor levando o resto, agora dá pra acertar."
+     "texto": "Tesoureira! O Diretor levou o resto, então bora acertar o que eu emprestei no mercado: os <<brl(emprestimo_lucas)>> com os <<juros_pct>>% de juros simples que a gente combinou."
     },
     {
      "quem": "lucas",
-     "texto": "Com os <<juros_pct>>% de juros simples que a gente combinou, quanto vocês me devolvem?"
+     "expressao": "tristeza",
+     "texto": "Só que eu travei na conta... <<juros_pct>>% de quê, mesmo? Me ajuda aí: quanto vocês me devolvem?"
     }
    ],
    "seguir": "f6_quiz_juros_lucas",
@@ -2001,13 +2005,13 @@
    "explicacao": [
     {
      "quem": "lucas",
-     "rubrica": "Faz uma continha rápida nos dedos",
-     "texto": "Eu te mostro, é fácil! Os juros incidem sobre o que eu emprestei: <<brl(emprestimo_lucas)>>. 10% de <<reais(emprestimo_lucas)>> é <<reais(pct(emprestimo_lucas, 10))>>.",
-     "frase_acao": "Lucas faz uma continha rápida nos dedos."
+     "rubrica": "Conta nos dedos, devagar",
+     "texto": "Ahh, os juros são só sobre o que eu emprestei: <<brl(emprestimo_lucas)>>. 10% de <<reais(emprestimo_lucas)>> é <<reais(pct(emprestimo_lucas, 10))>>.",
+     "frase_acao": "Lucas conta nos dedos, devagar."
     },
     {
      "quem": "lucas",
-     "texto": "E <<juros_pct>>% são <<juros_pct // 10>> vezes isso: <<reais(juros_lucas)>> de juros."
+     "texto": "E <<juros_pct>>% são <<juros_pct // 10>> vezes isso: <<reais(juros_lucas)>> de juros. Eu tava complicando à toa!"
     },
     {
      "quem": "lucas",
@@ -2042,22 +2046,7 @@
      "texto": "Opa, <<brl(emprestimo_lucas + juros_lucas)>> certinho! Valeu, Tesoureira! Foi um bom negócio pra todo mundo."
     }
    ],
-   "seguir": "f6_revelacao",
-   "tipo": "cena",
-   "fase": "fase6",
-   "fundo": "patio_revelacao",
-   "musica": "wildflowers_by_the_river"
-  },
-  {
-   "id": "f6_lucas_juros",
-   "falas": [
-    {
-     "quem": "lucas",
-     "expressao": "alegria",
-     "texto": "Tesoureira! Lembra dos <<brl(emprestimo_lucas)>> que eu emprestei no mercado? Com os <<juros_pct>>% de juros que a gente combinou, são <<brl(juros_lucas)>> a mais: <<brl(emprestimo_lucas + juros_lucas)>> no total."
-    }
-   ],
-   "seguir": "f6_lucas_recebe",
+   "seguir": "f6_meta",
    "tipo": "cena",
    "fase": "fase6",
    "fundo": "patio_revelacao",
@@ -2077,10 +2066,70 @@
     {
      "quem": "lucas",
      "texto": "Opa, meus <<brl(emprestimo_lucas)>> de volta! Valeu, Tesoureira! Trato é trato."
+    },
+    {
+     "quem": "lucas",
+     "se": "c_achocolatado_premium and c_leite_condensado",
+     "texto": "E os juros eu perdoo: vendemos tudo a preço de amigo."
     }
    ],
-   "seguir": "f6_revelacao",
+   "seguir": "f6_meta",
    "tipo": "cena",
+   "fase": "fase6",
+   "fundo": "patio_revelacao",
+   "musica": "wildflowers_by_the_river"
+  },
+  {
+   "id": "f6_meta",
+   "tipo": "ramo",
+   "casos": [
+    {
+     "se": "lucro >= meta_lucro",
+     "seguir": "f6_revelacao"
+    }
+   ],
+   "senao": "f6_derrota",
+   "fase": "fase6",
+   "fundo": "patio_revelacao",
+   "musica": null
+  },
+  {
+   "id": "f6_derrota",
+   "sem_autosave": true,
+   "falas": [
+    {
+     "narracao": "Pátio da escola. Chegou a hora de revelar os vencedores."
+    },
+    {
+     "quem": "ana",
+     "expressao": "nervosismo",
+     "texto": "Poxa, não foi dessa vez... A meta era de <<brl(meta_lucro)>> de Lucro Líquido, e a nossa sala fechou a feira com <<brl(lucro)>>.",
+     "se": "lucro >= 0"
+    },
+    {
+     "quem": "ana",
+     "expressao": "nervosismo",
+     "texto": "Poxa, não foi dessa vez... A meta era de <<brl(meta_lucro)>> de Lucro Líquido, e a nossa sala fechou a feira no vermelho.",
+     "se": "lucro < 0"
+    },
+    {
+     "quem": "ana",
+     "expressao": "alegria",
+     "texto": "Vocês se esforçaram, e isso conta. Quem sabe na próxima?"
+    }
+   ],
+   "seguir": "f6_tentar_novamente",
+   "tipo": "cena",
+   "fase": "fase6",
+   "fundo": "patio_revelacao",
+   "musica": "wildflowers_by_the_river"
+  },
+  {
+   "id": "f6_tentar_novamente",
+   "tipo": "tela",
+   "tela": "tentar_novamente",
+   "sem_autosave": true,
+   "seguir": "fim_jogo",
    "fase": "fase6",
    "fundo": "patio_revelacao",
    "musica": "wildflowers_by_the_river"
@@ -2261,6 +2310,7 @@
    "dinheiro_garotinha": 150,
    "qtd_5b": 10,
    "caixa_5b": 1000,
+   "meta_lucro": 6000,
    "juros_pct": 20,
    "emprestimo_lucas": 2000
   },
@@ -2269,7 +2319,7 @@
     "200": 70,
     "201": 70,
     "202": 70,
-    "300": 30,
+    "300": 20,
     "301": 40,
     "302": 50
    }
@@ -2307,7 +2357,7 @@
   "precos": {
    "leite_condensado": 3000,
    "leite_condensado_economico": 2600,
-   "achocolatado_premium": 3000,
+   "achocolatado_premium": 2600,
    "achocolatado_comum": 1000,
    "granulado": 1000,
    "granulado_colorido": 1400,

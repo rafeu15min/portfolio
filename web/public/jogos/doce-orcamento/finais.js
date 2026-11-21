@@ -30,7 +30,17 @@ function creditos({ assets }, continuar) {
     el("p", { class: "so-leitor" }, "Créditos do jogo"), continuar("Voltar ao menu"));
 }
 
-const TELAS = { balanco, vocabulario, creditos };
+/** Derrota (lucro abaixo da meta): carregar um save ou recomeçar do zero. Não resolve sozinha:
+ * quem sai daqui é o jogador, por um dos dois botões (tentar = {carregar, zero}, do main.js). */
+function tentarNovamente({ tentar }) {
+  return el("div", { class: "tela-final listrado" }, painel({ class: "balanco" },
+    el("h1", {}, "Tentar novamente"), el("p", {}, "Volte a um save ou recomece a feira do zero."),
+    el("div", { class: "cartoes" },
+      botao("Carregar um save", () => tentar.carregar(), { id: "tentar_carregar" }),
+      botao("Começar do zero", () => tentar.zero(), { id: "tentar_do_zero" }))));
+}
+
+const TELAS = { balanco, vocabulario, creditos, tentar_novamente: tentarNovamente };
 
 /** Mostra a tela final 'tipo' e resolve quando o jogador continua (botão ou Enter). */
 export function mostrarTelaFinal(tipo, deps) {

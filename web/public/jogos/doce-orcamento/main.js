@@ -60,7 +60,8 @@ function montar(c, assets) {
   const vitrine = new Vitrine(tela, c, assets);
   const dialogo = new Dialogo(tela, { esperas, prefs, som, livre: () => camadas.vazia });
   const hud = new Hud(tela, { som, abrirCaderno: () => caderno(), aoVerDica: () => jogo.marcarDicaVista() });
-  const jogo = new Jogo({ c, assets, tela, palco, dialogo, hud, vitrine, som, saves, esperas, aoTerminar: () => mostrarMenu() });
+  const jogo = new Jogo({ c, assets, tela, palco, dialogo, hud, vitrine, som, saves, esperas, aoTerminar: () => mostrarMenu(),
+    tentar: { carregar: () => abrirMenuJogo("carregar", contexto(false)), zero: () => comecar(() => jogo.novo()) } });
   let menu = null;
 
   /** Abre o Caderno (botão ou tecla I); abrir também tira a dica da tecla I. */
