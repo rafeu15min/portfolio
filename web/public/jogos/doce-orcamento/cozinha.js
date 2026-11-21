@@ -69,12 +69,13 @@ function tingida(nome, cor, largura = 577, altura = 430) {
   return canvas;
 }
 
-/** Faixa de massa do k-ésimo ingrediente (0, 1, 2): img/cozinha/mistura_nivel_k (577x430: boca da
- * panela x elipse mais abaixo, que sobe a cada ingrediente; cada faixa é o nível menos o anterior). */
+/** Massa do k-ésimo ingrediente (0, 1, 2): o 1º é a camada que sobe (img/cozinha/mistura_nivel_1:
+ * boca da panela x elipse mais abaixo); o 2º e o 3º são elipses dentro da anterior
+ * (mistura_elipse_k), todas em 577x430. */
 function poca(cor, k = 0) {
-  const faixa = tingida(`mistura_nivel_${Math.min(k, 2) + 1}`, cor);
-  faixa.className = "forma-nivel";
-  return faixa;
+  const forma = tingida(k === 0 ? "mistura_nivel_1" : `mistura_elipse_${Math.min(k, 2)}`, cor);
+  forma.className = "forma-nivel";
+  return forma;
 }
 
 /** Panela 577x430 (com espaço para a massa), centrada em (960, y) e um pouco menor. 'sobre'
@@ -485,17 +486,18 @@ function rodarEtapa(deps, opcoes) {
   });
 }
 
-/** Visual da mistura (doce_mistura_giro), num <canvas> só: as faixas de massa como ficaram na etapa
- * anterior, as manchas dos outros ingredientes girando por cima e, por fim, a cor final do
+/** Visual da mistura (doce_mistura_giro), num <canvas> só: a massa na cor do 1º ingrediente com as
+ * elipses dos outros (como na etapa anterior), as manchas dos outros ingredientes girando por cima e, por fim, a cor final do
  * brigadeiro com o progresso; tudo recortado na massa inteira (mistura_massa). */
 function visualMistura(cores, corFinal) {
   const { caixa, sobre } = panelaComMassa(CENTRO.y);
   const massa = el("canvas", { class: "forma-nivel", width: 577, height: 430 });
   const c = massa.getContext("2d");
-  const faixas = cores.map((cor, k) => tingida(`mistura_nivel_${Math.min(k, 2) + 1}`, cor));
+  const camadas = cores.map((cor, k) => poca(cor, k));
   const manchas = cores.slice(1).map((cor, j) => tingida(`mistura_mancha_${Math.min(j + 1, 2)}`, cor, 420, 420));
   const recorte = mascara("mistura_massa");
   const final = corCss(rgb(corFinal));
+  const base = corCss(cores[0]);
   sobre(massa);
   const texto = el("p");
   const consistencia = barra("Consistência da massa");
@@ -503,7 +505,9 @@ function visualMistura(cores, corFinal) {
   const pintar = (m) => {
     const p = m.progresso / 100;
     c.clearRect(0, 0, 577, 430);
-    faixas.forEach((faixa) => c.drawImage(faixa, 0, 0));
+    c.fillStyle = base;   // massa inteira na cor do 1º ingrediente; as elipses dos outros por cima
+    c.fillRect(0, 0, 577, 430);
+    camadas.slice(1).forEach((forma) => c.drawImage(forma, 0, 0));
     manchas.forEach((mancha, j) => {
       c.save();
       c.globalAlpha = 1 - 0.9 * p;
