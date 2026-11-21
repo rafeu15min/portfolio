@@ -259,7 +259,7 @@ mod tests {
 
     #[tokio::test]
     async fn github_proxy_refuses_private_and_unknown() {
-        for slug in ["vault-sync", "torvalds-linux", "..%2F..%2Fetc"] {
+        for slug in ["jobber", "torvalds-linux", "..%2F..%2Fetc"] {
             let res = test_app()
                 .oneshot(Request::get(format!("/api/github/{slug}")).body(Body::empty()).unwrap())
                 .await

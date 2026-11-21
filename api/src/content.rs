@@ -144,9 +144,15 @@ mod tests {
     #[test]
     fn private_projects_are_not_proxied() {
         let dir = Path::new(env!("CARGO_MANIFEST_DIR")).join("../content");
-        let c = Content::load(&dir).unwrap();
-        assert!(c.public_repo("vault-sync").is_none());
+        let mut c = Content::load(&dir).unwrap();
+        // jobber é privado no GitHub e no conteúdo; vault-sync é público desde c5389be
+        assert!(c.public_repo("jobber").is_none());
         assert!(c.public_repo("nao-existe").is_none());
+        assert_eq!(c.public_repo("vault-sync"), Some("rafeu15min/vault-sync"));
+        // privado com o repo preenchido continua fora da allowlist
+        let jobber = c.projects.iter_mut().find(|p| p.slug == "jobber").unwrap();
+        jobber.repo = Some("rafeu15min/jobber".into());
+        assert!(c.public_repo("jobber").is_none());
     }
 
     #[test]
