@@ -36,13 +36,20 @@
           "name": "Python",
           "projects": [
             "claudesktop",
-            "biblia"
+            "biblia",
+            "doce-orcamento"
           ]
         },
         {
           "name": "TypeScript",
           "projects": [
             "portfolio"
+          ]
+        },
+        {
+          "name": "JavaScript",
+          "projects": [
+            "doce-orcamento"
           ]
         },
         {
@@ -132,6 +139,12 @@
           ]
         },
         {
+          "name": "Ren'Py",
+          "projects": [
+            "doce-orcamento"
+          ]
+        },
+        {
           "name": "MCP",
           "projects": [
             "claudesktop"
@@ -152,7 +165,8 @@
             "token-econ-plugins",
             "jobber",
             "slideglide",
-            "ambilight"
+            "ambilight",
+            "doce-orcamento"
           ]
         },
         {
@@ -218,7 +232,8 @@
         {
           "name": "FFmpeg",
           "projects": [
-            "anubis"
+            "anubis",
+            "doce-orcamento"
           ]
         }
       ]

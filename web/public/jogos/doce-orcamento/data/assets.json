@@ -1,0 +1,234 @@
+{
+ "tela": [
+  1920,
+  1080
+ ],
+ "fundos": {
+  "titulo": {
+   "renpy": "images/fundos/titulo.png",
+   "web": "img/fundos/titulo.webp",
+   "tamanho": [
+    1920,
+    1080
+   ]
+  },
+  "sala_aula_manha": {
+   "renpy": "images/fundos/sala_aula_manha.png",
+   "web": "img/fundos/sala_aula_manha.webp",
+   "tamanho": [
+    1920,
+    1080
+   ]
+  },
+  "supermercado": {
+   "renpy": "images/fundos/supermercado.png",
+   "web": "img/fundos/supermercado.webp",
+   "tamanho": [
+    1920,
+    1080
+   ]
+  },
+  "cozinha_cassia": {
+   "renpy": "images/fundos/cozinha_cassia.png",
+   "web": "img/fundos/cozinha_cassia.webp",
+   "tamanho": [
+    1920,
+    1080
+   ]
+  },
+  "cozinha_minigame": {
+   "renpy": "images/fundos/cozinha_minigame.png",
+   "web": "img/fundos/cozinha_minigame.webp",
+   "tamanho": [
+    1920,
+    1080
+   ]
+  },
+  "patio_barraca": {
+   "renpy": "images/fundos/patio_barraca.png",
+   "web": "img/fundos/patio_barraca.webp",
+   "tamanho": [
+    1920,
+    1080
+   ]
+  },
+  "feira_movimentada": {
+   "renpy": "images/fundos/feira_movimentada.png",
+   "web": "img/fundos/feira_movimentada.webp",
+   "tamanho": [
+    1920,
+    1080
+   ]
+  },
+  "feira_fim_do_dia": {
+   "renpy": "images/fundos/feira_fim_do_dia.png",
+   "web": "img/fundos/feira_fim_do_dia.webp",
+   "tamanho": [
+    1920,
+    1080
+   ]
+  },
+  "patio_revelacao": {
+   "renpy": "images/fundos/patio_revelacao.png",
+   "web": "img/fundos/patio_revelacao.webp",
+   "tamanho": [
+    1920,
+    1080
+   ]
+  },
+  "onibus_excursao": {
+   "renpy": "images/fundos/onibus_excursao.png",
+   "web": "img/fundos/onibus_excursao.webp",
+   "tamanho": [
+    1920,
+    1080
+   ]
+  },
+  "creditos": {
+   "renpy": "images/fundos/creditos.png",
+   "web": "img/fundos/creditos.webp",
+   "tamanho": [
+    1920,
+    1080
+   ]
+  },
+  "listrado": {
+   "renpy": "images/fundos/listrado.png",
+   "web": "img/fundos/listrado.webp",
+   "tamanho": [
+    1920,
+    1080
+   ]
+  }
+ },
+ "personagens": {
+  "ana alegria": "personagens/ana_alegria",
+  "ana euforia": "personagens/ana_euforia",
+  "ana surpresa": "personagens/ana_surpresa",
+  "ana nervosismo": "personagens/ana_nervosismo",
+  "ana raiva": "personagens/ana_raiva",
+  "ana choro": "personagens/ana_choro",
+  "cassia alegria": "personagens/cassia_alegria",
+  "cassia tristeza": "personagens/cassia_tristeza",
+  "cassia raiva": "personagens/cassia_raiva",
+  "lucas alegria": "personagens/lucas_alegria",
+  "lucas tristeza": "personagens/lucas_tristeza",
+  "lucas raiva": "personagens/lucas_raiva",
+  "denis alegria": "personagens/denis_alegria",
+  "denis tristeza": "personagens/denis_tristeza",
+  "denis raiva": "personagens/denis_raiva",
+  "tabata alegria": "personagens/tabata_alegria",
+  "tabata tristeza": "personagens/tabata_tristeza",
+  "tabata raiva": "personagens/tabata_raiva"
+ },
+ "itens": {
+  "leite_condensado": "itens/leite_condensado",
+  "leite_condensado_economico": "itens/leite_condensado_economico",
+  "achocolatado_premium": "itens/achocolatado_premium",
+  "achocolatado_comum": "itens/achocolatado_comum",
+  "granulado": "itens/granulado",
+  "granulado_colorido": "itens/granulado_colorido",
+  "granulado_bolinha": "itens/granulado_bolinha",
+  "granulado_amendoim": "itens/granulado_amendoim",
+  "forminhas": "itens/forminhas",
+  "creme_de_leite": "itens/creme_de_leite",
+  "brigadeiro": "itens/brigadeiro",
+  "brigadeiro_tradicional": "itens/brigadeiro_tradicional",
+  "brigadeiro_colorido": "itens/brigadeiro_colorido",
+  "brigadeiro_bolinha": "itens/brigadeiro_bolinha",
+  "brigadeiro_amendoim": "itens/brigadeiro_amendoim"
+ },
+ "menu_botoes": [
+  {
+   "id": "novo_jogo",
+   "imagem": "ui/menu_novo_jogo",
+   "pos": [
+    117,
+    621
+   ],
+   "tamanho": [
+    300,
+    144
+   ]
+  },
+  {
+   "id": "continuar",
+   "imagem": "ui/menu_continuar",
+   "pos": [
+    384,
+    753
+   ],
+   "tamanho": [
+    321,
+    138
+   ]
+  },
+  {
+   "id": "carregar",
+   "imagem": "ui/menu_carregar",
+   "pos": [
+    702,
+    816
+   ],
+   "tamanho": [
+    294,
+    159
+   ]
+  },
+  {
+   "id": "opcoes",
+   "imagem": "ui/menu_opcoes",
+   "pos": [
+    1011,
+    825
+   ],
+   "tamanho": [
+    291,
+    147
+   ]
+  },
+  {
+   "id": "sobre",
+   "imagem": "ui/menu_sobre",
+   "pos": [
+    1278,
+    717
+   ],
+   "tamanho": [
+    303,
+    138
+   ]
+  },
+  {
+   "id": "sair",
+   "imagem": "ui/menu_sair",
+   "pos": [
+    1554,
+    618
+   ],
+   "tamanho": [
+    276,
+    132
+   ]
+  }
+ ],
+ "cozinha": [
+  "cozinha/panela_0",
+  "cozinha/panela_1",
+  "cozinha/panela_2",
+  "cozinha/panela_3",
+  "cozinha/panela_4",
+  "cozinha/panela_5",
+  "cozinha/panela_6",
+  "cozinha/colher_0",
+  "cozinha/colher_1",
+  "cozinha/colher_2",
+  "cozinha/colher_3",
+  "cozinha/colher_4",
+  "cozinha/colher_5",
+  "cozinha/colher_6",
+  "cozinha/bolha",
+  "cozinha/mistura_oval",
+  "cozinha/mistura_disco"
+ ]
+}

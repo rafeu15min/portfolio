@@ -9,6 +9,7 @@
                     │  /api/timeline    content/timeline.json   │
                     │  /api/github/:slug  cache 1h ──▶ GitHub   │
                     │  /api/contact     rate-limit, só loga     │
+                    │  /jogos/*         jogos, sem fallback SPA │
                     │  /*               ServeDir(web/dist)      │
                     │                                           │
                     │  camada de headers: CSP, HSTS, nosniff,   │
@@ -27,6 +28,8 @@
   figlet no bundle.
 - Rotas: `/` (single-page com âncoras), `/projetos/:slug` e `/devocao`
   (exposição 3D — o three.js, ~170 KB comprimido, só carrega nessa rota).
+  Os jogos em `/jogos/<nome>/` não são rotas do Vue: são arquivos de
+  `web/public/jogos/`, servidos direto pela API.
 - Modelos 3D: GLB com `KHR_mesh_quantization` (lido nativamente pelo
   three.js). Nada de Draco/meshopt: eles exigem decoder WASM, o que obrigaria
   `'wasm-unsafe-eval'` na CSP.
@@ -43,6 +46,7 @@
 | `GET /api/timeline` | idem |
 | `GET /api/github/:slug` | **allowlist**: só slugs de `projects.json` com `visibility: "public"`. Não é um proxy aberto pro GitHub. Cache em memória TTL 1h. `GITHUB_TOKEN` opcional via env (sobe o rate limit; nunca vai pro cliente) |
 | `POST /api/contact` | valida tamanho/formato, honeypot (`website` precisa vir vazio), consentimento LGPD obrigatório, rate limit por IP (3 a cada 10 min — conta antes da validação, pra não virar oráculo). Envia por **e-mail** (SMTP, crate `lettre`) para `CONTACT_TO`, com o visitante no Reply-To. Sem SMTP configurado → **503** (nunca um sucesso falso). O log registra só o tamanho da mensagem. Nada é persistido |
+| `/jogos/*` | jogos estáticos de `web/public/jogos/<nome>/` (hoje o Doce Orçamento), abertos num `<iframe>` da página do projeto. Mesmo `web/dist`, mas **sem** o fallback da SPA: arquivo que falta é 404 (o service worker do jogo não guarda o `index.html` do site no lugar de um arquivo dele). CSP própria, `security::GAME_CSP`: a do site com `font-src 'self'` (fontes do jogo), `media-src 'self' blob:` (música tocada por Blob) e `frame-ancestors 'self'`, com `X-Frame-Options: SAMEORIGIN`. O resto do site continua com `frame-ancestors 'none'` e `DENY` |
 | `/*` | `web/dist` com fallback SPA para `index.html` |
 
 **Cache-Control** (middleware `cache_control`): HTML `no-cache` (senão um

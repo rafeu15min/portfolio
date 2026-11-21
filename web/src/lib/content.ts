@@ -21,7 +21,26 @@ export interface Project {
   featured?: boolean
   /** outros projetos ligados a este, com o motivo */
   related?: { slug: string; why: string }[]
+  /** versão jogável servida pelo site (web/public/jogos/), aberta num iframe */
+  play?: Play
   todo?: string
+}
+
+export interface Credit {
+  who: string
+  text: string
+  url?: string
+}
+
+export interface Play {
+  /** pasta do jogo: "/jogos/<nome>/" */
+  path: string
+  /** imagem mostrada antes do clique em "jogar" */
+  cover: string
+  hint: string
+  credits: Credit[]
+  /** aviso de licença dos recursos de terceiros */
+  license: string
 }
 
 export interface TimelineEntry {

@@ -98,7 +98,15 @@ pub fn app(state: Arc<AppState>, web_dist: PathBuf) -> Router {
         .precompressed_gzip()
         .fallback(ServeFile::new(web_dist.join("index.html")).precompressed_br().precompressed_gzip());
 
-    security::with_headers(Router::new().nest("/api", api).fallback_service(spa))
+    // Jogos (web/public/jogos/<nome>/), abertos num <iframe> da página do projeto: mesmos
+    // arquivos do web/dist, com a CSP dos jogos e SEM o fallback da SPA. Arquivo que falta
+    // é 404 (o jogo.pack fora do ar deixa o jogo mudo, em vez de virar o index.html).
+    let games = security::game_headers(Router::new().route_service(
+        "/jogos/{*arquivo}",
+        ServeDir::new(&web_dist).precompressed_br().precompressed_gzip(),
+    ));
+
+    security::with_headers(Router::new().nest("/api", api).merge(games).fallback_service(spa))
         .layer(middleware::from_fn(cache_control))
         .layer(middleware::from_fn_with_state(redirect_state, redirect_host))
         .layer(TraceLayer::new_for_http())
@@ -194,9 +202,9 @@ mod tests {
     };
     use tower::ServiceExt;
 
-    fn test_app_with(mailer: Option<Mailer>) -> Router {
+    fn test_state(mailer: Option<Mailer>) -> Arc<AppState> {
         let root = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
-        let state = Arc::new(AppState {
+        Arc::new(AppState {
             content: Content::load(&root.join("../content")).unwrap(),
             http: reqwest::Client::new(),
             github_token: None,
@@ -207,8 +215,11 @@ mod tests {
             trusted_proxy_hops: 0,
             canonical_host: Some("portfolio.rafeu.dev".into()),
             redirect_hosts: vec!["portifolio.rafeu.dev".into()],
-        });
-        app(state, root.join("../web/dist"))
+        })
+    }
+
+    fn test_app_with(mailer: Option<Mailer>) -> Router {
+        app(test_state(mailer), PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("../web/dist"))
     }
 
     fn test_app() -> Router {
@@ -258,8 +269,41 @@ mod tests {
     }
 
     #[tokio::test]
+    async fn games_have_their_csp_and_no_spa_fallback() {
+        // arquivo que falta num jogo é 404, nunca o index.html da SPA
+        let res = test_app().oneshot(Request::get("/jogos/nao-existe/jogo.pack").body(Body::empty()).unwrap()).await.unwrap();
+        assert_eq!(res.status(), StatusCode::NOT_FOUND);
+        assert_eq!(res.headers()[header::CONTENT_SECURITY_POLICY], security::GAME_CSP);
+        assert_eq!(res.headers()[header::X_FRAME_OPTIONS], "SAMEORIGIN");
+        assert_eq!(res.headers()[header::X_CONTENT_TYPE_OPTIONS], "nosniff");
+        assert_eq!(res.headers()[header::CACHE_CONTROL], "no-cache");
+
+        // o resto do site segue com a CSP e o X-Frame-Options de sempre
+        let res = test_app().oneshot(Request::get("/projetos/doce-orcamento").body(Body::empty()).unwrap()).await.unwrap();
+        assert_eq!(res.headers()[header::CONTENT_SECURITY_POLICY], security::CSP);
+        assert_eq!(res.headers()[header::X_FRAME_OPTIONS], "DENY");
+    }
+
+    #[tokio::test]
+    async fn games_are_served_from_web_dist() {
+        let dist = std::env::temp_dir().join(format!("portfolio-api-teste-{}", std::process::id()));
+        std::fs::create_dir_all(dist.join("jogos/x")).unwrap();
+        std::fs::write(dist.join("jogos/x/index.html"), "<p>jogo</p>").unwrap();
+        let app = app(test_state(None), dist.clone());
+
+        let res = app.clone().oneshot(Request::get("/jogos/x/").body(Body::empty()).unwrap()).await.unwrap();
+        assert_eq!(res.status(), StatusCode::OK);
+        assert_eq!(res.headers()[header::CONTENT_TYPE], "text/html");
+        // sem a barra no fim: redireciona para a pasta (caminhos relativos do jogo)
+        let res = app.oneshot(Request::get("/jogos/x").body(Body::empty()).unwrap()).await.unwrap();
+        assert!(res.status().is_redirection(), "{}", res.status());
+        assert_eq!(res.headers()[header::LOCATION], "/jogos/x/");
+        std::fs::remove_dir_all(dist).unwrap();
+    }
+
+    #[tokio::test]
     async fn github_proxy_refuses_private_and_unknown() {
-        for slug in ["jobber", "torvalds-linux", "..%2F..%2Fetc"] {
+        for slug in ["jobber", "doce-orcamento", "torvalds-linux", "..%2F..%2Fetc"] {
             let res = test_app()
                 .oneshot(Request::get(format!("/api/github/{slug}")).body(Body::empty()).unwrap())
                 .await

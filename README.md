@@ -56,10 +56,11 @@ responde 503 em vez de fingir que recebeu.
 
 ## Publicação
 
-Render (gratuito, container inteiro, `render.yaml`) + domínio `rafeu.dev`
-(Hostinger); Koyeb como alternativa. Ver
-[`docs/06-deploy.md`](docs/06-deploy.md). Depois de configurado, cada
-`git push` na `main` publica sozinho.
+VM da Oracle (São Paulo) com o domínio `rafeu.dev` (Hostinger): cada `git push`
+na `main` monta a imagem no GitHub Actions (GHCR) e a VM troca o container em
+até 5 minutos. O Render (`render.yaml`) segue como espelho. Ver
+[`docs/06-deploy.md`](docs/06-deploy.md), inclusive o passo da música do Doce
+Orçamento, que fica só na VM.
 
 ## Testes
 
@@ -85,6 +86,12 @@ cd web; npm run build     # inclui o type-check (vue-tsc)
   enquanto está na tela; `src` é a capa. Com "reduzir movimento" no sistema,
   fica parado na capa com o botão de play.
 - Trajetória: `content/timeline.json`.
+- Jogos: um projeto com `play` ganha o quadro "Jogar" na página dele, com o jogo
+  num `<iframe>` (carrega só no clique), os créditos e o aviso de licença. Os
+  arquivos ficam em `web/public/jogos/<nome>/` e saem em `/jogos/<nome>/`, com
+  uma CSP própria (`security::GAME_CSP`) e 404 para arquivo que falta. O
+  `jogo.pack` do Doce Orçamento (músicas da Pizza Doggy) nunca entra no git nem
+  na imagem: fica na VM, montado no container (ver `docs/06-deploy.md`).
 - Stack: `content/stack.json` — cada tecnologia aponta os projetos (slugs) onde aparece.
 - Devoção: `content/devocao.json` (textos, posição e altura de cada imagem).
 - Modelos 3D: `npm run models` (precisa do Blender) — ver `docs/05-assets.md`.

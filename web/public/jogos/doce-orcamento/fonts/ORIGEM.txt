@@ -1,0 +1,21 @@
+Fontes do jogo (SIL Open Font License 1.1). Baixadas uma vez em 2026-11-20
+do repositório oficial google/fonts no GitHub, em commits fixos; o jogo não
+depende do Google Fonts em tempo de execução (o pipeline copia estes arquivos
+para game/fonts e web/fonts).
+
+Fredoka-Variable.ttf (fonte variável: eixos wdth e wght)
+  https://raw.githubusercontent.com/google/fonts/a60a77e14f28abd4ef243a1b5dfc48df0cec5205/ofl/fredoka/Fredoka%5Bwdth,wght%5D.ttf
+  sha256 2ba02e68b152868aef9ba28e24b3648c7d457fe6f25c761f2c2c53fb61a73fc8
+OFL-Fredoka.txt
+  https://raw.githubusercontent.com/google/fonts/a60a77e14f28abd4ef243a1b5dfc48df0cec5205/ofl/fredoka/OFL.txt
+  sha256 5c9e7eee5c6b25f4b05b8d53b2e470ea4962f9ced742d044a98f7d95d1375bab
+
+Nunito-Variable.ttf (fonte variável: eixo wght)
+  https://raw.githubusercontent.com/google/fonts/8b0a1d0f5983c89bc2b93f1b5fb55f9e252744b5/ofl/nunito/Nunito%5Bwght%5D.ttf
+  sha256 bb55a5ca5c2042335b3991af27c4d0705d0ef41cac6164ac737fd8f2a1e85207
+OFL-Nunito.txt
+  https://raw.githubusercontent.com/google/fonts/8b0a1d0f5983c89bc2b93f1b5fb55f9e252744b5/ofl/nunito/OFL.txt
+  sha256 580df76c95a1ec5ab878ceb25bb3d85c6a076804e9c970c8c6972aea775fdf65
+
+Conferir: sha256sum *.ttf OFL-*.txt  (e comparar com os valores acima)
+Para a web, converter para WOFF2 (menor) fica para a fase do front-end.

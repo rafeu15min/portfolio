@@ -19,6 +19,21 @@ pub const CSP: &str = "default-src 'self'; script-src 'self'; \
     img-src 'self' data:; connect-src 'self'; frame-ancestors 'none'; base-uri 'self'; \
     form-action 'self'; object-src 'none'";
 
+/// CSP dos jogos em /jogos/ (o Doce Orçamento): a do site, liberando só o que o jogo
+/// precisa: fontes da própria origem, música tocada por Blob e iframe nas páginas do
+/// próprio site. Sem Google Fonts: o jogo traz as fontes dele.
+pub const GAME_CSP: &str = "default-src 'self'; script-src 'self'; style-src 'self'; \
+    font-src 'self'; img-src 'self' data:; media-src 'self' blob:; connect-src 'self'; \
+    frame-ancestors 'self'; base-uri 'self'; form-action 'self'; object-src 'none'";
+
+/// Rotas dos jogos: trocam a CSP e o X-Frame-Options do site. Precisa vir por dentro
+/// de `with_headers`, que só preenche o que a resposta ainda não tem.
+pub fn game_headers(router: Router) -> Router {
+    router
+        .layer(SetResponseHeaderLayer::overriding(header::CONTENT_SECURITY_POLICY, HeaderValue::from_static(GAME_CSP)))
+        .layer(SetResponseHeaderLayer::overriding(header::X_FRAME_OPTIONS, HeaderValue::from_static("SAMEORIGIN")))
+}
+
 pub fn with_headers(router: Router) -> Router {
     let headers: [(HeaderName, &'static str); 6] = [
         (header::CONTENT_SECURITY_POLICY, CSP),

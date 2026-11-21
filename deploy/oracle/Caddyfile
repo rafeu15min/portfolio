@@ -1,0 +1,5 @@
+# HTTPS automático (Let's Encrypt). portifolio.rafeu.dev → redirecionado pela própria API.
+portfolio.rafeu.dev, portifolio.rafeu.dev {
+	reverse_proxy 127.0.0.1:8080
+	header -Server
+}

@@ -9,3 +9,5 @@ docs
 3D
 tools
 deploy
+# a música do Doce Orçamento nunca entra na imagem (pública no GHCR)
+**/jogo.pack

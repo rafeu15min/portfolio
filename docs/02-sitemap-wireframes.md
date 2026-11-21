@@ -113,6 +113,23 @@ o link para teclado e leitor de tela).
  └──────────────────────┘  └──────────────┘
 ```
 
+Projeto com `play` (hoje o Doce Orçamento) ganha, logo abaixo, o quadro
+"Jogar" (`GameBoard.vue`, mesmo cartaz escuro das evidências):
+
+```
+ JOGAR
+ ┌──────────────────────────────────────────┐
+ │  capa do jogo (16:9)                     │   o iframe só carrega no clique
+ │              [ jogar ▶ ]                 │   (~17 MB com a música e o cache)
+ └──────────────────────────────────────────┘
+ dica de uso                 abrir em outra aba ↗
+ ┌─ créditos (papel) ───────────────────────┐
+ │ quem fez o quê · licenças · aviso        │
+ └──────────────────────────────────────────┘
+```
+
+No cartão da grade, um link `jogar ▶` leva direto a `#jogar`.
+
 ## Trajetória
 
 ```

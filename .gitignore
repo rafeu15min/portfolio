@@ -2,3 +2,6 @@
 *.log
 3D/
 tools/models/.tmp/
+# Música do Doce Orçamento (licença Pizza Doggy): não pode ir para repositório
+# público. Fica só na VM, montada no container (docs/06-deploy.md).
+jogo.pack

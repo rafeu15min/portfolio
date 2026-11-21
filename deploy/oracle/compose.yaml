@@ -1,0 +1,43 @@
+# Portfólio na VM da Oracle. A imagem vem pronta do GHCR (Action "imagem" do repositório);
+# o timer portfolio-atualizar baixa a nova a cada 5 min. O Caddy cuida do HTTPS.
+services:
+  portfolio:
+    image: ghcr.io/rafeu15min/portfolio:latest
+    container_name: portfolio
+    ports:
+      - "127.0.0.1:8080:8080"
+    # RESEND_API_KEY e CONTACT_TO (0600, fora do repositório)
+    env_file: [segredos.env]
+    environment:
+      RUST_LOG: portfolio_api=info,tower_http=warn
+      CANONICAL_HOST: portfolio.rafeu.dev
+      REDIRECT_HOSTS: portifolio.rafeu.dev
+      # o Caddy acrescenta o IP real ao X-Forwarded-For
+      TRUSTED_PROXY_HOPS: "1"
+    # Música do Doce Orçamento (licença Pizza Doggy): fora do git e da imagem pública,
+    # montada ao lado dos outros arquivos do jogo. Envio e atualização: docs/06-deploy.md
+    volumes:
+      - ./jogos/doce-orcamento/jogo.pack:/app/web/jogos/doce-orcamento/jogo.pack:ro
+    read_only: true
+    cap_drop: [ALL]
+    security_opt: ["no-new-privileges:true"]
+    mem_limit: 256m
+    restart: unless-stopped
+    logging: {driver: json-file, options: {max-size: 10m, max-file: "3"}}
+
+  caddy:
+    image: caddy:2.10.2-alpine
+    container_name: caddy
+    # rede do host: as portas 80/443 já estão liberadas no iptables da Oracle
+    network_mode: host
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+      - caddy_config:/config
+    mem_limit: 128m
+    restart: unless-stopped
+    logging: {driver: json-file, options: {max-size: 10m, max-file: "3"}}
+
+volumes:
+  caddy_data:
+  caddy_config:

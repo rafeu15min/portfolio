@@ -1,0 +1,16 @@
+{
+  "name": "Doce Orçamento: A Feira dos Brigadeiros",
+  "short_name": "Doce Orçamento",
+  "description": "Visual novel educativa de matemática financeira para o 5º ano.",
+  "lang": "pt-BR",
+  "start_url": "./",
+  "scope": "./",
+  "display": "fullscreen",
+  "orientation": "landscape",
+  "background_color": "#2a1a10",
+  "theme_color": "#b45309",
+  "icons": [
+    { "src": "img/icones/icone_192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "img/icones/icone_512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" }
+  ]
+}

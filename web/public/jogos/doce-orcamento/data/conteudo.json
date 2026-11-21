@@ -1,0 +1,2209 @@
+{
+ "jogo": {
+  "titulo": "Doce Orçamento",
+  "subtitulo": "A Feira dos Brigadeiros",
+  "inicio": "prologo_anuncio",
+  "protagonista": "angelica",
+  "tela": [
+   1920,
+   1080
+  ],
+  "menu_inicial": {
+   "fundo": "titulo",
+   "folha_botoes": "ui/botoes_menu.png",
+   "botoes": [
+    "novo_jogo",
+    "continuar",
+    "carregar",
+    "opcoes",
+    "sobre",
+    "sair"
+   ]
+  },
+  "afinidade": {
+   "personagens": [
+    "cassia",
+    "denis",
+    "lucas",
+    "tabata"
+   ],
+   "maximo": 5,
+   "inicial": {
+    "cassia": 5
+   }
+  },
+  "regras": {
+   "constantes": {
+    "meta_producao": 80,
+    "rendimento_receita": 20,
+    "nota_cliente": 2000,
+    "qtd_cliente": 3,
+    "dinheiro_garotinha": 150,
+    "qtd_5b": 10,
+    "caixa_5b": 1000,
+    "juros_pct": 20,
+    "emprestimo_lucas": 2000
+   },
+   "tabelas": {
+    "demanda": {
+     "200": 70,
+     "201": 70,
+     "202": 70,
+     "300": 30,
+     "301": 40,
+     "302": 50
+    }
+   },
+   "calculos": [
+    {
+     "nome": "carrinho_total",
+     "expr": "preco_leite_condensado + preco_achocolatado_premium + preco_creme_de_leite + preco_granulado + preco_forminhas"
+    },
+    {
+     "nome": "custo_unit",
+     "expr": "dividir(despesas, producao)"
+    },
+    {
+     "nome": "qualidade",
+     "expr": "c_achocolatado_premium + c_leite_condensado"
+    },
+    {
+     "nome": "mercado",
+     "expr": "tabela(\"demanda\", preco + qualidade)"
+    },
+    {
+     "nome": "falta_5b",
+     "expr": "qtd_5b * preco - caixa_5b"
+    },
+    {
+     "nome": "juros_5b",
+     "expr": "pct(falta_5b, juros_pct)"
+    }
+   ]
+  },
+  "caderno": {
+   "nome": "Caderno da Tesoureira",
+   "tecla": "i",
+   "abas": [
+    "financas",
+    "amigos",
+    "inventario",
+    "glossario"
+   ],
+   "bloquear_em": [
+    "quiz",
+    "minigame"
+   ],
+   "liberado_por_flag": "caderno"
+  },
+  "creditos": {
+   "vocabulario": [
+    {
+     "rotulo": "Capital",
+     "termo": "capital_inicial"
+    },
+    {
+     "rotulo": "Lucro",
+     "termo": "lucro_liquido"
+    },
+    {
+     "rotulo": "Desconto",
+     "termo": "desconto"
+    },
+    {
+     "rotulo": "Custo",
+     "termo": "custo_unitario"
+    },
+    {
+     "rotulo": "Receita",
+     "termo": "receita"
+    },
+    {
+     "rotulo": "Juros",
+     "termo": "juros_simples"
+    }
+   ]
+  }
+ },
+ "personagens": {
+  "angelica": {
+   "id": "angelica",
+   "nome": "Angélica",
+   "cor": "#0369a1",
+   "voz": "Protagonista (a jogadora). Insegura no início, ótima com números. Sem sprite."
+  },
+  "ana": {
+   "id": "ana",
+   "nome": "Professora Ana",
+   "cor": "#047857",
+   "voz": "Gentil, mas exigente com os cálculos.",
+   "expressao_padrao": "alegria",
+   "sprite": {
+    "tipo": "camadas",
+    "base": "professora-Ana/fm02-body.png",
+    "pasta": "professora-Ana",
+    "recorte": [
+     109,
+     221,
+     1160,
+     2160
+    ],
+    "altura": 1000,
+    "expressoes": {
+     "alegria": [
+      "fm02-eyes-smile.png",
+      "fm02-mouth-smile00.png"
+     ],
+     "euforia": [
+      "fm02-eyes-joy.png",
+      "fm02-mouth-smile01.png"
+     ],
+     "surpresa": [
+      "fm02-eyes-wow.png",
+      "fm02-mouth-wow01.png"
+     ],
+     "nervosismo": [
+      "fm02-eyes-nervous.png",
+      "fm02-mouth-nervous00.png"
+     ],
+     "raiva": [
+      "fm02-eyes-upset.png",
+      "fm02-mouth-upset00.png"
+     ],
+     "choro": [
+      "fm02-eyes-bawl.png",
+      "fm02-mouth-cry01.png"
+     ]
+    }
+   }
+  },
+  "cassia": {
+   "id": "cassia",
+   "nome": "Cássia",
+   "cor": "#be123c",
+   "voz": "Melhor amiga. Tímida e doce, excelente cozinheira, sempre dá apoio.",
+   "expressao_padrao": "alegria",
+   "sprite": {
+    "tipo": "arquivos",
+    "origem": "alunos/Cássia-{arquivo}.png",
+    "altura": 960,
+    "expressoes": {
+     "alegria": "happy",
+     "tristeza": "sad",
+     "raiva": "angry"
+    }
+   }
+  },
+  "lucas": {
+   "id": "lucas",
+   "nome": "Lucas",
+   "cor": "#c2410c",
+   "voz": "Enérgico e otimista, quer vender muito e a margem mais alta.",
+   "expressao_padrao": "alegria",
+   "sprite": {
+    "tipo": "arquivos",
+    "origem": "alunos/Denis-{arquivo}.png",
+    "altura": 960,
+    "expressoes": {
+     "alegria": "happy",
+     "tristeza": "sad",
+     "raiva": "angry"
+    }
+   }
+  },
+  "denis": {
+   "id": "denis",
+   "nome": "Denis",
+   "cor": "#0f766e",
+   "voz": "Pragmático e resmungão, mas prestativo. Corta gastos e pechincha.",
+   "expressao_padrao": "alegria",
+   "sprite": {
+    "tipo": "arquivos",
+    "origem": "alunos/Lucas-{arquivo}.png",
+    "altura": 960,
+    "expressoes": {
+     "alegria": "happy",
+     "tristeza": "sad",
+     "raiva": "angry"
+    }
+   }
+  },
+  "tabata": {
+   "id": "tabata",
+   "nome": "Tábata",
+   "cor": "#475569",
+   "voz": "Fria, inteligente e competitiva. Pensa a longo prazo, em juros e taxas.",
+   "expressao_padrao": "alegria",
+   "sprite": {
+    "tipo": "arquivos",
+    "origem": "alunos/Tábata-{arquivo}.png",
+    "altura": 960,
+    "expressoes": {
+     "alegria": "happy",
+     "tristeza": "sad",
+     "raiva": "angry"
+    }
+   }
+  },
+  "cliente": {
+   "id": "cliente",
+   "nome": "Cliente",
+   "cor": "#6b4f3a"
+  },
+  "garotinha": {
+   "id": "garotinha",
+   "nome": "Garotinha",
+   "cor": "#6b4f3a"
+  },
+  "lider_5b": {
+   "id": "lider_5b",
+   "nome": "Líder do 5ºB",
+   "cor": "#6b4f3a"
+  },
+  "diretor": {
+   "id": "diretor",
+   "nome": "Diretor",
+   "cor": "#475569"
+  }
+ },
+ "fundos": {
+  "titulo": {
+   "id": "titulo",
+   "arquivo": "fundos/titulo.png",
+   "descricao": "Tela de título (logo + listras, sem botões; os botões vêm de ui/botoes_menu.png)."
+  },
+  "sala_aula_manha": {
+   "id": "sala_aula_manha",
+   "arquivo": "fundos/sala_aula_manha.jpg",
+   "descricao": "Sala de aula, manhã (lousa verde em close). Prólogo."
+  },
+  "supermercado": {
+   "id": "supermercado",
+   "arquivo": "fundos/supermercado.jpg",
+   "descricao": "Supermercado do Dorival. Fase 1."
+  },
+  "cozinha_cassia": {
+   "id": "cozinha_cassia",
+   "arquivo": "fundos/cozinha_cassia.jpg",
+   "descricao": "Cozinha da Cássia. Fase 2."
+  },
+  "cozinha_minigame": {
+   "id": "cozinha_minigame",
+   "arquivo": "fundos/cozinha_minigame.jpg",
+   "descricao": "Cozinha com a bancada em primeiro plano: cenário do minigame da panela (fase futura; a história ainda não usa)."
+  },
+  "patio_barraca": {
+   "id": "patio_barraca",
+   "arquivo": "fundos/patio_barraca.jpg",
+   "descricao": "Pátio da escola, montando a barraca. Fase 3."
+  },
+  "feira_movimentada": {
+   "id": "feira_movimentada",
+   "arquivo": "fundos/feira_movimentada.jpg",
+   "descricao": "A feira em andamento, barraca movimentada. Fase 4."
+  },
+  "feira_fim_do_dia": {
+   "id": "feira_fim_do_dia",
+   "arquivo": "fundos/feira_fim_do_dia.jpg",
+   "descricao": "A feira no fim do dia, sol se pondo. Fase 5."
+  },
+  "patio_revelacao": {
+   "id": "patio_revelacao",
+   "arquivo": "fundos/patio_revelacao.jpg",
+   "descricao": "Pátio coberto da escola, palco da revelação dos vencedores. Fase 6."
+  },
+  "onibus_excursao": {
+   "id": "onibus_excursao",
+   "arquivo": "fundos/onibus_excursao.jpg",
+   "descricao": "Interior do ônibus da excursão. Finais."
+  },
+  "creditos": {
+   "id": "creditos",
+   "arquivo": "fundos/creditos.png",
+   "descricao": "Créditos finais (o texto já está na imagem)."
+  },
+  "listrado": {
+   "id": "listrado",
+   "arquivo": "telas/fundo_listrado.png",
+   "descricao": "Fundo listrado neutro: Sobre, Opções, Caderno, balanço e vocabulário."
+  }
+ },
+ "itens": {
+  "leite_condensado": {
+   "id": "leite_condensado",
+   "nome": "Leite da Moçinha",
+   "preco": 30.0,
+   "icone": {
+    "folha": "Igredientes/leite_e_granulados.png",
+    "celula": [
+     0,
+     0
+    ]
+   },
+   "cor": "#f0d98c"
+  },
+  "leite_condensado_economico": {
+   "id": "leite_condensado_economico",
+   "nome": "Leite Condensado",
+   "preco": 26.0,
+   "icone": {
+    "regiao": [
+     38,
+     60,
+     322,
+     480
+    ]
+   },
+   "cor": "#f0d98c"
+  },
+  "achocolatado_premium": {
+   "id": "achocolatado_premium",
+   "nome": "Achocolatado Premium",
+   "preco": 30.0,
+   "icone": {
+    "regiao": [
+     528,
+     42,
+     816,
+     482
+    ]
+   },
+   "cor": "#5b3420"
+  },
+  "achocolatado_comum": {
+   "id": "achocolatado_comum",
+   "nome": "Achocolatado Comum",
+   "preco": 10.0,
+   "icone": {
+    "regiao": [
+     1052,
+     60,
+     1340,
+     480
+    ]
+   },
+   "cor": "#6b4228"
+  },
+  "granulado": {
+   "id": "granulado",
+   "nome": "Granulado",
+   "preco": 10.0,
+   "icone": {
+    "regiao": [
+     519,
+     543,
+     825,
+     967
+    ]
+   }
+  },
+  "granulado_colorido": {
+   "id": "granulado_colorido",
+   "nome": "Granulado Colorido",
+   "preco": 14.0,
+   "icone": {
+    "folha": "Igredientes/leite_e_granulados.png",
+    "celula": [
+     1,
+     0
+    ]
+   }
+  },
+  "granulado_bolinha": {
+   "id": "granulado_bolinha",
+   "nome": "Granulado de Bolinha",
+   "preco": 14.0,
+   "icone": {
+    "folha": "Igredientes/leite_e_granulados.png",
+    "celula": [
+     0,
+     1
+    ]
+   }
+  },
+  "granulado_amendoim": {
+   "id": "granulado_amendoim",
+   "nome": "Granulado de Amendoim",
+   "preco": 14.0,
+   "icone": {
+    "folha": "Igredientes/leite_e_granulados.png",
+    "celula": [
+     1,
+     1
+    ]
+   }
+  },
+  "forminhas": {
+   "id": "forminhas",
+   "nome": "Forminhas",
+   "preco": 5.0,
+   "icone": {
+    "regiao": [
+     1046,
+     544,
+     1354,
+     977
+    ]
+   }
+  },
+  "creme_de_leite": {
+   "id": "creme_de_leite",
+   "nome": "Creme de Leite",
+   "preco": 5.0,
+   "icone": {
+    "regiao": [
+     38,
+     547,
+     323,
+     964
+    ]
+   },
+   "cor": "#faf6ea"
+  },
+  "brigadeiro": {
+   "id": "brigadeiro",
+   "nome": "Brigadeiros prontos",
+   "preco": null,
+   "icone": {
+    "folha": "cozinha/brigadeiros_variados.png",
+    "celula": [
+     1,
+     1
+    ]
+   },
+   "aparencia": {
+    "granulado_colorido": "brigadeiro_colorido",
+    "granulado_bolinha": "brigadeiro_bolinha",
+    "granulado_amendoim": "brigadeiro_amendoim",
+    "granulado": "brigadeiro_tradicional"
+   }
+  },
+  "brigadeiro_tradicional": {
+   "id": "brigadeiro_tradicional",
+   "nome": "Brigadeiros tradicionais",
+   "preco": null,
+   "icone": {
+    "folha": "cozinha/brigadeiros_variados.png",
+    "celula": [
+     1,
+     1
+    ]
+   }
+  },
+  "brigadeiro_colorido": {
+   "id": "brigadeiro_colorido",
+   "nome": "Brigadeiros de granulado colorido",
+   "preco": null,
+   "icone": {
+    "folha": "cozinha/brigadeiros_variados.png",
+    "celula": [
+     0,
+     0
+    ]
+   }
+  },
+  "brigadeiro_bolinha": {
+   "id": "brigadeiro_bolinha",
+   "nome": "Brigadeiros de bolinha preta e branca",
+   "preco": null,
+   "icone": {
+    "folha": "cozinha/brigadeiros_variados.png",
+    "celula": [
+     0,
+     1
+    ]
+   }
+  },
+  "brigadeiro_amendoim": {
+   "id": "brigadeiro_amendoim",
+   "nome": "Brigadeiros de amendoim",
+   "preco": null,
+   "icone": {
+    "folha": "cozinha/brigadeiros_variados.png",
+    "celula": [
+     1,
+     0
+    ]
+   }
+  }
+ },
+ "itens_config": {
+  "cartela": "Igredientes/Cartela de Produtos de Mercearia Pastel.png",
+  "icone_altura": 300,
+  "pendentes_minigame": [
+   {
+    "arquivo": "cozinha/panela_estados.png",
+    "nota": "7 estados da panela (vazia, leite condensado, ingredientes, mexendo... pronta); fatiar por transparência."
+   },
+   {
+    "arquivo": "cozinha/colher_e_panela.png",
+    "nota": "5 colheres (limpas e com brigadeiro) e 2 panelas sendo mexidas; fatiar por transparência."
+   },
+   {
+    "arquivo": "cozinha/brigadeiros_marinex.png",
+    "nota": "Resultado final: travessa com os brigadeiros; candidato ao ícone de brigadeiro."
+   }
+  ]
+ },
+ "glossario": [
+  {
+   "id": "capital_inicial",
+   "termo": "Capital Inicial",
+   "definicao": "O dinheiro reservado no início para poder comprar os ingredientes e materiais do projeto.",
+   "fonte": "prototipo"
+  },
+  {
+   "id": "orcamento",
+   "termo": "Orçamento",
+   "definicao": "O limite de dinheiro que podemos gastar. Se as compras passam desse valor, o orçamento estoura.",
+   "fonte": "novo"
+  },
+  {
+   "id": "despesa",
+   "termo": "Despesa",
+   "definicao": "Todo dinheiro que sai do caixa para pagar o que gastamos, como os ingredientes.",
+   "fonte": "docx"
+  },
+  {
+   "id": "receita",
+   "termo": "Receita",
+   "definicao": "Todo dinheiro que entra com as vendas.",
+   "fonte": "docx"
+  },
+  {
+   "id": "proporcao",
+   "termo": "Proporção",
+   "definicao": "Relação entre quantidades que crescem juntas: se 1 receita rende 20 brigadeiros, 4 receitas rendem 80.",
+   "fonte": "novo"
+  },
+  {
+   "id": "custo_unitario",
+   "termo": "Custo Unitário",
+   "definicao": "Quanto custou para produzir cada unidade de produto (Custo Total ÷ Quantidade Produzida).",
+   "fonte": "prototipo"
+  },
+  {
+   "id": "preco_de_venda",
+   "termo": "Preço de Venda",
+   "definicao": "Quanto o cliente paga por cada unidade do produto.",
+   "fonte": "novo"
+  },
+  {
+   "id": "lucro_bruto",
+   "termo": "Lucro Bruto",
+   "definicao": "O que sobra das vendas depois de tirar o custo dos produtos vendidos. Em cada brigadeiro: R$ 2,00 − R$ 0,75 = R$ 1,25.",
+   "fonte": "novo"
+  },
+  {
+   "id": "lucro_liquido",
+   "termo": "Lucro Líquido",
+   "definicao": "O ganho real que sobra após subtrair todas as Despesas das Receitas (Receitas - Despesas).",
+   "fonte": "prototipo"
+  },
+  {
+   "id": "troco",
+   "termo": "Troco",
+   "definicao": "O dinheiro devolvido quando o cliente paga com um valor maior que o da compra: Troco = valor pago − valor da compra.",
+   "fonte": "novo"
+  },
+  {
+   "id": "desconto",
+   "termo": "Desconto",
+   "definicao": "A diminuição do preço cobrado para facilitar a venda ou ajudar o cliente.",
+   "fonte": "prototipo"
+  },
+  {
+   "id": "porcentagem",
+   "termo": "Porcentagem",
+   "definicao": "Uma parte de cada 100. 10% de R$ 10,00 é R$ 1,00; 20% é o dobro: R$ 2,00.",
+   "fonte": "novo"
+  },
+  {
+   "id": "venda_a_prazo",
+   "termo": "Venda a Prazo (Fiado)",
+   "definicao": "Venda em que o cliente leva o produto agora e paga depois. Tem o risco de o dinheiro não voltar.",
+   "fonte": "novo"
+  },
+  {
+   "id": "juros_simples",
+   "termo": "Juros Simples",
+   "definicao": "Uma taxa percentual cobrada a mais quando uma venda ou pagamento é feito a prazo (fiado).",
+   "fonte": "prototipo"
+  }
+ ],
+ "sobre": {
+  "titulo": "Doce Orçamento: A Feira dos Brigadeiros",
+  "versao": "1.0",
+  "secoes": [
+   {
+    "titulo": "Criado por",
+    "texto": "Desenvolvedor: Rafael de Paulo\nRoteirista e designer: Ana Laura Rosa\n"
+   },
+   {
+    "titulo": "Contexto acadêmico",
+    "texto": "IBILCE - Instituto de Biociências, Letras e Ciências Exatas - Câmpus de São José do Rio Preto - UNESP\nCurso de Pedagogia (4º ano)\nDisciplina: Tecnologias da Informação e Comunicação na Educação\n"
+   },
+   {
+    "titulo": "Objetivo pedagógico",
+    "texto": "Ensinar conceitos básicos de matemática financeira para alunos do 5º ano do Ensino Fundamental por meio de uma experiência interativa em formato de visual novel."
+   },
+   {
+    "titulo": "Créditos de arte e recursos de terceiros",
+    "texto": "Cenários, interface e ilustrações: criados com auxílio de inteligência artificial (Google Gemini e ChatGPT)\nSprites dos alunos: Fülli, \"Free to use character sprites\" (https://fuelli.itch.io/free-to-use-character-sprites), uso livre com crédito (https://fuelli.carrd.co/)\nSprite da professora: Puppetbomb, \"College Life Bundle\" (Lemma Soft Forums), licença CC BY-NC 3.0, uso não comercial\nMúsicas e efeitos: Game Assets by Pizza Doggy (https://pizzadoggy.itch.io/)\nMotor: Ren'Py 8.6.1 (licença MIT) na versão para Windows; HTML5 e JavaScript, sem bibliotecas externas, na versão para navegador\nFontes: Fredoka e Nunito (SIL Open Font License 1.1)\n"
+   }
+  ],
+  "rodape": "Desenvolvido com carinho por dois noivos apaixonados por educação."
+ },
+ "audio": {
+  "musica": {
+   "origem": "audio/pizzadoggy/musicas",
+   "fade": 1.5,
+   "slots": {
+    "menu": "Golden Gleam",
+    "prologo": "Sunlight Through Leaves",
+    "fase1": "Ducks In A Pond",
+    "fase2": "Cuddle Clouds",
+    "cozinha": "Ducks In A Pond",
+    "fase3": "Wildflowers By The River",
+    "fase4": "Golden Gleam",
+    "fase5": "Evening Harmony",
+    "fase6": "Wildflowers By The River",
+    "onibus": "Far Far Away",
+    "creditos": "Golden Gleam"
+   },
+   "nos": {
+    "f2_minigame_cozinha": "cozinha",
+    "f6_onibus": "onibus",
+    "final_cassia": "onibus",
+    "final_denis": "onibus",
+    "final_lucas": "onibus",
+    "final_tabata": "onibus",
+    "fim_balanco": "onibus",
+    "fim_vocabulario": "onibus",
+    "fim_creditos": "creditos"
+   }
+  },
+  "efeitos": {
+   "origem": "audio/pizzadoggy/efeitos",
+   "slots": {
+    "clique": "clique",
+    "acerto": "acerto",
+    "erro": "erro",
+    "moeda": "moeda",
+    "pagina": "pagina"
+   }
+  }
+ },
+ "fases": [
+  {
+   "id": "prologo",
+   "titulo": "Prólogo: A Missão",
+   "fundo": "sala_aula_manha",
+   "arquivo": "00_prologo.yaml",
+   "ids": [
+    "prologo_anuncio",
+    "prologo_tesoureira",
+    "prologo_dica_caderno"
+   ]
+  },
+  {
+   "id": "fase1",
+   "titulo": "Fase 1: O Orçamento Limitado",
+   "fundo": "supermercado",
+   "arquivo": "01_supermercado.yaml",
+   "ids": [
+    "f1_supermercado",
+    "f1_precos",
+    "f1_quiz_soma",
+    "f1_estouro",
+    "f1_carrinho",
+    "f1_compra_feita"
+   ]
+  },
+  {
+   "id": "fase2",
+   "titulo": "Fase 2: A Cozinha e a Receita",
+   "fundo": "cozinha_cassia",
+   "arquivo": "02_cozinha.yaml",
+   "ids": [
+    "f2_cozinha",
+    "f2_quiz_proporcao",
+    "f2_minigame_cozinha",
+    "f2_pronto"
+   ]
+  },
+  {
+   "id": "fase3",
+   "titulo": "Fase 3: Precificação",
+   "fundo": "patio_barraca",
+   "arquivo": "03_precificacao.yaml",
+   "ids": [
+    "f3_patio",
+    "f3_quiz_custo",
+    "f3_debate_preco",
+    "f3_escolha_preco",
+    "f3_preco_alto"
+   ]
+  },
+  {
+   "id": "fase4",
+   "titulo": "Fase 4: A Feira - O Troco e o Desconto",
+   "fundo": "feira_movimentada",
+   "arquivo": "04_feira.yaml",
+   "ids": [
+    "f4_feira",
+    "f4_quiz_troco",
+    "f4_garotinha",
+    "f4_escolha_desconto"
+   ]
+  },
+  {
+   "id": "fase5",
+   "titulo": "Fase 5: O Balanço Final e os Juros",
+   "fundo": "feira_fim_do_dia",
+   "arquivo": "05_balanco.yaml",
+   "ids": [
+    "f5_fim_do_dia",
+    "f5_quiz_juros",
+    "f5_risco",
+    "f5_escolha_credito",
+    "f5_ramo_diretor",
+    "f5_diretor",
+    "f5_diretor_paga",
+    "f5_sobras"
+   ]
+  },
+  {
+   "id": "fase6",
+   "titulo": "Fase 6: A Viagem e as Finanças",
+   "fundo": "patio_revelacao",
+   "arquivo": "06_viagem.yaml",
+   "ids": [
+    "f6_acertos",
+    "f6_fiado_pago",
+    "f6_ramo_emprestimo",
+    "f6_devolve_lucas",
+    "f6_revelacao",
+    "f6_onibus",
+    "f6_quem_chama",
+    "final_lucas",
+    "final_denis",
+    "final_cassia",
+    "final_tabata",
+    "fim_balanco",
+    "fim_vocabulario",
+    "fim_creditos",
+    "fim_jogo"
+   ]
+  }
+ ],
+ "nos": [
+  {
+   "id": "prologo_anuncio",
+   "falas": [
+    {
+     "narracao": "Sala de aula, manhã. A Professora Ana anuncia a Feira de Empreendedorismo da escola."
+    },
+    {
+     "quem": "ana",
+     "expressao": "euforia",
+     "texto": "Atenção, turma! A nossa Feira de Empreendedorismo começou! A sala que conseguir o maior Lucro Líquido vai ganhar a excursão para o Parque de Diversões!"
+    },
+    {
+     "narracao": "A turma conversa, vota e decide: a barraca da sala vai vender brigadeiros!"
+    },
+    {
+     "quem": "ana",
+     "texto": "Precisamos de alguém responsável e focado para ser a nossa Tesoureira. Alguém que não deixe as contas fecharem no vermelho."
+    },
+    {
+     "narracao": "Angélica se encolhe na cadeira, mas Cássia segura sua mão."
+    },
+    {
+     "quem": "cassia",
+     "texto": "Angélica... você é a melhor em matemática da sala. Eu te ajudo com a cozinha se você cuidar do cofre."
+    },
+    {
+     "narracao": "Angélica respira fundo e aceita a missão."
+    }
+   ],
+   "seguir": "prologo_tesoureira",
+   "tipo": "cena",
+   "fase": "prologo",
+   "fundo": "sala_aula_manha",
+   "musica": "sunlight_through_leaves"
+  },
+  {
+   "id": "prologo_tesoureira",
+   "palco": [
+    "ana",
+    "cassia"
+   ],
+   "falas": [
+    {
+     "quem": "ana",
+     "expressao": "euforia",
+     "rubrica": "Abre um sorriso radiante e bate palmas, animada",
+     "texto": "Que notícia maravilhosa, Angélica! Fico muito feliz que você tenha aceitado a missão de ser a nossa tesoureira. Com a sua dedicação e talento para os números, tenho certeza de que o cofre da turma está em ótimas mãos!",
+     "anim": "pula",
+     "frase_acao": "Professora Ana abre um sorriso radiante e bate palmas, animada."
+    },
+    {
+     "quem": "ana",
+     "expressao": "alegria",
+     "rubrica": "Vira-se para a lousa e consulta sua prancheta",
+     "texto": "Agora, atenção, pessoal! Para organizarmos as compras, a cozinha e as vendas dos nossos brigadeiros, vocês serão divididos em equipes de cinco pessoas. O grupo da nossa tesoureira será formado por: Angélica, Cássia, Lucas, Denis e Tábata!",
+     "anim": "aproxima",
+     "frase_acao": "Professora Ana vira-se para a lousa e consulta sua prancheta."
+    },
+    {
+     "acao": "Enquanto os colegas começam a arrastar as cadeiras para formar os grupos, Cássia se aproxima da carteira de Angélica com um sorriso doce e um pouco tímido, segurando um caderno espiral decorado com adesivos de estrelinhas e calculadoras.",
+     "sai": [
+      "ana"
+     ],
+     "mover": {
+      "cassia": 0.5
+     }
+    },
+    {
+     "quem": "cassia",
+     "rubrica": "Entrega o caderno delicadamente nas mãos de Angélica",
+     "texto": "Eu sabia que você ia aceitar, Angélica! Preparei isso ontem à noite pensando em você... É o Caderno da Tesoureira.",
+     "anim": "aproxima",
+     "frase_acao": "Cássia entrega o caderno delicadamente nas mãos de Angélica."
+    },
+    {
+     "quem": "cassia",
+     "rubrica": "Aponta para as abas coloridas do caderno",
+     "texto": "Sempre que precisar, é só abrir ele para monitorar tudo o que acontece durante a feira: cada centavo que entra e sai do nosso caixa, as anotações de matemática e até como está a sintonia do nosso grupo. Ele vai te ajudar a guiar a gente até a excursão!",
+     "anim": "aproxima",
+     "frase_acao": "Cássia aponta para as abas coloridas do caderno."
+    }
+   ],
+   "seguir": "prologo_dica_caderno",
+   "tipo": "cena",
+   "fase": "prologo",
+   "fundo": "sala_aula_manha",
+   "musica": "sunlight_through_leaves"
+  },
+  {
+   "id": "prologo_dica_caderno",
+   "palco": [
+    "ana",
+    "cassia"
+   ],
+   "efeitos": [
+    {
+     "flag": "caderno"
+    }
+   ],
+   "falas": [
+    {
+     "narracao": "Dica: aperte a tecla I (ou o botão \"Caderno\" no alto da tela) para abrir e fechar o Caderno da Tesoureira."
+    }
+   ],
+   "seguir": "f1_supermercado",
+   "tipo": "cena",
+   "fase": "prologo",
+   "fundo": "sala_aula_manha",
+   "musica": "sunlight_through_leaves"
+  },
+  {
+   "id": "f1_supermercado",
+   "efeitos": [
+    {
+     "capital": {
+      "valor": 60.0,
+      "desc": "Capital Inicial fornecido pela escola"
+     }
+    }
+   ],
+   "falas": [
+    {
+     "narracao": "No supermercado, o grupo empurra o carrinho pelos corredores."
+    },
+    {
+     "quem": "tabata",
+     "texto": "A escola nos deu um Capital Inicial de R$ 60,00. Não podemos gastar nem um centavo a mais."
+    },
+    {
+     "quem": "lucas",
+     "texto": "Vamos pegar o chocolate mais caro! Vai ficar uma delícia e vamos vender milhares!"
+    },
+    {
+     "quem": "denis",
+     "expressao": "raiva",
+     "texto": "Idiota. Se gastarmos tudo no chocolate, não compramos a forminha. Olha os preços:"
+    }
+   ],
+   "seguir": "f1_precos",
+   "tipo": "cena",
+   "fase": "fase1",
+   "fundo": "supermercado",
+   "musica": "ducks_in_a_pond"
+  },
+  {
+   "id": "f1_precos",
+   "vitrine": [
+    "leite_condensado",
+    "achocolatado_premium",
+    "creme_de_leite",
+    "granulado",
+    "forminhas"
+   ],
+   "falas": [
+    {
+     "narracao": "Leite da Moçinha: <<brl(preco_leite_condensado)>> · Achocolatado Premium: <<brl(preco_achocolatado_premium)>> · Creme de Leite: <<brl(preco_creme_de_leite)>> · Granulado: <<brl(preco_granulado)>> · Forminhas: <<brl(preco_forminhas)>>"
+    },
+    {
+     "quem": "tabata",
+     "texto": "Angélica, quanto dá a soma disso tudo?"
+    }
+   ],
+   "seguir": "f1_quiz_soma",
+   "tipo": "cena",
+   "fase": "fase1",
+   "fundo": "supermercado",
+   "musica": "ducks_in_a_pond"
+  },
+  {
+   "id": "f1_quiz_soma",
+   "tipo": "quiz",
+   "quem": "tabata",
+   "titulo": "Desafio: o carrinho de compras",
+   "vitrine": [
+    "leite_condensado",
+    "achocolatado_premium",
+    "creme_de_leite",
+    "granulado",
+    "forminhas"
+   ],
+   "pergunta": "Quanto dá a soma de todos os itens do carrinho?",
+   "resposta": "carrinho_total",
+   "erros": [
+    "carrinho_total - preco_forminhas",
+    "carrinho_total + preco_creme_de_leite"
+   ],
+   "correta": "B",
+   "dica": [
+    {
+     "quem": "tabata",
+     "expressao": "raiva",
+     "texto": "Incorreto. Some um item de cada vez e confira na vitrine se nenhum ficou de fora."
+    }
+   ],
+   "explicacao": [
+    {
+     "quem": "tabata",
+     "rubrica": "Fala sem emoção, apontando para a vitrine",
+     "texto": "Vamos por etapas. <<reais(preco_leite_condensado)>> mais <<reais(preco_achocolatado_premium)>> dá <<reais(preco_leite_condensado + preco_achocolatado_premium)>>.",
+     "anim": "aproxima",
+     "frase_acao": "Tábata fala sem emoção, apontando para a vitrine."
+    },
+    {
+     "quem": "tabata",
+     "texto": "Agora entram o creme de leite, o granulado e as forminhas: <<reais(preco_leite_condensado + preco_achocolatado_premium)>> + <<reais(preco_creme_de_leite)>> + <<reais(preco_granulado)>> + <<reais(preco_forminhas)>> = <<reais(carrinho_total)>>."
+    },
+    {
+     "quem": "tabata",
+     "expressao": "raiva",
+     "texto": "O total é <<brl(carrinho_total)>>. Eram só números, Angélica: não há espaço para achismo."
+    }
+   ],
+   "seguir": "f1_estouro",
+   "fase": "fase1",
+   "fundo": "supermercado",
+   "musica": "ducks_in_a_pond"
+  },
+  {
+   "id": "f1_estouro",
+   "vitrine": [
+    "leite_condensado",
+    "achocolatado_premium",
+    "creme_de_leite",
+    "granulado",
+    "forminhas"
+   ],
+   "falas": [
+    {
+     "quem": "denis",
+     "texto": "Estouramos o orçamento em <<brl(carrinho_total - capital)>>! Como vamos resolver esse impasse, Tesoureira?"
+    },
+    {
+     "quem": "denis",
+     "texto": "Olha na prateleira: tem o Achocolatado Comum a <<brl(preco_achocolatado_comum)>>, e uma marca mais simples de leite condensado. O granulado também vem de vários tipos: comum, colorido, de bolinha e de amendoim. Dá pra montar um carrinho que caiba."
+    },
+    {
+     "quem": "lucas",
+     "expressao": "alegria",
+     "texto": "Ou então a gente leva o chocolate premium, que é o melhor, e eu empresto o que faltar da minha mesada! Só do chocolate, hein? Pra outras coisas eu não arrisco."
+    }
+   ],
+   "seguir": "f1_carrinho",
+   "tipo": "cena",
+   "fase": "fase1",
+   "fundo": "supermercado",
+   "musica": "ducks_in_a_pond"
+  },
+  {
+   "id": "f1_carrinho",
+   "tipo": "carrinho",
+   "titulo": "Montar o carrinho",
+   "desc": "Ingredientes da receita",
+   "grupos": [
+    [
+     "leite_condensado",
+     "leite_condensado_economico"
+    ],
+    [
+     "achocolatado_premium",
+     "achocolatado_comum"
+    ],
+    [
+     "creme_de_leite"
+    ],
+    [
+     "granulado",
+     "granulado_colorido",
+     "granulado_bolinha",
+     "granulado_amendoim"
+    ],
+    [
+     "forminhas"
+    ]
+   ],
+   "emprestimo": {
+    "valor": "emprestimo_lucas"
+   },
+   "efeitos_emprestimo": [
+    {
+     "emprestimo": {
+      "valor": "emprestimo_lucas",
+      "desc": "Empréstimo da mesada do Lucas (devolver depois da feira)"
+     }
+    },
+    {
+     "flag": "emprestimo_lucas"
+    },
+    {
+     "afinidade": {
+      "cassia": -1
+     }
+    },
+    {
+     "se": {
+      "cond": "c_achocolatado_premium",
+      "efeitos": [
+       {
+        "afinidade": {
+         "lucas": 2
+        }
+       }
+      ]
+     }
+    }
+   ],
+   "efeitos": [
+    {
+     "se": {
+      "cond": "not f_emprestimo_lucas",
+      "efeitos": [
+       {
+        "afinidade": {
+         "denis": 2
+        }
+       }
+      ]
+     }
+    }
+   ],
+   "seguir": "f1_compra_feita",
+   "fase": "fase1",
+   "fundo": "supermercado",
+   "musica": "ducks_in_a_pond"
+  },
+  {
+   "id": "f1_compra_feita",
+   "falas": [
+    {
+     "quem": "lucas",
+     "se": "f_emprestimo_lucas and c_achocolatado_premium",
+     "texto": "Valeu, Angélica! Depois da feira vocês me devolvem os <<brl(emprestimo_lucas)>>. Esse vai ser o melhor brigadeiro da escola!"
+    },
+    {
+     "quem": "lucas",
+     "se": "f_emprestimo_lucas and not c_achocolatado_premium",
+     "texto": "Tá bom, empresto. Mas depois da feira eu quero os <<brl(emprestimo_lucas)>> de volta, hein!"
+    },
+    {
+     "quem": "cassia",
+     "expressao": "tristeza",
+     "se": "f_emprestimo_lucas and af_cassia < 5",
+     "texto": "Emprestar dinheiro dos outros me deixa um pouquinho apreensiva, Angélica... Mas vou confiar em você."
+    },
+    {
+     "quem": "denis",
+     "se": "not f_emprestimo_lucas",
+     "texto": "Hmpf. Ficou em <<brl(despesas)>>, dentro do orçamento. Dá pra trabalhar com isso."
+    },
+    {
+     "quem": "tabata",
+     "se": "caixa > 0",
+     "texto": "Sobraram <<brl(caixa)>> no caixa. Vamos guardar de reserva: dinheiro parado também é planejamento."
+    },
+    {
+     "quem": "tabata",
+     "se": "caixa == 0",
+     "texto": "Zeramos o caixa. Nenhum centavo de folga: daqui pra frente tudo precisa dar certo."
+    }
+   ],
+   "seguir": "f2_cozinha",
+   "tipo": "cena",
+   "fase": "fase1",
+   "fundo": "supermercado",
+   "musica": "ducks_in_a_pond"
+  },
+  {
+   "id": "f2_cozinha",
+   "falas": [
+    {
+     "quem": "cassia",
+     "texto": "Compramos tudo! Mas a minha receita de brigadeiro rende apenas <<rendimento_receita>> unidades. Precisamos fazer <<meta_producao>> unidades para a feira inteira."
+    },
+    {
+     "quem": "cassia",
+     "expressao": "tristeza",
+     "texto": "Eu sei fazer a receita de olhos fechados, mas me enrolo com as contas... Angélica, por quanto eu preciso multiplicar a receita?"
+    }
+   ],
+   "seguir": "f2_quiz_proporcao",
+   "tipo": "cena",
+   "fase": "fase2",
+   "fundo": "cozinha_cassia",
+   "musica": "cuddle_clouds"
+  },
+  {
+   "id": "f2_quiz_proporcao",
+   "tipo": "quiz",
+   "quem": "cassia",
+   "titulo": "Desafio: a receita",
+   "pergunta": "Se 1 receita rende <<rendimento_receita>> brigadeiros, por quanto multiplicamos a receita para chegar a <<meta_producao>>?",
+   "resposta": "meta_producao // rendimento_receita",
+   "erros": [
+    "meta_producao // rendimento_receita - 1",
+    "meta_producao // rendimento_receita + 1"
+   ],
+   "formato": "num",
+   "correta": "B",
+   "dica": [
+    {
+     "quem": "cassia",
+     "expressao": "tristeza",
+     "texto": "Ah... quase! Acho que é uma divisão: quantas vezes a receita cabe nos brigadeiros que a gente precisa?"
+    }
+   ],
+   "explicacao": [
+    {
+     "quem": "cassia",
+     "rubrica": "Fala baixinho, mexendo no caderno",
+     "texto": "Eu mostro, com calma... Cada receita rende <<rendimento_receita>>. Com 2 receitas são <<rendimento_receita * 2>>, com 3 são <<rendimento_receita * 3>>...",
+     "anim": "aproxima",
+     "frase_acao": "Cássia fala baixinho, mexendo no caderno."
+    },
+    {
+     "quem": "cassia",
+     "texto": "Com <<meta_producao // rendimento_receita>> receitas chegamos em <<meta_producao>>. Ou seja, <<meta_producao>> ÷ <<rendimento_receita>> = <<meta_producao // rendimento_receita>>."
+    },
+    {
+     "quem": "cassia",
+     "expressao": "alegria",
+     "texto": "Multiplicamos a receita por <<meta_producao // rendimento_receita>>. Viu só? Não era tão difícil assim..."
+    }
+   ],
+   "seguir": "f2_minigame_cozinha",
+   "fase": "fase2",
+   "fundo": "cozinha_cassia",
+   "musica": "cuddle_clouds"
+  },
+  {
+   "id": "f2_minigame_cozinha",
+   "tipo": "minigame",
+   "minigame": "cozinha",
+   "fundo": "cozinha_minigame",
+   "titulo": "Hora de cozinhar!",
+   "falas": [
+    {
+     "quem": "cassia",
+     "rubrica": "Aponta para a bancada, cheia de ingredientes",
+     "texto": "Agora é a hora! Na receita vai leite condensado, creme de leite e achocolatado. Arrasta eles para a panela, Angélica.",
+     "anim": "aproxima",
+     "frase_acao": "Cássia aponta para a bancada, cheia de ingredientes."
+    }
+   ],
+   "receita": [
+    [
+     "leite_condensado",
+     "leite_condensado_economico"
+    ],
+    [
+     "creme_de_leite"
+    ],
+    [
+     "achocolatado_premium",
+     "achocolatado_comum"
+    ]
+   ],
+   "distratores": [
+    [
+     "granulado",
+     "granulado_colorido",
+     "granulado_bolinha",
+     "granulado_amendoim"
+    ],
+    [
+     "forminhas"
+    ]
+   ],
+   "dica_errado": "Esse fica para o final, Angélica: o granulado e as forminhas só entram na hora de enrolar!",
+   "descricao": "Arraste os ingredientes da receita para a panela.",
+   "misturar": {
+    "meias_voltas": 8,
+    "descricao": "Mexa a massa em círculos, no sentido do relógio, até as cores se misturarem."
+   },
+   "pergunta": "Como a equipe vai cuidar da panela?",
+   "opcoes": [
+    {
+     "id": "a",
+     "texto": "Deixar a Cássia mexer a panela devagar e com carinho. Demora mais, mas não queima.",
+     "mexer": {
+      "esfria": 1.8,
+      "passo": 8,
+      "ganho": 2.0,
+      "zona": [
+       30,
+       80
+      ]
+     },
+     "efeitos": [
+      {
+       "afinidade": {
+        "cassia": 1
+       }
+      }
+     ],
+     "seguir": "f2_pronto"
+    },
+    {
+     "id": "b",
+     "texto": "Seguir o cronômetro exato da Tábata, aumentando o fogo para otimizar o tempo.",
+     "mexer": {
+      "esfria": 3.2,
+      "passo": 14,
+      "ganho": 4.0,
+      "zona": [
+       45,
+       70
+      ],
+      "queima": 88
+     },
+     "efeitos": [
+      {
+       "afinidade": {
+        "tabata": 1,
+        "cassia": -1
+       }
+      }
+     ],
+     "seguir": "f2_pronto"
+    }
+   ],
+   "fase": "fase2",
+   "musica": "ducks_in_a_pond"
+  },
+  {
+   "id": "f2_pronto",
+   "vitrine": [
+    "brigadeiro"
+   ],
+   "efeitos": [
+    {
+     "producao": "meta_producao"
+    }
+   ],
+   "falas": [
+    {
+     "quem": "cassia",
+     "texto": "A massa ficou no ponto perfeito! Agora é só enrolar os <<meta_producao>> brigadeiros e colocar nas forminhas."
+    }
+   ],
+   "seguir": "f3_patio",
+   "tipo": "cena",
+   "fase": "fase2",
+   "fundo": "cozinha_cassia",
+   "musica": "cuddle_clouds"
+  },
+  {
+   "id": "f3_patio",
+   "falas": [
+    {
+     "narracao": "No pátio da escola, a equipe monta a barraca."
+    },
+    {
+     "quem": "denis",
+     "texto": "Beleza. Gastamos <<brl(despesas)>> e fizemos <<producao>> brigadeiros. Precisamos saber o nosso Custo Unitário antes de decidir o preço de venda."
+    }
+   ],
+   "seguir": "f3_quiz_custo",
+   "tipo": "cena",
+   "fase": "fase3",
+   "fundo": "patio_barraca",
+   "musica": "wildflowers_by_the_river"
+  },
+  {
+   "id": "f3_quiz_custo",
+   "tipo": "quiz",
+   "quem": "denis",
+   "titulo": "Desafio: custo unitário",
+   "pergunta": "Se gastamos <<brl(despesas)>> e fizemos <<producao>> brigadeiros, quanto custou cada um?",
+   "resposta": "custo_unit",
+   "erros": [
+    "custo_unit + 25",
+    "custo_unit * 2"
+   ],
+   "correta": "C",
+   "dica": [
+    {
+     "quem": "denis",
+     "expressao": "raiva",
+     "rubrica": "Cruza os braços",
+     "texto": "Hmpf. Errado. Presta atenção: é o que a gente gastou dividido pela quantidade de brigadeiros. Nada de chute.",
+     "anim": "balanca",
+     "frase_acao": "Denis cruza os braços."
+    }
+   ],
+   "explicacao": [
+    {
+     "quem": "denis",
+     "expressao": "raiva",
+     "texto": "Tsc... vou explicar UMA vez. Custo unitário é quanto cada brigadeiro custou pra gente: o gasto total dividido pela quantidade."
+    },
+    {
+     "quem": "denis",
+     "texto": "Gastamos <<brl(despesas)>> e fizemos <<producao>>. Então <<reais(despesas)>> ÷ <<producao>> = <<reais(custo_unit)>>."
+    },
+    {
+     "quem": "denis",
+     "expressao": "raiva",
+     "texto": "Cada brigadeiro custou <<brl(custo_unit)>> pra gente. Anota aí e não me faz repetir."
+    }
+   ],
+   "seguir": "f3_debate_preco",
+   "fase": "fase3",
+   "fundo": "patio_barraca",
+   "musica": "wildflowers_by_the_river"
+  },
+  {
+   "id": "f3_debate_preco",
+   "falas": [
+    {
+     "quem": "lucas",
+     "texto": "Legal! Se cada um custou <<brl(custo_unit)>>, vamos vender por R$ 3,00! Nosso Lucro Bruto vai ser gigante!"
+    },
+    {
+     "quem": "cassia",
+     "expressao": "tristeza",
+     "texto": "R$ 3,00 é muito caro, Lucas... As crianças menores não vão conseguir comprar."
+    }
+   ],
+   "seguir": "f3_escolha_preco",
+   "tipo": "cena",
+   "fase": "fase3",
+   "fundo": "patio_barraca",
+   "musica": "wildflowers_by_the_river"
+  },
+  {
+   "id": "f3_escolha_preco",
+   "tipo": "escolha",
+   "pergunta": "Qual vai ser o preço de cada brigadeiro?",
+   "opcoes": [
+    {
+     "id": "a",
+     "texto": "Vender a R$ 2,00 (preço justo, atrai todos).",
+     "efeitos": [
+      {
+       "afinidade": {
+        "cassia": 1,
+        "denis": 1
+       }
+      },
+      {
+       "preco": 2.0
+      }
+     ],
+     "seguir": "f4_feira"
+    },
+    {
+     "id": "b",
+     "texto": "Vender a R$ 3,00 (preço alto, menos clientes, mas maior lucro por venda).",
+     "efeitos": [
+      {
+       "afinidade": {
+        "lucas": 2,
+        "tabata": 1,
+        "cassia": -1
+       }
+      },
+      {
+       "preco": 3.0
+      }
+     ],
+     "seguir": "f3_preco_alto"
+    }
+   ],
+   "fase": "fase3",
+   "fundo": "patio_barraca",
+   "musica": "wildflowers_by_the_river"
+  },
+  {
+   "id": "f3_preco_alto",
+   "falas": [
+    {
+     "narracao": "A feira abre. Os primeiros clientes leem a placa de <<brl(preco)>>, contam as moedas... e muitos desistem."
+    },
+    {
+     "quem": "tabata",
+     "texto": "Pelos meus cálculos, a esse preço só uns <<mercado>> dos <<producao>> brigadeiros devem sair para o público. Em compensação, cada venda deixa <<brl(preco - custo_unit)>> de lucro, contra <<brl(200 - custo_unit)>> a R$ 2,00."
+    },
+    {
+     "quem": "tabata",
+     "se": "qualidade == 2",
+     "texto": "Mas nossos ingredientes são de primeira: chocolate premium e Leite da Moçinha. A qualidade segura a venda, e isso entra na conta."
+    },
+    {
+     "quem": "tabata",
+     "se": "qualidade == 1",
+     "texto": "Só um dos nossos ingredientes é de primeira, então a qualidade ajuda só um pouco na venda."
+    },
+    {
+     "quem": "tabata",
+     "se": "qualidade == 0",
+     "texto": "Com ingredientes comuns, não temos o que justifique um preço mais alto. É a venda que paga por isso."
+    },
+    {
+     "quem": "lucas",
+     "expressao": "tristeza",
+     "texto": "Ué... era pra ser mais lucro! Mas tá bom, vou vender com o meu melhor sorriso!"
+    }
+   ],
+   "seguir": "f4_feira",
+   "tipo": "cena",
+   "fase": "fase3",
+   "fundo": "patio_barraca",
+   "musica": "wildflowers_by_the_river"
+  },
+  {
+   "id": "f4_feira",
+   "falas": [
+    {
+     "narracao": "A feira está a todo vapor e a música está animada. A barraca é um sucesso! Clientes não param de chegar. Um garoto mais novo pede <<qtd_cliente>> brigadeiros."
+    },
+    {
+     "quem": "cliente",
+     "texto": "Eu quero <<qtd_cliente>>! Aqui está uma nota de <<brl(nota_cliente)>>!"
+    },
+    {
+     "quem": "lucas",
+     "texto": "Anota aí, Angélica! O garoto pediu <<qtd_cliente>> brigadeiros e deu uma nota de <<brl(nota_cliente)>>. Quanto a gente devolve de troco?"
+    }
+   ],
+   "seguir": "f4_quiz_troco",
+   "tipo": "cena",
+   "fase": "fase4",
+   "fundo": "feira_movimentada",
+   "musica": "golden_gleam"
+  },
+  {
+   "id": "f4_quiz_troco",
+   "tipo": "quiz",
+   "quem": "lucas",
+   "titulo": "Desafio: o troco",
+   "pergunta": "O garoto levou <<qtd_cliente>> brigadeiros a <<brl(preco)>> cada e pagou com <<brl(nota_cliente)>>. Qual é o troco?",
+   "resposta": "nota_cliente - qtd_cliente * preco",
+   "erros": [
+    "qtd_cliente * preco",
+    "nota_cliente - preco"
+   ],
+   "correta": "B",
+   "dica": [
+    {
+     "quem": "lucas",
+     "expressao": "tristeza",
+     "texto": "Eita, quase! Lembra: troco é o que o cliente deu MENOS o que ele gastou. Vamos de novo, você consegue!"
+    }
+   ],
+   "explicacao": [
+    {
+     "quem": "lucas",
+     "rubrica": "Dá um soquinho no ar, animado",
+     "texto": "Bora lá, sem estresse! O garoto gastou <<qtd_cliente>> x <<reais(preco)>> = <<reais(qtd_cliente * preco)>>.",
+     "anim": "pula",
+     "frase_acao": "Lucas dá um soquinho no ar, animado."
+    },
+    {
+     "quem": "lucas",
+     "texto": "Ele pagou com <<reais(nota_cliente)>>, então o troco é <<reais(nota_cliente)>> - <<reais(qtd_cliente * preco)>> = <<reais(nota_cliente - qtd_cliente * preco)>>!"
+    },
+    {
+     "quem": "lucas",
+     "texto": "Dica de ouro de vendedor: sempre confere o troco antes de entregar. Cliente feliz volta sempre!"
+    }
+   ],
+   "seguir": "f4_garotinha",
+   "fase": "fase4",
+   "fundo": "feira_movimentada",
+   "musica": "golden_gleam"
+  },
+  {
+   "id": "f4_garotinha",
+   "efeitos": [
+    {
+     "venda": {
+      "qtd": "qtd_cliente",
+      "desc": "Venda de {qtd} brigadeiros a {preco} (troco de <<brl(nota_cliente - qtd_cliente * preco)>>)"
+     }
+    }
+   ],
+   "falas": [
+    {
+     "narracao": "Uma garotinha olha triste para a vitrine."
+    },
+    {
+     "quem": "garotinha",
+     "texto": "Eu só tenho <<brl(dinheiro_garotinha)>>... do dinheiro do meu lanche."
+    },
+    {
+     "quem": "denis",
+     "texto": "O preço é <<brl(preco)>>. Regras são regras. Se dermos desconto para ela, teremos que dar para todos."
+    },
+    {
+     "quem": "lucas",
+     "texto": "Não compensa. O nosso lucro cai muito."
+    },
+    {
+     "quem": "cassia",
+     "expressao": "tristeza",
+     "texto": "Mas Angélica... ela está quase chorando. <<brl(dinheiro_garotinha)>> ainda cobre o nosso custo de <<brl(custo_unit)>>, não é?"
+    }
+   ],
+   "seguir": "f4_escolha_desconto",
+   "tipo": "cena",
+   "fase": "fase4",
+   "fundo": "feira_movimentada",
+   "musica": "golden_gleam"
+  },
+  {
+   "id": "f4_escolha_desconto",
+   "tipo": "escolha",
+   "pergunta": "O que dizer para a garotinha?",
+   "opcoes": [
+    {
+     "id": "a",
+     "texto": "“Eu faço por R$ 1,50 para você!” (dar o desconto)",
+     "efeitos": [
+      {
+       "afinidade": {
+        "cassia": 2
+       }
+      },
+      {
+       "venda": {
+        "qtd": 1,
+        "valor": "dinheiro_garotinha",
+        "desc": "Venda com desconto de <<brl(preco - dinheiro_garotinha)>> para a garotinha"
+       }
+      },
+      {
+       "flag": "desconto_garotinha"
+      }
+     ],
+     "seguir": "f5_fim_do_dia"
+    },
+    {
+     "id": "b",
+     "texto": "“Desculpe, o preço é fixo. Mas na próxima feira você compra!”",
+     "efeitos": [
+      {
+       "afinidade": {
+        "denis": 1,
+        "tabata": 1,
+        "cassia": -1
+       }
+      }
+     ],
+     "seguir": "f5_fim_do_dia"
+    }
+   ],
+   "fase": "fase4",
+   "fundo": "feira_movimentada",
+   "musica": "golden_gleam"
+  },
+  {
+   "id": "f5_fim_do_dia",
+   "efeitos": [
+    {
+     "venda_ate_restar": {
+      "restante": "producao - mercado",
+      "desc": "Vendas ao público: {qtd} brigadeiros a {preco}"
+     }
+    }
+   ],
+   "falas": [
+    {
+     "narracao": "Fim do dia, o sol está se pondo. Sobraram <<estoque>> brigadeiros. A turma do 5ºB, os rivais que vendem suco, chega até a barraca."
+    },
+    {
+     "quem": "lider_5b",
+     "texto": "Nós compramos os últimos <<qtd_5b>> brigadeiros de vocês. O valor total é <<brl(qtd_5b * preco)>>, certo? Mas nós só temos <<brl(caixa_5b)>> aqui. Vendam no crédito. Pagamos o resto amanhã."
+    },
+    {
+     "quem": "tabata",
+     "texto": "Vender a prazo tem risco. Só aceitamos se vocês pagarem com Juros. Se aplicarmos uma taxa de Juros Simples de <<juros_pct>>% sobre os <<brl(falta_5b)>> que vão faltar, quanto eles nos deverão amanhã, Angélica?"
+    }
+   ],
+   "seguir": "f5_quiz_juros",
+   "tipo": "cena",
+   "fase": "fase5",
+   "fundo": "feira_fim_do_dia",
+   "musica": "evening_harmony"
+  },
+  {
+   "id": "f5_quiz_juros",
+   "tipo": "quiz",
+   "quem": "tabata",
+   "titulo": "Desafio: juros simples",
+   "pergunta": "Juros simples de <<juros_pct>>% sobre <<brl(falta_5b)>>. Quanto o 5ºB deve amanhã (Capital + Juros)?",
+   "resposta": "falta_5b + juros_5b",
+   "erros": [
+    "juros_5b",
+    "falta_5b + pct(qtd_5b * preco, juros_pct)"
+   ],
+   "correta": "A",
+   "dica": [
+    {
+     "quem": "tabata",
+     "expressao": "raiva",
+     "rubrica": "Revira os olhos",
+     "texto": "Incorreto. Os juros incidem só sobre o que falta pagar, não sobre o total. E depois é preciso somar o capital. Refaça.",
+     "anim": "balanca",
+     "frase_acao": "Tábata revira os olhos."
+    }
+   ],
+   "explicacao": [
+    {
+     "quem": "tabata",
+     "rubrica": "Revira os olhos",
+     "texto": "Cálculo básico. Os juros incidem sobre o que falta pagar: <<brl(falta_5b)>>.",
+     "anim": "balanca",
+     "frase_acao": "Tábata revira os olhos."
+    },
+    {
+     "quem": "tabata",
+     "texto": "10% de <<reais(falta_5b)>> é <<reais(pct(falta_5b, 10))>>. E <<juros_pct>>% são <<juros_pct // 10>> vezes isso: <<reais(juros_5b)>> de juros."
+    },
+    {
+     "quem": "tabata",
+     "texto": "Eles nos deverão <<reais(falta_5b)>> + <<reais(juros_5b)>> = <<brl(falta_5b + juros_5b)>> amanhã."
+    }
+   ],
+   "seguir": "f5_risco",
+   "fase": "fase5",
+   "fundo": "feira_fim_do_dia",
+   "musica": "evening_harmony"
+  },
+  {
+   "id": "f5_risco",
+   "falas": [
+    {
+     "quem": "denis",
+     "texto": "Vender fiado tem o risco de não recebermos o dinheiro. Vale a pena aceitar essa venda a prazo ou recusar?"
+    }
+   ],
+   "seguir": "f5_escolha_credito",
+   "tipo": "cena",
+   "fase": "fase5",
+   "fundo": "feira_fim_do_dia",
+   "musica": "evening_harmony"
+  },
+  {
+   "id": "f5_escolha_credito",
+   "tipo": "escolha",
+   "pergunta": "Vender os últimos brigadeiros a prazo?",
+   "opcoes": [
+    {
+     "id": "a",
+     "texto": "Aceitar o acordo de crédito com juros: uma parte agora e o resto, com juros, amanhã.",
+     "efeitos": [
+      {
+       "afinidade": {
+        "tabata": 2,
+        "lucas": 1,
+        "cassia": -1
+       }
+      },
+      {
+       "venda": {
+        "qtd": "qtd_5b",
+        "valor": "caixa_5b",
+        "desc": "Venda ao 5ºB: <<brl(caixa_5b)>> à vista"
+       }
+      },
+      {
+       "a_receber": {
+        "valor": "falta_5b + juros_5b",
+        "desc": "5ºB paga amanhã: <<brl(falta_5b)>> + <<brl(juros_5b)>> de juros"
+       }
+      },
+      {
+       "flag": "venda_fiado"
+      }
+     ],
+     "seguir": "f5_ramo_diretor"
+    },
+    {
+     "id": "b",
+     "texto": "Não vender a prazo. Dividir esses doces entre a própria equipe.",
+     "efeitos": [
+      {
+       "afinidade": {
+        "cassia": 1,
+        "denis": 1
+       }
+      },
+      {
+       "consumo": {
+        "qtd": "qtd_5b",
+        "desc": "Brigadeiros divididos entre a equipe"
+       }
+      }
+     ],
+     "seguir": "f5_ramo_diretor"
+    }
+   ],
+   "fase": "fase5",
+   "fundo": "feira_fim_do_dia",
+   "musica": "evening_harmony"
+  },
+  {
+   "id": "f5_ramo_diretor",
+   "tipo": "ramo",
+   "casos": [
+    {
+     "se": "qualidade == 2 and estoque > 0",
+     "seguir": "f5_diretor"
+    }
+   ],
+   "senao": "f5_sobras",
+   "fase": "fase5",
+   "fundo": "feira_fim_do_dia",
+   "musica": null
+  },
+  {
+   "id": "f5_diretor",
+   "falas": [
+    {
+     "narracao": "O Diretor aparece na barraca, com uma sacola. Ele já tinha provado um brigadeiro mais cedo."
+    },
+    {
+     "quem": "diretor",
+     "texto": "Que brigadeiro delicioso! Dá para sentir que os ingredientes são de qualidade. Quero levar os <<estoque>> que sobraram, para os professores, pelo mesmo preço da barraca: <<brl(preco)>> cada."
+    }
+   ],
+   "seguir": "f5_diretor_paga",
+   "tipo": "cena",
+   "fase": "fase5",
+   "fundo": "feira_fim_do_dia",
+   "musica": "evening_harmony"
+  },
+  {
+   "id": "f5_diretor_paga",
+   "efeitos": [
+    {
+     "venda": {
+      "qtd": "estoque",
+      "desc": "Venda ao Diretor: {qtd} brigadeiros a {preco} (para os professores)"
+     }
+    }
+   ],
+   "falas": [
+    {
+     "quem": "tabata",
+     "texto": "Qualidade vendeu! Ingredientes melhores custaram mais, mas deixaram a gente cobrar mais e ainda vender o resto."
+    }
+   ],
+   "seguir": "f5_sobras",
+   "tipo": "cena",
+   "fase": "fase5",
+   "fundo": "feira_fim_do_dia",
+   "musica": "evening_harmony"
+  },
+  {
+   "id": "f5_sobras",
+   "efeitos": [
+    {
+     "consumo_restante": true
+    }
+   ],
+   "falas": [
+    {
+     "narracao": "Ainda sobraram <<sobras>> brigadeiros que ninguém comprou. A equipe divide os doces com a turma e com os funcionários da escola.",
+     "se": "sobras > 0"
+    },
+    {
+     "narracao": "Não sobrou nem um brigadeiro: a barraca vendeu tudo!",
+     "se": "sobras == 0"
+    }
+   ],
+   "seguir": "f6_acertos",
+   "tipo": "cena",
+   "fase": "fase5",
+   "fundo": "feira_fim_do_dia",
+   "musica": "evening_harmony"
+  },
+  {
+   "id": "f6_acertos",
+   "tipo": "ramo",
+   "casos": [
+    {
+     "se": "f_venda_fiado",
+     "seguir": "f6_fiado_pago"
+    }
+   ],
+   "senao": "f6_ramo_emprestimo",
+   "fase": "fase6",
+   "fundo": "patio_revelacao",
+   "musica": null
+  },
+  {
+   "id": "f6_fiado_pago",
+   "efeitos": [
+    {
+     "recebimento": {
+      "valor": "falta_5b + juros_5b",
+      "desc": "5ºB pagou o fiado: <<brl(falta_5b)>> + <<brl(juros_5b)>> de juros"
+     }
+    }
+   ],
+   "falas": [
+    {
+     "narracao": "No dia seguinte, a turma do 5ºB aparece na hora combinada e paga os <<brl(falta_5b + juros_5b)>>: <<brl(falta_5b)>> da dívida mais <<brl(juros_5b)>> de juros."
+    }
+   ],
+   "seguir": "f6_ramo_emprestimo",
+   "tipo": "cena",
+   "fase": "fase6",
+   "fundo": "patio_revelacao",
+   "musica": "wildflowers_by_the_river"
+  },
+  {
+   "id": "f6_ramo_emprestimo",
+   "tipo": "ramo",
+   "casos": [
+    {
+     "se": "f_emprestimo_lucas",
+     "seguir": "f6_devolve_lucas"
+    }
+   ],
+   "senao": "f6_revelacao",
+   "fase": "fase6",
+   "fundo": "patio_revelacao",
+   "musica": null
+  },
+  {
+   "id": "f6_devolve_lucas",
+   "efeitos": [
+    {
+     "quitar": {
+      "valor": "emprestimo_lucas",
+      "desc": "Devolução do empréstimo ao Lucas"
+     }
+    }
+   ],
+   "falas": [
+    {
+     "quem": "lucas",
+     "texto": "Opa, meus <<brl(emprestimo_lucas)>> de volta! Valeu, Tesoureira! Trato é trato."
+    }
+   ],
+   "seguir": "f6_revelacao",
+   "tipo": "cena",
+   "fase": "fase6",
+   "fundo": "patio_revelacao",
+   "musica": "wildflowers_by_the_river"
+  },
+  {
+   "id": "f6_revelacao",
+   "falas": [
+    {
+     "narracao": "Pátio da escola. Chegou a hora de revelar os vencedores."
+    },
+    {
+     "quem": "ana",
+     "expressao": "euforia",
+     "texto": "Depois de calcular as Receitas (tudo que entrou) e subtrair as Despesas (o que gastamos), a sala da Angélica teve o maior Lucro Líquido! Vocês ganharam a viagem!"
+    }
+   ],
+   "seguir": "f6_onibus",
+   "tipo": "cena",
+   "fase": "fase6",
+   "fundo": "patio_revelacao",
+   "musica": "wildflowers_by_the_river"
+  },
+  {
+   "id": "f6_onibus",
+   "fundo": "onibus_excursao",
+   "falas": [
+    {
+     "narracao": "Angélica sobe no ônibus escolar. Há um lugar vago ao lado de cada um dos seus quatro amigos..."
+    }
+   ],
+   "seguir": "f6_quem_chama",
+   "tipo": "cena",
+   "fase": "fase6",
+   "musica": "far_far_away"
+  },
+  {
+   "id": "f6_quem_chama",
+   "tipo": "final",
+   "finais": [
+    {
+     "personagem": "lucas",
+     "perfil": "Perfil Arrojado",
+     "mensagem": "Você tem uma mente empreendedora e ousada!",
+     "seguir": "final_lucas"
+    },
+    {
+     "personagem": "denis",
+     "perfil": "Perfil Conservador",
+     "mensagem": "Você sabe o valor do dinheiro e a importância de poupar!",
+     "seguir": "final_denis"
+    },
+    {
+     "personagem": "cassia",
+     "perfil": "Perfil Social/Ético",
+     "mensagem": "Você entendeu que economia também é sobre cuidar das pessoas!",
+     "seguir": "final_cassia"
+    },
+    {
+     "personagem": "tabata",
+     "perfil": "Perfil Analítico",
+     "mensagem": "Você domina as engrenagens da matemática financeira!",
+     "seguir": "final_tabata"
+    }
+   ],
+   "fase": "fase6",
+   "fundo": "patio_revelacao",
+   "musica": null
+  },
+  {
+   "id": "final_lucas",
+   "fundo": "onibus_excursao",
+   "falas": [
+    {
+     "quem": "lucas",
+     "rubrica": "Sorrindo e acenando empolgado",
+     "texto": "Angélica! Senta aqui! Graças a você e à nossa coragem, ganhamos! Já estou pensando no nosso próximo negócio... que tal vendermos pipoca no parque de diversões?!",
+     "anim": "pula",
+     "frase_acao": "Lucas, sorrindo e acenando empolgado."
+    }
+   ],
+   "seguir": "fim_balanco",
+   "tipo": "cena",
+   "fase": "fase6",
+   "musica": "far_far_away"
+  },
+  {
+   "id": "final_denis",
+   "fundo": "onibus_excursao",
+   "falas": [
+    {
+     "quem": "denis",
+     "rubrica": "Ajeita a mochila no banco e desvia o olhar, corado",
+     "texto": "Ei. Tem espaço aqui. Você administrou bem o caixa... não fomos à falência por sua causa. Toma, eu guardei um brigadeiro pra gente.",
+     "anim": "balanca",
+     "frase_acao": "Denis ajeita a mochila no banco e desvia o olhar, corado."
+    }
+   ],
+   "seguir": "fim_balanco",
+   "tipo": "cena",
+   "fase": "fase6",
+   "musica": "far_far_away"
+  },
+  {
+   "id": "final_cassia",
+   "fundo": "onibus_excursao",
+   "falas": [
+    {
+     "quem": "cassia",
+     "rubrica": "Dá batidinhas no banco, sorrindo docemente",
+     "texto": "Angélica, guardei seu lugar. Você foi uma líder incrível. Provou que podemos fazer negócios sendo justos e gentis. Trouxe lanchinhos pra nós!",
+     "anim": "pula",
+     "frase_acao": "Cássia dá batidinhas no banco, sorrindo docemente."
+    }
+   ],
+   "seguir": "fim_balanco",
+   "tipo": "cena",
+   "fase": "fase6",
+   "musica": "far_far_away"
+  },
+  {
+   "id": "final_tabata",
+   "fundo": "onibus_excursao",
+   "falas": [
+    {
+     "quem": "tabata",
+     "rubrica": "Lendo um livro de economia, ergue os olhos por cima do livro",
+     "texto": "Pode sentar. Sua capacidade de calcular margens e juros me impressionou. Quero você como minha sócia na minha futura empresa.",
+     "anim": "balanca",
+     "frase_acao": "Tábata, lendo um livro de economia, ergue os olhos por cima do livro."
+    }
+   ],
+   "seguir": "fim_balanco",
+   "tipo": "cena",
+   "fase": "fase6",
+   "musica": "far_far_away"
+  },
+  {
+   "id": "fim_balanco",
+   "tipo": "tela",
+   "tela": "balanco",
+   "seguir": "fim_vocabulario",
+   "fase": "fase6",
+   "fundo": "patio_revelacao",
+   "musica": "far_far_away"
+  },
+  {
+   "id": "fim_vocabulario",
+   "tipo": "tela",
+   "tela": "vocabulario",
+   "seguir": "fim_creditos",
+   "fase": "fase6",
+   "fundo": "patio_revelacao",
+   "musica": "far_far_away"
+  },
+  {
+   "id": "fim_creditos",
+   "tipo": "tela",
+   "tela": "creditos",
+   "seguir": "fim_jogo",
+   "fase": "fase6",
+   "fundo": "patio_revelacao",
+   "musica": "golden_gleam"
+  },
+  {
+   "id": "fim_jogo",
+   "tipo": "fim",
+   "fase": "fase6",
+   "fundo": "patio_revelacao",
+   "musica": null
+  }
+ ],
+ "regras": {
+  "constantes": {
+   "meta_producao": 80,
+   "rendimento_receita": 20,
+   "nota_cliente": 2000,
+   "qtd_cliente": 3,
+   "dinheiro_garotinha": 150,
+   "qtd_5b": 10,
+   "caixa_5b": 1000,
+   "juros_pct": 20,
+   "emprestimo_lucas": 2000
+  },
+  "tabelas": {
+   "demanda": {
+    "200": 70,
+    "201": 70,
+    "202": 70,
+    "300": 30,
+    "301": 40,
+    "302": 50
+   }
+  },
+  "calculos": [
+   {
+    "nome": "carrinho_total",
+    "expr": "preco_leite_condensado + preco_achocolatado_premium + preco_creme_de_leite + preco_granulado + preco_forminhas"
+   },
+   {
+    "nome": "custo_unit",
+    "expr": "dividir(despesas, producao)"
+   },
+   {
+    "nome": "qualidade",
+    "expr": "c_achocolatado_premium + c_leite_condensado"
+   },
+   {
+    "nome": "mercado",
+    "expr": "tabela(\"demanda\", preco + qualidade)"
+   },
+   {
+    "nome": "falta_5b",
+    "expr": "qtd_5b * preco - caixa_5b"
+   },
+   {
+    "nome": "juros_5b",
+    "expr": "pct(falta_5b, juros_pct)"
+   }
+  ],
+  "precos": {
+   "leite_condensado": 3000,
+   "leite_condensado_economico": 2600,
+   "achocolatado_premium": 3000,
+   "achocolatado_comum": 1000,
+   "granulado": 1000,
+   "granulado_colorido": 1400,
+   "granulado_bolinha": 1400,
+   "granulado_amendoim": 1400,
+   "forminhas": 500,
+   "creme_de_leite": 500
+  },
+  "afinidade_inicial": {
+   "cassia": 5
+  },
+  "afinidade_maxima": 5
+ },
+ "web": {
+  "posicoes_palco": {
+   "1": [
+    0.5
+   ],
+   "2": [
+    0.28,
+    0.72
+   ],
+   "3": [
+    0.2,
+    0.5,
+    0.8
+   ],
+   "4": [
+    0.12,
+    0.37,
+    0.63,
+    0.88
+   ]
+  },
+  "musica_menu": "golden_gleam",
+  "musicas": [
+   "cuddle_clouds",
+   "ducks_in_a_pond",
+   "evening_harmony",
+   "far_far_away",
+   "golden_gleam",
+   "sunlight_through_leaves",
+   "wildflowers_by_the_river"
+  ],
+  "fade_musica": 1.5,
+  "total_quizzes": 5
+ }
+}

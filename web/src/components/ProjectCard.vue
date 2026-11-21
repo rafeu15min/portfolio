@@ -23,6 +23,7 @@ defineProps<{ project: Project; tilt: number; tape: 'tl' | 'tr' | 'top'; compact
       <a v-if="project.visibility === 'public' && project.repo" :href="`https://github.com/${project.repo}`" target="_blank" rel="noopener">código ↗</a>
       <span v-else-if="project.repo" class="card__private">repo privado</span>
       <span v-else class="card__private">sem repo público</span>
+      <RouterLink v-if="project.play" :to="`/projetos/${project.slug}#jogar`">jogar ▶</RouterLink>
       <span aria-hidden="true" class="card__more">detalhes →</span>
     </footer>
   </PaperCard>

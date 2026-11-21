@@ -165,6 +165,73 @@
     "updated": "2026-11"
   },
   {
+    "slug": "doce-orcamento",
+    "name": "Doce Orçamento",
+    "tagline": "Visual novel de matemática financeira para o 5º ano, jogável no navegador.",
+    "summary": "Projeto acadêmico de Ana Laura Rosa no curso de Pedagogia da UNESP (IBILCE, São José do Rio Preto), para a disciplina Tecnologias da Informação e Comunicação na Educação: uma visual novel que ensina matemática financeira a alunos do 5º ano. Ela escreveu o roteiro e fez o design do jogo; eu fiz a programação. A turma monta uma barraca de brigadeiros na feira da escola, e quem joga é a tesoureira: compra os ingredientes com o orçamento da turma, calcula o custo de cada doce, escolhe o preço, dá troco e fecha o balanço. Roteiro, regras do caixa e quizzes ficam em arquivos YAML, e um pipeline em Python gera dali as duas versões: a do Ren'Py, empacotada como .exe para Windows, e a em HTML5, que funciona offline nos Chromebooks e roda nesta página.",
+    "highlights": [
+      "As duas versões leem o mesmo conteúdo: Ren'Py para Windows (.exe e instalador) e HTML5 com modo offline (PWA)",
+      "Versão web em JavaScript puro, sem framework nem dependências, com um avaliador próprio das contas do roteiro (sem eval)",
+      "O motor em JavaScript refaz os 208 caminhos do roteiro calculados pelo motor em Python e precisa chegar ao mesmo caixa, aos mesmos quizzes e ao mesmo final",
+      "Build em Docker a partir do Linux (Ren'Py SDK, ffmpeg, NSIS), com teste de ponta a ponta do .exe no Wine"
+    ],
+    "stack": [
+      "JavaScript",
+      "Ren'Py",
+      "Python",
+      "PWA",
+      "Docker"
+    ],
+    "status": "concluído",
+    "visibility": "private",
+    "repo": "rafeu15min/doce-orcamento",
+    "accent": "pink",
+    "updated": "2026-11",
+    "play": {
+      "path": "/jogos/doce-orcamento/",
+      "cover": "/jogos/doce-orcamento/img/fundos/titulo.webp",
+      "hint": "Feito para computador ou Chromebook, com mouse ou teclado. O progresso fica salvo neste navegador.",
+      "credits": [
+        {
+          "who": "Roteiro e design",
+          "text": "Ana Laura Rosa"
+        },
+        {
+          "who": "Programação",
+          "text": "Rafael de Paulo"
+        },
+        {
+          "who": "Contexto acadêmico",
+          "text": "Pedagogia, IBILCE/UNESP (São José do Rio Preto), disciplina Tecnologias da Informação e Comunicação na Educação"
+        },
+        {
+          "who": "Músicas",
+          "text": "Game Assets by Pizza Doggy",
+          "url": "https://pizzadoggy.itch.io/"
+        },
+        {
+          "who": "Sprites dos alunos",
+          "text": "Fülli, Free to use character sprites",
+          "url": "https://fuelli.itch.io/free-to-use-character-sprites"
+        },
+        {
+          "who": "Sprite da professora",
+          "text": "Puppetbomb, College Life Bundle (CC BY-NC 3.0)",
+          "url": "https://creativecommons.org/licenses/by-nc/3.0/deed.pt-br"
+        },
+        {
+          "who": "Cenários, interface e ilustrações",
+          "text": "criados com auxílio de IA (Google Gemini e ChatGPT)"
+        },
+        {
+          "who": "Fontes",
+          "text": "Fredoka e Nunito (SIL Open Font License 1.1)"
+        }
+      ],
+      "license": "O jogo é gratuito e sem fins comerciais, como exige a licença CC BY-NC 3.0 do sprite da professora. As músicas da Pizza Doggy fazem parte do jogo e não são distribuídas em separado."
+    }
+  },
+  {
     "slug": "slideglide",
     "name": "SlideGlide",
     "tagline": "Roguelite de nave para Android, em Godot com C# e Rust.",

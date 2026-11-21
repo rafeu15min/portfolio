@@ -32,6 +32,9 @@ pub struct Project {
     /// Outros projetos ligados a este, com o motivo (mostrado na página do projeto).
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     pub related: Vec<Related>,
+    /// Versão jogável servida pelo próprio site (web/public/jogos/), aberta num <iframe>.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub play: Option<Play>,
     /// Nota interna — nunca sai pela API.
     #[serde(default, skip_serializing)]
     pub todo: Option<String>,
@@ -41,6 +44,36 @@ pub struct Project {
 pub struct Related {
     pub slug: String,
     pub why: String,
+}
+
+/// Jogo em /jogos/<nome>/, com a capa mostrada antes do clique e os créditos.
+#[derive(Debug, Clone, Deserialize, Serialize)]
+pub struct Play {
+    /// "/jogos/<nome>/"
+    pub path: String,
+    pub cover: String,
+    pub hint: String,
+    pub credits: Vec<Credit>,
+    /// aviso de licença dos recursos de terceiros
+    pub license: String,
+}
+
+#[derive(Debug, Clone, Deserialize, Serialize)]
+pub struct Credit {
+    pub who: String,
+    pub text: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub url: Option<String>,
+}
+
+/// Slug: minúsculas, dígitos e hífen.
+fn valid_slug(s: &str) -> bool {
+    !s.is_empty() && s.bytes().all(|b| b.is_ascii_lowercase() || b.is_ascii_digit() || b == b'-')
+}
+
+/// Pasta de um jogo: "/jogos/<nome>/", com o nome no formato de slug.
+fn valid_game_path(path: &str) -> bool {
+    path.strip_prefix("/jogos/").and_then(|rest| rest.strip_suffix('/')).is_some_and(valid_slug)
 }
 
 #[derive(Debug, Clone, Deserialize, Serialize)]
@@ -76,13 +109,14 @@ impl Content {
     fn validate(&self) -> Result<(), String> {
         let mut seen = HashSet::new();
         for p in &self.projects {
-            let slug_ok = !p.slug.is_empty()
-                && p.slug.bytes().all(|b| b.is_ascii_lowercase() || b.is_ascii_digit() || b == b'-');
-            if !slug_ok {
+            if !valid_slug(&p.slug) {
                 return Err(format!("slug inválido: {:?}", p.slug));
             }
             if !seen.insert(&p.slug) {
                 return Err(format!("slug duplicado: {}", p.slug));
+            }
+            if p.play.as_ref().is_some_and(|g| !valid_game_path(&g.path)) {
+                return Err(format!("{}: play.path deve ser \"/jogos/<nome>/\"", p.slug));
             }
             if let Some(repo) = &p.repo {
                 let valid = repo.split_once('/').is_some_and(|(owner, name)| {
@@ -148,6 +182,8 @@ mod tests {
         // jobber é privado no GitHub e no conteúdo; vault-sync é público desde c5389be
         assert!(c.public_repo("jobber").is_none());
         assert!(c.public_repo("nao-existe").is_none());
+        // doce-orcamento tem repositório, mas privado
+        assert!(c.public_repo("doce-orcamento").is_none());
         assert_eq!(c.public_repo("vault-sync"), Some("rafeu15min/vault-sync"));
         // privado com o repo preenchido continua fora da allowlist
         let jobber = c.projects.iter_mut().find(|p| p.slug == "jobber").unwrap();
@@ -189,5 +225,13 @@ mod tests {
         let c = Content::load(&dir).unwrap();
         let json = serde_json::to_string(&c.projects).unwrap();
         assert!(!json.contains("\"todo\""));
+    }
+
+    #[test]
+    fn game_path_is_a_folder_under_jogos() {
+        assert!(valid_game_path("/jogos/doce-orcamento/"));
+        for bad in ["/jogos/doce-orcamento", "/jogos//", "/jogos/../web/", "/outra/doce/", "jogos/x/", "/jogos/Doce/"] {
+            assert!(!valid_game_path(bad), "{bad} deveria ser recusado");
+        }
     }
 }

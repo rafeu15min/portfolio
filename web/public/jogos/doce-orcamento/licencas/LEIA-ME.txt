@@ -1,0 +1,14 @@
+Licenças e créditos de terceiros distribuídos junto com o jogo
+Doce Orçamento: A Feira dos Brigadeiros.
+
+puppetbomb/readme.txt  Sprite da Professora Ana ("College Life Bundle",
+                       puppetbomb). CC BY-NC 3.0, uso não comercial. A licença
+                       exige que este readme.txt acompanhe o jogo.
+Fulli.txt              Sprites dos alunos (Fülli).
+pizzadoggy/License Agreement.pdf
+                       Músicas e efeitos sonoros: "Cozy Tunes" e "Cozy FX",
+                       Game Assets by Pizza Doggy (https://pizzadoggy.itch.io/).
+                       Os sons fazem parte do jogo e não podem ser
+                       redistribuídos como arquivos avulsos.
+Fontes Fredoka e Nunito: SIL Open Font License 1.1 (game/fonts/OFL-*.txt).
+Motor Ren'Py: licença MIT (renpy/LICENSE.txt no pacote).

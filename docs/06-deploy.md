@@ -3,7 +3,78 @@
 Endereço principal: **https://portfolio.rafeu.dev** ·
 `portifolio.rafeu.dev` redireciona para ele (308, preservando o caminho).
 
-## Hospedagem atual: Render (gratuito)
+## Hospedagem atual: VM da Oracle (São Paulo)
+
+O DNS aponta para a VM `portfolio` da Oracle (1 GB de RAM, acesso `ssh oci-web`,
+usuário `ubuntu`). Ela não compila nada:
+
+1. Cada push na `main` roda a Action `imagem` (`.github/workflows/imagem.yml`),
+   que monta a imagem (mesmo `Dockerfile`) e publica no GHCR:
+   `ghcr.io/rafeu15min/portfolio:latest` e `:<sha>`. A imagem é pública.
+2. Na VM, o timer `portfolio-atualizar` (a cada 5 min) roda
+   `docker compose pull -q portfolio` e `docker compose up -d portfolio` em
+   `/opt/portfolio`. Imagem nova = container recriado.
+3. O Caddy (mesmo compose, `network_mode: host`) faz o HTTPS do Let's Encrypt e
+   repassa para `127.0.0.1:8080`.
+
+Arquivos da VM, em `/opt/portfolio` (root): `compose.yaml`, `Caddyfile` e
+`segredos.env` (0600, `RESEND_API_KEY` e `CONTACT_TO`, fora do repositório).
+Cópias versionadas, sem segredo: [`deploy/oracle/`](../deploy/oracle/).
+
+### Música do Doce Orçamento (`jogo.pack`): só na VM
+
+O jogo em `/jogos/doce-orcamento/` vem da imagem (arquivos em
+`web/public/jogos/doce-orcamento/`), menos o `jogo.pack`: as músicas da Pizza
+Doggy não podem ir para repositório público, e a imagem no GHCR também é
+pública. O pack fica em `/opt/portfolio/jogos/doce-orcamento/jogo.pack` e o
+compose o monta, só leitura, em `/app/web/jogos/doce-orcamento/jogo.pack`:
+para o navegador ele está na mesma pasta do resto do jogo. Atualizar a imagem
+não toca nele (o arquivo é do host). Sem o pack, a rota devolve 404 e o jogo
+abre mudo e sem o modo offline.
+
+**Uma vez só (root):**
+
+```sh
+ssh oci-web 'install -d -m 700 ~/envio-portfolio'
+scp web/dist/jogo.pack oci-web:envio-portfolio/          # no repositório do jogo
+scp deploy/oracle/compose.yaml oci-web:envio-portfolio/  # neste repositório
+ssh oci-web
+sudo install -d -o ubuntu -g ubuntu -m 755 /opt/portfolio/jogos /opt/portfolio/jogos/doce-orcamento
+install -m 644 ~/envio-portfolio/jogo.pack /opt/portfolio/jogos/doce-orcamento/jogo.pack
+sudo cp -a /opt/portfolio/compose.yaml /opt/portfolio/compose.yaml.bak-$(date +%Y%m%d-%H%M%S)
+sudo install -m 644 -o root -g root ~/envio-portfolio/compose.yaml /opt/portfolio/compose.yaml
+cd /opt/portfolio && sudo docker compose config -q && sudo docker compose up -d portfolio
+```
+
+Desfazer: voltar o `compose.yaml.bak-*` e repetir o `up -d portfolio`.
+
+**Música nova (sem root):** o pack e o jogo saem do mesmo build
+(`./build.sh web` no repositório do jogo; o `sw.js` leva a versão dos dois).
+Publique os arquivos do jogo por commit aqui e o pack por SSH:
+
+```sh
+scp web/dist/jogo.pack oci-web:/opt/portfolio/jogos/doce-orcamento/jogo.pack.novo
+ssh oci-web 'cd /opt/portfolio/jogos/doce-orcamento && sha256sum jogo.pack.novo \
+  && cp jogo.pack.novo jogo.pack && rm jogo.pack.novo'
+```
+
+O `cp` grava por cima do mesmo arquivo (mesmo inode), então o container vê o
+pack novo na hora. Um `mv` ou `rsync` comum troca o inode e o container segue
+com o antigo até ser recriado.
+
+**Conferir:** `curl -sI https://portfolio.rafeu.dev/jogos/doce-orcamento/jogo.pack`
+devolve 200 com `content-length` igual ao tamanho local, e
+`curl -s .../jogo.pack | sha256sum` bate com o `sha256sum` local.
+
+---
+
+## Espelho: Render (gratuito)
+
+O Render continua com deploy automático do `render.yaml` (`autoDeploy: true`),
+mas o DNS não aponta mais para ele. Lá o jogo abre sem música (o pack não
+existe na imagem).
+
+## Como o Render foi montado (gratuito)
 
 Container inteiro (mesmo `Dockerfile`), sem cartão, domínio próprio com HTTPS.
 Configuração no `render.yaml` (Blueprint). Limites do plano gratuito:

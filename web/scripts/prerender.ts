@@ -11,6 +11,7 @@ const SITE = 'https://portfolio.rafeu.dev'
 const read = (name: string) => JSON.parse(readFileSync(fileURLToPath(new URL(`../../content/${name}`, import.meta.url)), 'utf8'))
 const indexPath = fileURLToPath(new URL('../dist/index.html', import.meta.url))
 
+interface Credit { who: string; text: string; url?: string }
 interface Project {
   slug: string
   name: string
@@ -21,6 +22,7 @@ interface Project {
   status: string
   visibility: 'public' | 'private'
   repo: string | null
+  play?: { path: string; credits: Credit[]; license: string }
 }
 interface StackItem { name: string; projects: string[] }
 interface TimelineEntry { kind: string; org: string | null; role: string; period: string | null; text: string }
@@ -31,6 +33,15 @@ const timeline = read('timeline.json') as TimelineEntry[]
 
 const esc = (s: string) =>
   s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;')
+
+const creditHtml = (c: Credit) => `${esc(c.who)}: ${c.url ? `<a href="${esc(c.url)}">${esc(c.text)}</a>` : esc(c.text)}`
+
+// projeto com versão jogável: o link do jogo e os créditos (atribuições das licenças)
+const playHtml = (p: Project) =>
+  p.play
+    ? `<p><a href="${esc(p.play.path)}">Jogar no navegador</a></p>
+<p>Créditos: ${p.play.credits.map(creditHtml).join(' · ')}. ${esc(p.play.license)}</p>\n`
+    : ''
 
 const projectHtml = (p: Project) => {
   const code =
@@ -43,7 +54,7 @@ const projectHtml = (p: Project) => {
 <p>${esc(p.summary)}</p>
 <ul>${p.highlights.map((h) => `<li>${esc(h)}</li>`).join('')}</ul>
 <p>Stack: ${p.stack.map(esc).join(', ')} · Status: ${esc(p.status)} · ${code}</p>
-</article>`
+${playHtml(p)}</article>`
 }
 
 const body = `<div class="prerender">

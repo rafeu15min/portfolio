@@ -466,10 +466,33 @@ def kernel():
     return d
 
 
+def doce_orcamento():
+    d = D(
+        "doce", 880, 40 + 4 * 86 + 46, "Doce Orçamento: do roteiro às duas versões",
+        "O roteiro, as regras do caixa e os quizzes ficam em arquivos YAML. Um pipeline em Python, dentro do "
+        "Docker, valida esse conteúdo, prepara artes e áudio e gera as duas versões: os scripts do Ren'Py, "
+        "empacotados num .exe e num instalador para Windows, e a versão em HTML5 e JavaScript, que funciona "
+        "offline nos Chromebooks e roda na página do projeto.",
+    )
+    g = Grid(d, 40)
+    g.down(440, 0, 1)
+    d.elbow(380, g.bot(1), 220, g.y(2))
+    d.elbow(500, g.bot(1), 660, g.y(2))
+    g.down(220, 2, 3, "empacota")
+    g.down(660, 2, 3, "monta o web/dist")
+    g.n(260, 360, 0, "Conteúdo em YAML", "roteiro, regras do caixa e quizzes", "store")
+    g.n(260, 360, 1, "Pipeline em Python", "no Docker: valida, artes e áudio", "focal-ruby")
+    g.n(40, 360, 2, "Ren'Py", "scripts .rpy gerados")
+    g.n(480, 360, 2, "Versão web", "HTML5 e JavaScript, sem dependências")
+    g.n(40, 360, 3, ".exe e instalador", "Windows, com NSIS")
+    g.n(480, 360, 3, "PWA offline", "Chromebooks e esta página")
+    legend(d, g.bot(3) + 30, [("kraft", "fonte única do conteúdo")])
+    return d
+
 
 out = sys.argv[1]
 for d, name in [(personal_bank(), "personal-bank-suite"), (anubis(), "anubis"), (claudesktop(), "claudesktop"),
                 (vault_sync(), "vault-sync"), (token_econ(), "token-econ-plugins"), (portfolio(), "portfolio"),
-                (ship_n_click(), "ship-n-click"), (kernel(), "kernel-heimdall")]:
+                (ship_n_click(), "ship-n-click"), (kernel(), "kernel-heimdall"), (doce_orcamento(), "doce-orcamento")]:
     open(f"{out}/{name}.svg", "w").write(d.svg())
     print(name, "ok")
