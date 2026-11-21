@@ -23,7 +23,9 @@ async function start() {
   frame.value?.focus()
 }
 
-// tela cheia do quadro do jogo (o botão do próprio jogo faz o mesmo por dentro)
+// tela cheia do quadro do jogo. Pedida no iframe porque a ativação do clique é desta página
+// (pedida pelo documento do jogo, o Chrome recusa: "not granted"). Nesse modo o ⛶ do jogo
+// não a desfaz (só empilha outra); sai com Esc ou com o Sair do jogo.
 function fullscreen() {
   frame.value?.requestFullscreen().catch(() => {})
 }
@@ -116,7 +118,11 @@ onBeforeUnmount(() => window.removeEventListener('message', onMessage))
 .game__start img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
 .game__start .btn { position: relative; }
 .game__start:hover .btn { transform: translate(-1px, -1px); box-shadow: 0 0 0 1px var(--neon-pink), 0 0 28px var(--neon-pink); }
+/* acima do cartão de créditos: enquanto ele chega (v-reveal "out"), sobe girado e
+   invisível por cima desta linha e engoliria o clique em "tela cheia" e no link */
 .game__info {
+  position: relative;
+  z-index: calc(var(--z-collage) + 1);
   display: flex;
   flex-wrap: wrap;
   justify-content: space-between;
