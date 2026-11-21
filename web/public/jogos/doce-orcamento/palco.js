@@ -157,10 +157,11 @@ export class Palco {
   #andar(pid, x) {
     const ator = this.#atores.get(pid);
     if (!ator) return;
-    const de = { left: ator.x * LARGURA + "px", transform: `translateX(${-ator.x * 100}%)` };
+    const antes = ator.x;
     this.#posicionar(ator, x);
-    const para = { left: x * LARGURA + "px", transform: `translateX(${-x * 100}%)` };
-    animar(ator.caixa, [de, para], { duration: this.#ms(ANDAR), easing: "ease-in-out" });
+    // O 'left' já vai direto ao destino; a diferença vira translateX (só transform: sem layout por quadro).
+    const de = `translateX(calc(${(antes - x) * LARGURA}px + ${-antes * 100}%))`;
+    animar(ator.caixa, [{ transform: de }, { transform: `translateX(${-x * 100}%)` }], { duration: this.#ms(ANDAR), easing: "ease-in-out" });
   }
 
   #trocarExpressao(pid, expressao) {

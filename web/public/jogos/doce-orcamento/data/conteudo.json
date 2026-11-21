@@ -1306,7 +1306,8 @@
       "zona": [
        30,
        80
-      ]
+      ],
+      "automatico": true
      },
      "efeitos": [
       {
@@ -1491,6 +1492,7 @@
   },
   {
    "id": "f3_preco_alto",
+   "fundo": "feira_movimentada",
    "falas": [
     {
      "narracao": "A feira abre. Os primeiros clientes leem a placa de <<brl(preco)>>, contam as moedas... e muitos desistem."
@@ -1523,7 +1525,6 @@
    "seguir": "f4_feira",
    "tipo": "cena",
    "fase": "fase3",
-   "fundo": "patio_barraca",
    "musica": "wildflowers_by_the_river"
   },
   {

@@ -25,7 +25,9 @@ const BANCADA = { centro: 900, passo: 270, y: 850 };          // Ren'Py: 900 + (
 const ANEL = { min: 40, max: 300 };                            // Mexida.r_min / r_max
 const DESLIZAR_MS = 350;
 const ARRASTO_MINIMO = 6;
-const ACHATA_MANCHA = 107 / 203;   // semieixos da boca da panela: o plano do círculo vira elipse
+const CENTRO_BOCA = { x: 288, y: 145 };   // centro da boca da panela na peça 577x430 (tools/assets.py > BOCA)
+const ACHATA_MANCHA = 127 / 208;   // semieixos da boca da panela (tools/assets.py > BOCA): o plano do círculo vira elipse
+const RAIO_CASSIA = { x: 110, y: 45 };   // elipse que a colher da Cássia percorre em volta do centro da panela
 const ANGULO_MANCHA = 70;          // cada mancha entra girada 70° em relação à anterior
 
 const imagemCozinha = (nome) => img("cozinha/" + nome);
@@ -42,22 +44,37 @@ export function casasDaBancada(itens) {
   return new Map(itens.map((item, k) => [item, { x: BANCADA.centro + Math.trunc((k - meio) * BANCADA.passo), y: BANCADA.y }]));
 }
 
-/** Poça de cor que enche a boca da panela até a borda: a forma branca
- * img/cozinha/mistura_oval (577x430, a peça da panela) vira máscara CSS de um fundo da cor. */
-function poca(cor) {
-  return el("div", { class: "forma-oval", style: { background: corCss(cor) } });
+// Máscaras brancas do pipeline (img/cozinha/mistura_*) tingidas UMA vez em <canvas>. Máscara CSS
+// girando custa um repaint por quadro quando o navegador não tem aceleração por GPU (comum no
+// Linux); um bitmap pronto não.
+const mascaras = new Map();
+function mascara(nome) {
+  if (!mascaras.has(nome)) mascaras.set(nome, Object.assign(new Image(), { src: imagemCozinha(nome) }));
+  return mascaras.get(nome);
 }
 
-/** Mancha em espiral (2º e 3º ingredientes, k = 1 ou 2) da cor dada, girada 'graus': a
- * forma (img/cozinha/mistura_mancha_k) fica no plano do círculo e é achatada na perspectiva. */
-function mancha(cor, k, graus) {
-  const mancha = el("div", { class: `forma-mancha forma-mancha-${Math.min(k, 2)}`, style: { background: corCss(cor) } });
-  posicionarMancha(mancha, graus);
-  return mancha;
+/** Canvas w x h com a máscara 'nome' tingida de 'cor' ([r, g, b]); pinta quando a máscara chegar. */
+function tingida(nome, cor, largura = 577, altura = 430) {
+  const canvas = el("canvas", { width: largura, height: altura });
+  const imagem = mascara(nome);
+  const pintar = () => {
+    const c = canvas.getContext("2d");
+    c.drawImage(imagem, 0, 0, largura, altura);
+    c.globalCompositeOperation = "source-in";
+    c.fillStyle = corCss(cor);
+    c.fillRect(0, 0, largura, altura);
+  };
+  if (imagem.complete && imagem.naturalWidth) pintar();
+  else imagem.addEventListener("load", pintar, { once: true });
+  return canvas;
 }
 
-function posicionarMancha(mancha, graus) {
-  mancha.style.transform = `scaleY(${ACHATA_MANCHA}) rotate(${graus}deg)`;
+/** Faixa de massa do k-ésimo ingrediente (0, 1, 2): img/cozinha/mistura_nivel_k (577x430: boca da
+ * panela x elipse mais abaixo, que sobe a cada ingrediente; cada faixa é o nível menos o anterior). */
+function poca(cor, k = 0) {
+  const faixa = tingida(`mistura_nivel_${Math.min(k, 2) + 1}`, cor);
+  faixa.className = "forma-nivel";
+  return faixa;
 }
 
 /** Panela 577x430 (com espaço para a massa), centrada em (960, y) e um pouco menor. 'sobre'
@@ -159,8 +176,8 @@ class Bancada {
     const k = this.postos.length;
     this.postos.push(item);
     const cor = rgb(this.c.itens[item].cor);
-    const nova = k === 0 ? poca(cor) : mancha(cor, k, ANGULO_MANCHA * k);
-    this.panela.sobre(nova);
+    const nova = poca(cor, k);
+    this.panela.sobre(nova);   // cada ingrediente acrescenta a sua faixa (o nível sobe)
     animar(nova, [{ opacity: 0 }, { opacity: 1 }], { duration: 600 });
     const queda = el("img", { class: "queda", src: img(this.assets.itens[item]), alt: "" });
     this.raiz.append(queda);
@@ -186,10 +203,9 @@ class Bancada {
   }
 
   #deslizar(peca, casa, ms, easing) {
-    const de = { left: peca.style.left, top: peca.style.top };
-    const para = { left: casa.x + "px", top: casa.y + "px" };
-    Object.assign(peca.style, para);
-    animar(peca, [de, para], { duration: ms, easing });
+    const dx = parseFloat(peca.style.left) - casa.x, dy = parseFloat(peca.style.top) - casa.y;
+    Object.assign(peca.style, { left: casa.x + "px", top: casa.y + "px" });
+    animar(peca, [{ transform: `translate(${dx}px, ${dy}px)` }, { transform: "translate(0, 0)" }], { duration: ms, easing });   // transform: sem layout por quadro
   }
 }
 
@@ -351,15 +367,16 @@ function medir(elemento, valor) {
  * pressionado, bolhas, texto de alerta e o botão; 'visual' desenha o que é próprio da etapa.
  */
 class Etapa {
-  constructor({ tela, som }, { regra, tiqueMs, botaoTexto, botaoId, titulo, descricao, pronto, esperaFim, visual }, concluir) {
-    Object.assign(this, { tela, som, regra, visual, pronto, concluir, esperaFim });
+  constructor({ tela, som }, { regra, tiqueMs, botaoTexto, botaoId, titulo, descricao, pronto, esperaFim, visual, automatico = false }, concluir) {
+    Object.assign(this, { tela, som, regra, visual, pronto, concluir, esperaFim, automatico });
+    this.passoCassia = 0;   // ângulo da colher da Cássia (radianos)
     this.gesto = new Gesto();
     this.colher = el("img", { class: "colher", src: imagemCozinha("colher_1"), alt: "", hidden: true });
     this.bolhas = el("div", { class: "bolhas" });
     this.alerta = el("p", { class: "alerta-cozinha", role: "status" });
     this.raiz = el("div", { class: "cozinha mexendo" }, visual.cena, this.bolhas,
       painel({ class: "cozinha-painel" }, el("h2", {}, titulo), el("p", {}, descricao), ...visual.painel), this.alerta,
-      botao(botaoTexto, () => this.mexer(), { class: "botao botao-mexer", id: botaoId }), this.colher);
+      botao(botaoTexto, () => this.mexer(), { class: "botao botao-mexer", id: botaoId, hidden: automatico }), this.colher);
     this.raiz.addEventListener("pointerdown", (e) => this.#pressionar(e));
     this.raiz.addEventListener("pointermove", (e) => this.#mover(e));
     ["pointerup", "pointercancel", "lostpointercapture"].forEach((tipo) => this.raiz.addEventListener(tipo, () => this.#soltar()));
@@ -376,7 +393,7 @@ class Etapa {
   /** Botão principal pressionado sobre a panela: o gesto passa a valer (e o ponteiro
    * fica preso à tela até soltar, mesmo saindo dela). Nos botões, nada. */
   #pressionar(evento) {
-    if (evento.button !== 0 || evento.target.closest("button")) return;
+    if (this.automatico || evento.button !== 0 || evento.target.closest("button")) return;
     const p = this.#colherEm(evento);
     const vale = this.gesto.pressionar(p.x, p.y);
     this.raiz.dataset.apertado = String(vale);
@@ -390,13 +407,14 @@ class Etapa {
 
   /** Cada ponto do movimento (também os agrupados pelo navegador) gira a massa. */
   #mover(evento) {
+    if (this.automatico) return;
     const agrupados = evento.getCoalescedEvents?.() ?? [];
     const pontos = (agrupados.length ? agrupados : [evento]).map((e) => noJogo(e, this.tela));
     this.#colherEm(evento);
     const giros = pontos.map((p) => this.gesto.mover(p.x, p.y)).filter((delta) => delta !== 0);
     if (!giros.length) return;
     giros.forEach((delta) => this.regra.avanco(delta));
-    this.desenhar();
+    this.#agendar();
   }
 
   /** A colher segue o ponteiro (concha na ponta). Devolve o ponto no jogo. */
@@ -407,7 +425,20 @@ class Etapa {
     return p;
   }
 
+  /** A Cássia mexe: a colher dá uma volta em elipse e cada tique gira o suficiente para o calor
+   * ficar parado na zona (compensa o que a panela esfria): demora mais, mas não queima. */
+  #cassiaMexe() {
+    const r = this.regra.regras;
+    const passo = (Math.PI * r.esfria) / r.passo;
+    this.passoCassia = (this.passoCassia + passo) % (2 * Math.PI);
+    const p = { x: CENTRO.x + RAIO_CASSIA.x * Math.cos(this.passoCassia), y: CENTRO.y + RAIO_CASSIA.y * Math.sin(this.passoCassia) };
+    this.colher.hidden = false;
+    Object.assign(this.colher.style, { left: p.x - 46 + "px", top: p.y - 256 + "px" });
+    this.regra.avanco(passo);
+  }
+
   #tique() {
+    if (this.automatico && !this.regra.pronto) this.#cassiaMexe();
     this.regra.tique();
     this.desenhar();
     if (!this.regra.pronto) return;
@@ -415,12 +446,29 @@ class Etapa {
     setTimeout(() => this.concluir(), this.esperaFim);
   }
 
+  /** Reaproveita os <img> das bolhas (criar e jogar fora uma dezena por quadro pesa sem GPU). */
+  #sincronizarBolhas(lista) {
+    while (this.bolhas.children.length < lista.length) this.bolhas.append(el("img", { src: imagemCozinha("bolha"), alt: "" }));
+    while (this.bolhas.children.length > lista.length) this.bolhas.lastChild.remove();
+    lista.forEach((b, i) => { this.bolhas.children[i].style.transform = `translate(${b.x}px, ${b.y}px)`; });
+  }
+
+  /** Vários movimentos do mouse no mesmo quadro desenham uma vez só. */
+  #agendar() {
+    if (this.pendente) return;
+    this.pendente = true;
+    requestAnimationFrame(() => {
+      this.pendente = false;
+      this.desenhar();
+    });
+  }
+
   desenhar() {
     const r = this.regra;
     this.visual.desenhar(r);
     this.alerta.textContent = r.pronto ? this.pronto : r.queimando ? "Cuidado! Está queimando!" : "";
     this.alerta.dataset.tipo = r.pronto ? "pronto" : "queima";
-    this.bolhas.replaceChildren(...r.bolhas.map((b) => el("img", { src: imagemCozinha("bolha"), alt: "", style: { left: b.x + "px", top: b.y + "px" } })));
+    this.#sincronizarBolhas(r.bolhas);
     Object.assign(this.raiz.dataset, { progresso: Math.round(r.progresso), calor: Math.round(r.temp), mexidas: r.mexidas });
   }
 
@@ -437,22 +485,44 @@ function rodarEtapa(deps, opcoes) {
   });
 }
 
-/** Visual da mistura (doce_mistura_giro): a cor do 1º ingrediente enche a boca; as manchas
- * dos outros giram por cima e, por fim, a cor final do brigadeiro aparece com o progresso. */
+/** Visual da mistura (doce_mistura_giro), num <canvas> só: as faixas de massa como ficaram na etapa
+ * anterior, as manchas dos outros ingredientes girando por cima e, por fim, a cor final do
+ * brigadeiro com o progresso; tudo recortado na massa inteira (mistura_massa). */
 function visualMistura(cores, corFinal) {
   const { caixa, sobre } = panelaComMassa(CENTRO.y);
-  const manchas = cores.slice(1).map((cor, j) => mancha(cor, j + 1, ANGULO_MANCHA * (j + 1)));
-  const uniforme = poca(rgb(corFinal));
-  uniforme.classList.add("massa-final");
-  sobre(poca(cores[0]), ...manchas, uniforme);
+  const massa = el("canvas", { class: "forma-nivel", width: 577, height: 430 });
+  const c = massa.getContext("2d");
+  const faixas = cores.map((cor, k) => tingida(`mistura_nivel_${Math.min(k, 2) + 1}`, cor));
+  const manchas = cores.slice(1).map((cor, j) => tingida(`mistura_mancha_${Math.min(j + 1, 2)}`, cor, 420, 420));
+  const recorte = mascara("mistura_massa");
+  const final = corCss(rgb(corFinal));
+  sobre(massa);
   const texto = el("p");
   const consistencia = barra("Consistência da massa");
-  const desenhar = (m) => {
-    manchas.forEach((forma, j) => {
-      posicionarMancha(forma, m.anguloVisual + ANGULO_MANCHA * (j + 1));
-      forma.style.opacity = 1 - 0.9 * (m.progresso / 100);
+  /** Um quadro da massa: faixas, manchas giradas (no plano do círculo, achatadas na perspectiva) e cor final. */
+  const pintar = (m) => {
+    const p = m.progresso / 100;
+    c.clearRect(0, 0, 577, 430);
+    faixas.forEach((faixa) => c.drawImage(faixa, 0, 0));
+    manchas.forEach((mancha, j) => {
+      c.save();
+      c.globalAlpha = 1 - 0.9 * p;
+      c.translate(CENTRO_BOCA.x, CENTRO_BOCA.y);
+      c.scale(1, ACHATA_MANCHA);
+      c.rotate(((m.anguloVisual + ANGULO_MANCHA * (j + 1)) * Math.PI) / 180);
+      c.drawImage(mancha, -210, -210);
+      c.restore();
     });
-    uniforme.style.opacity = m.progresso / 100;
+    c.globalAlpha = p;
+    c.fillStyle = final;
+    c.fillRect(0, 0, 577, 430);
+    c.globalAlpha = 1;
+    c.globalCompositeOperation = "destination-in";
+    if (recorte.complete) c.drawImage(recorte, 0, 0, 577, 430);
+    c.globalCompositeOperation = "source-over";
+  };
+  const desenhar = (m) => {
+    pintar(m);
     texto.textContent = `Consistência da massa: ${Math.round(m.progresso)}%`;
     medir(consistencia, m.progresso);
   };
@@ -478,7 +548,11 @@ function visualFogo(regras) {
   const textoProgresso = el("p");
   const progresso = barra("Progresso do doce");
   const desenhar = (m) => {
-    panela.src = imagemCozinha(m.imagem());
+    const nome = m.imagem();
+    if (panela.dataset.nome !== nome) {   // só troca a imagem quando a etapa da panela muda
+      panela.dataset.nome = nome;
+      panela.src = imagemCozinha(nome);
+    }
     textoCalor.textContent = `Calor da panela: ${Math.round(m.temp)}%`;
     marcador.style.left = m.temp + "%";
     calor.setAttribute("aria-valuenow", Math.round(m.temp));
@@ -490,8 +564,10 @@ function visualFogo(regras) {
 
 /** Etapa 3: mexer no fogo até o ponto. */
 export function mexerPanela(deps, regras) {
+  const automatico = Boolean(regras.automatico);
   return rodarEtapa(deps, { regra: new Mexida(regras), tiqueMs: 120, botaoTexto: "MEXER (sem girar o mouse)", botaoId: "mexer_botao",
-    titulo: "Ponto do Brigadeiro!",
-    descricao: "Segure o botão do mouse sobre a panela e gire: quanto mais rápido, mais esquenta. Mantenha o calor na zona verde.",
+    titulo: "Ponto do Brigadeiro!", automatico,
+    descricao: automatico ? "A Cássia mexe a panela devagar e com carinho. Espere a massa chegar ao ponto."
+      : "Segure o botão do mouse sobre a panela e gire: quanto mais rápido, mais esquenta. Mantenha o calor na zona verde.",
     pronto: "Ponto perfeito!", esperaFim: 1200, visual: visualFogo(regras) });
 }

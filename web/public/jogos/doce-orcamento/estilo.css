@@ -160,7 +160,7 @@ h1, h2, h3 { font-family: var(--titulo); font-weight: 500; margin: 0; }
 }
 
 .ator { position: absolute; bottom: 0; }
-.ator-imagem { display: block; }
+.ator-imagem { display: block; will-change: transform, opacity; }
 
 /* --- HUD ---------------------------------------------------------------------- */
 
@@ -195,11 +195,10 @@ h1, h2, h3 { font-family: var(--titulo); font-weight: 500; margin: 0; }
   bottom: 0;
   height: 330px;
   z-index: 30;
-  /* Creme translúcido (parecido com o do Ren'Py), com o que está atrás desfocado:
-     o sprite aparece, mas não disputa com o texto. */
-  background: rgba(255, 247, 237, 0.82);
-  -webkit-backdrop-filter: blur(7px);
-  backdrop-filter: blur(7px);
+  /* Creme translúcido (parecido com o do Ren'Py). Sem backdrop-filter: desfocar o que está atrás
+     a cada quadro de animação engasga o navegador sem aceleração por GPU; o creme um pouco mais
+     denso mantém o sprite sem disputar com o texto. */
+  background: rgba(255, 247, 237, 0.86);
 }
 
 /* Borda de cima suave (sem linha dura), no lugar do degradê translúcido de antes. */
@@ -553,17 +552,9 @@ h1, h2, h3 { font-family: var(--titulo); font-weight: 500; margin: 0; }
 .panela, .panela-caixa { position: absolute; }
 .panela-caixa { width: 577px; height: 430px; }
 .panela-caixa > img { position: absolute; left: 0; top: 0; }
-/* Formas brancas do pipeline (tools/assets.py) usadas como máscara: a cor de cada
-   ingrediente é o fundo do elemento (tinta em tempo de execução, sem canvas). A boca
-   (oval) enche a panela até a borda; as manchas (420x420, centradas na boca) são
-   achatadas na perspectiva da panela (scaleY) e giram na mistura; a sombra fica por cima. */
-.forma-oval, .forma-mancha { position: absolute; -webkit-mask-size: 100% 100%; mask-size: 100% 100%;
-  -webkit-mask-repeat: no-repeat; mask-repeat: no-repeat; }
-.forma-oval { left: 0; top: 0; width: 577px; height: 430px;
-  -webkit-mask-image: url("img/cozinha/mistura_oval.webp"); mask-image: url("img/cozinha/mistura_oval.webp"); }
-.forma-mancha { left: 81px; top: -55px; width: 420px; height: 420px; }
-.forma-mancha-1 { -webkit-mask-image: url("img/cozinha/mistura_mancha_1.webp"); mask-image: url("img/cozinha/mistura_mancha_1.webp"); }
-.forma-mancha-2 { -webkit-mask-image: url("img/cozinha/mistura_mancha_2.webp"); mask-image: url("img/cozinha/mistura_mancha_2.webp"); }
+/* A massa da panela são <canvas> de 577x430 (tingidos por web/src/cozinha.js a partir das formas
+   brancas do pipeline, tools/assets.py): sem máscara CSS, que repinta a cada quadro sem GPU. */
+.forma-nivel { position: absolute; left: 0; top: 0; width: 577px; height: 430px; }
 .panela-caixa > .sombra-boca { position: absolute; left: 0; top: 0; width: 577px; height: 430px; }
 .queda { position: absolute; height: 170px; pointer-events: none; }
 
@@ -622,7 +613,7 @@ h1, h2, h3 { font-family: var(--titulo); font-weight: 500; margin: 0; }
 
 .alerta-cozinha[data-tipo="pronto"] { color: var(--verde); font-size: 56px; }
 .bolhas { position: absolute; inset: 0; pointer-events: none; }
-.bolhas img { position: absolute; width: 48px; height: 48px; }
+.bolhas img { position: absolute; left: 0; top: 0; width: 48px; height: 48px; }
 .colher { position: absolute; width: 175px; pointer-events: none; z-index: 2; }
 
 .botao-mexer {
