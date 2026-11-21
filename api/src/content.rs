@@ -185,6 +185,8 @@ mod tests {
         // doce-orcamento tem repositório, mas privado
         assert!(c.public_repo("doce-orcamento").is_none());
         assert_eq!(c.public_repo("vault-sync"), Some("rafeu15min/vault-sync"));
+        // kaiak tem repositório público desde 21/11/2026 (só o último estado)
+        assert_eq!(c.public_repo("kaiak"), Some("rafeu15min/kaiak"));
         // privado com o repo preenchido continua fora da allowlist
         let jobber = c.projects.iter_mut().find(|p| p.slug == "jobber").unwrap();
         jobber.repo = Some("rafeu15min/jobber".into());
