@@ -40,10 +40,13 @@ function deslizante(rotulo, valor, aoMudar, formatar) {
 const velocidadeParaCps = (v) => (v >= 100 ? 0 : Math.round(10 + v * 1.4));
 const cpsParaVelocidade = (cps) => (cps === 0 ? 100 : Math.round((cps - 10) / 1.4));
 
-function telaCheia(ativar) {
+export function telaCheia(ativar) {
   const pedido = ativar ? document.documentElement.requestFullscreen?.() : document.exitFullscreen?.();
   return Promise.resolve(pedido).catch(() => {});
 }
+
+/** Alterna janela/tela cheia (botão do menu rápido e tecla F). */
+export const alternarTelaCheia = () => telaCheia(!document.fullscreenElement);
 
 function opcoes({ prefs, som }) {
   const salvar = () => {

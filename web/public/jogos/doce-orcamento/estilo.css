@@ -195,9 +195,11 @@ h1, h2, h3 { font-family: var(--titulo); font-weight: 500; margin: 0; }
   bottom: 0;
   height: 330px;
   z-index: 30;
-  /* Creme quase opaco: com sprite ou cenário atrás, texto e nome ficam legíveis
-     (contraste AA mesmo sobre fundo preto: texto 12:1, nomes 4,3:1 ou mais). */
-  background: rgba(255, 247, 237, 0.94);
+  /* Creme translúcido (parecido com o do Ren'Py), com o que está atrás desfocado:
+     o sprite aparece, mas não disputa com o texto. */
+  background: rgba(255, 247, 237, 0.82);
+  -webkit-backdrop-filter: blur(7px);
+  backdrop-filter: blur(7px);
 }
 
 /* Borda de cima suave (sem linha dura), no lugar do degradê translúcido de antes. */
@@ -208,7 +210,7 @@ h1, h2, h3 { font-family: var(--titulo); font-weight: 500; margin: 0; }
   right: 0;
   bottom: 100%;
   height: 48px;
-  background: linear-gradient(to bottom, rgba(255, 247, 237, 0), rgba(255, 247, 237, 0.94));
+  background: linear-gradient(to bottom, rgba(255, 247, 237, 0), rgba(255, 247, 237, 0.82));
   pointer-events: none;
 }
 
@@ -629,3 +631,22 @@ h1, h2, h3 { font-family: var(--titulo); font-weight: 500; margin: 0; }
 @media (prefers-reduced-motion: reduce) {
   .ator-imagem { animation: none !important; }
 }
+
+/* --- botão de tela cheia (canto de baixo, sobre tudo) ------------------------------ */
+
+.tela-cheia-botao {
+  position: absolute;
+  right: 14px;
+  bottom: 10px;
+  z-index: 90;
+  width: 48px;
+  height: 48px;
+  border: 3px solid #6b4423;
+  background: rgba(255, 247, 237, 0.92);
+  color: #6b4423;
+  font-size: 28px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.tela-cheia-botao:hover { color: var(--rosa); border-color: var(--rosa); }

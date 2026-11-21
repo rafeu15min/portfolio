@@ -9,7 +9,7 @@ import { Dialogo } from "./dialogo.js";
 import { ALTURA, botao, el, Esperas, LARGURA } from "./dom.js";
 import { Hud } from "./hud.js";
 import { Jogo } from "./jogo.js";
-import { abrirMenuJogo, menuInicial } from "./menu.js";
+import { abrirMenuJogo, alternarTelaCheia, menuInicial } from "./menu.js";
 import { Vitrine } from "./paineis.js";
 import { Preferencias, Saves } from "./saves.js";
 import { Som } from "./audio.js";
@@ -87,7 +87,13 @@ function montar(c, assets) {
     acao();
   }
 
+  /** Sair: dentro de uma página (iframe) avisa a página, que fecha o jogo e volta ao
+      botão "jogar"; numa aba própria tenta fechá-la (o navegador só deixa se foi aberta por script). */
   function sair() {
+    if (window.parent !== window) {
+      window.parent.postMessage({ tipo: "doce-orcamento:sair" }, window.location.origin);
+      return;
+    }
     window.close();
     setTimeout(() => hud.mensagem("Para sair, é só fechar esta aba ou janela."), 300);
   }
@@ -118,6 +124,11 @@ function montar(c, assets) {
     botao("Salvar", () => menuDoJogo("salvar"), { class: "rapido-botao" }), botao("Carregar", () => menuDoJogo("carregar"), { class: "rapido-botao" }),
     botao("Opções", () => menuDoJogo("opcoes"), { class: "rapido-botao" }), botao("Menu", () => mostrarMenu(), { class: "rapido-botao" }));
   tela.append(rapido);
+  // Tela cheia sempre à mão (também no menu inicial); some se o navegador não a oferece.
+  if (document.documentElement.requestFullscreen) {
+    const cheia = botao("⛶", alternarTelaCheia, { class: "tela-cheia-botao", "aria-label": "Alternar tela cheia", title: "Tela cheia" });
+    tela.append(cheia);
+  }
   new MutationObserver(() => pular.setAttribute("aria-pressed", String(tela.dataset.pulando === "sim")))
     .observe(tela, { attributes: true, attributeFilter: ["data-pulando"] });
 

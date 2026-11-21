@@ -3,7 +3,7 @@
 // quadro de cartaz das evidências, com os créditos e o aviso de licença embaixo
 // (content/projects.json → play). O iframe só carrega depois do clique: o jogo baixa
 // ~17 MB (artes, música e o cache offline dele), e quem só lê a página não paga isso.
-import { nextTick, ref } from 'vue'
+import { nextTick, onBeforeUnmount, onMounted, ref } from 'vue'
 import PaperCard from './collage/PaperCard.vue'
 import Tape from './collage/Tape.vue'
 import type { Play } from '@/lib/content'
@@ -12,6 +12,9 @@ defineProps<{ play: Play; name: string }>()
 
 const playing = ref(false)
 const frame = ref<HTMLIFrameElement | null>(null)
+const startButton = ref<HTMLButtonElement | null>(null)
+// o botão "tela cheia" some onde o navegador não a oferece (iPhone), como o do jogo
+const canFullscreen = document.fullscreenEnabled
 
 // o foco vai para o jogo: teclado (setas, Esc, I) funciona sem outro clique
 async function start() {
@@ -19,21 +22,43 @@ async function start() {
   await nextTick()
   frame.value?.focus()
 }
+
+// tela cheia do quadro do jogo (o botão do próprio jogo faz o mesmo por dentro)
+function fullscreen() {
+  frame.value?.requestFullscreen().catch(() => {})
+}
+
+// "Sair" dentro do jogo: ele avisa a página, que fecha o quadro e volta ao botão "jogar",
+// com o foco nele. Só vale mensagem da mesma origem e vinda do próprio iframe.
+async function onMessage(e: MessageEvent) {
+  if (e.origin !== window.location.origin || e.source !== frame.value?.contentWindow) return
+  if (e.data?.tipo !== 'doce-orcamento:sair') return
+  if (document.fullscreenElement) void document.exitFullscreen()
+  playing.value = false
+  await nextTick()
+  startButton.value?.focus()
+}
+onMounted(() => window.addEventListener('message', onMessage))
+onBeforeUnmount(() => window.removeEventListener('message', onMessage))
 </script>
 
 <template>
   <section id="jogar" class="game tex-poster" aria-labelledby="game-title">
     <h2 id="game-title" class="game__title stencil">Jogar</h2>
     <div class="game__screen">
+      <!-- allow="fullscreen" vale no Chrome e no Firefox; o Safari só entende o allowfullscreen -->
       <iframe v-if="playing" ref="frame" :src="play.path" :title="name" allow="fullscreen" allowfullscreen />
-      <button v-else type="button" class="game__start" :aria-label="`jogar ${name} nesta página`" @click="start">
+      <button v-else ref="startButton" type="button" class="game__start" :aria-label="`jogar ${name} nesta página`" @click="start">
         <img :src="play.cover" alt="" width="1920" height="1080" loading="lazy" decoding="async" />
         <span class="btn btn--neon">jogar ▶</span>
       </button>
     </div>
     <p class="game__info">
       <span>{{ play.hint }}</span>
-      <a :href="play.path" target="_blank" rel="noopener">abrir em outra aba ↗</a>
+      <span class="game__links">
+        <button v-if="playing && canFullscreen" type="button" class="game__link" @click="fullscreen">tela cheia ⛶</button>
+        <a :href="play.path" target="_blank" rel="noopener">abrir em outra aba ↗</a>
+      </span>
     </p>
 
     <PaperCard :tilt="-0.4" crop class="game__credits">
@@ -100,7 +125,11 @@ async function start() {
   color: var(--on-bg);
   font-size: 0.95rem;
 }
-.game__info a { color: var(--on-bg); font-family: var(--font-mono); font-weight: 700; white-space: nowrap; }
+.game__info a,
+.game__link { color: var(--on-bg); font-family: var(--font-mono); font-weight: 700; white-space: nowrap; }
+.game__links { display: flex; flex-wrap: wrap; gap: 0.5rem 1.5rem; }
+/* o botão imita o link ao lado (sublinhado na mesma altura do `a` do base.css) */
+.game__link { padding: 0; border: 0; background: none; font-size: inherit; text-decoration: underline; text-underline-offset: 0.18em; cursor: pointer; }
 
 .game__credits { margin-top: 2rem; }
 .game__credits-title { margin: 0 0 0.9rem; font-size: 1.4rem; }
