@@ -21,10 +21,11 @@ function linhaDaFala(fala, personagens) {
 const EXECUTORES = {
   async cena(j, no) {
     await j.cenario(no.fundo);
-    if (no.vitrine?.length) j.vitrine.mostrar(no.vitrine, j.estado);
-    else j.vitrine.ocultar();
     j.palco.abrir(no);
     j.avisar(roteiro.entrar(no, j.estado));
+    // Depois dos efeitos (como o Ren'Py): o item feito já existe e tem a arte do que foi comprado.
+    if (no.vitrine?.length) j.vitrine.mostrar(no.vitrine, j.estado, Boolean(no.vitrine_destaque));
+    else j.vitrine.ocultar();
     await j.falas(no.falas);
     await j.aguardar(j.palco.fechar());
     return no.seguir;
@@ -112,6 +113,7 @@ export class Jogo {
     this.ponto = null;
     this.bloqueio = false;
     this.rodando = false;
+    this.dicaVista = false;   // a dica da tecla I já apareceu (doce_dica_caderno_vista no Ren'Py)
   }
 
   /** Caderno: só depois que a Cássia o entrega e fora de quiz/minigame/carrinho. */
@@ -120,7 +122,7 @@ export class Jogo {
   }
 
   novo() {
-    return this.#iniciar(new Estado(this.c.jogo.afinidade.personagens, this.c.regras), this.c.jogo.inicio);
+    return this.#iniciar(new Estado(this.c.jogo.afinidade.personagens, this.c.regras), this.c.jogo.inicio, false);
   }
 
   carregar(ponto) {
@@ -128,7 +130,15 @@ export class Jogo {
       this.hud.mensagem("Este save é de uma versão antiga do jogo: começando do início.");
       return this.novo();
     }
-    return this.#iniciar(Estado.deDados(ponto.estado, this.c.regras), ponto.no);
+    return this.#iniciar(Estado.deDados(ponto.estado, this.c.regras), ponto.no, Boolean(ponto.dica_vista), ponto.fundo);
+  }
+
+  /** A dica da tecla I sai de vez (passaram os 9 s ou o jogador abriu o Caderno); o save leva isso. */
+  marcarDicaVista() {
+    if (this.dicaVista) return;
+    this.dicaVista = true;
+    if (this.ponto) this.ponto.dica_vista = true;
+    this.atualizarHud();
   }
 
   /** Para tudo na hora (voltar ao menu, carregar outro save). */
@@ -144,14 +154,18 @@ export class Jogo {
     this.hud.mostrar(false);
   }
 
-  async #iniciar(estado, noId) {
+  /** Roda o jogo a partir do nó 'noId'. 'fundo' (save) põe o cenário antes: um save
+   * num quiz ou numa escolha, que não trocam o fundo, não abre com a tela preta. */
+  async #iniciar(estado, noId, dicaVista, fundo = null) {
     this.parar();
     this.estado = estado;
+    this.dicaVista = dicaVista;
     this.dialogo.historico.length = 0;
     this.rodando = true;
     this.hud.mostrar(true);
     const sessao = this.#sessao;
     try {
+      if (fundo) await this.cenario(fundo);
       let id = noId;
       while (id) {
         const no = this.porId.get(id);
@@ -170,7 +184,7 @@ export class Jogo {
   /** Começo de um nó: ponto de save (antes dos efeitos), HUD e música da cena. */
   #entrar(no) {
     const titulo = this.titulos.get(no.fase);
-    this.ponto = { no: no.id, estado: this.estado.paraDados(), fase: titulo, fundo: no.fundo ?? this.palco.fundo };
+    this.ponto = { no: no.id, estado: this.estado.paraDados(), fase: titulo, fundo: no.fundo ?? this.palco.fundo, dica_vista: this.dicaVista };
     if (no.tipo !== "fim") this.saves.autosalvar(this.ponto);
     this.tela.dataset.no = no.id;
     this.hud.fase(titulo);
@@ -237,8 +251,10 @@ export class Jogo {
     this.atualizarHud();
   }
 
+  /** Caixa e Caderno no HUD; a dica da tecla I aparece com o Caderno liberado até ser vista. */
   atualizarHud() {
-    this.hud.atualizar(this.estado, this.cadernoLiberado);
+    const liberado = this.cadernoLiberado;
+    this.hud.atualizar(this.estado, liberado, liberado && !this.dicaVista);
   }
 
   /** Modo pular: as falas passam sozinhas até a próxima escolha, quiz ou tela. */

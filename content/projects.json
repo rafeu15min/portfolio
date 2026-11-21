@@ -172,7 +172,7 @@
     "highlights": [
       "As duas versões leem o mesmo conteúdo: Ren'Py para Windows (.exe e instalador) e HTML5 com modo offline (PWA)",
       "Versão web em JavaScript puro, sem framework nem dependências, com um avaliador próprio das contas do roteiro (sem eval)",
-      "O motor em JavaScript refaz os 208 caminhos do roteiro calculados pelo motor em Python e precisa chegar ao mesmo caixa, aos mesmos quizzes e ao mesmo final",
+      "O motor em JavaScript refaz os 204 caminhos do roteiro calculados pelo motor em Python e precisa chegar ao mesmo caixa, aos mesmos quizzes e ao mesmo final",
       "Build em Docker a partir do Linux (Ren'Py SDK, ffmpeg, NSIS), com teste de ponta a ponta do .exe no Wine"
     ],
     "stack": [

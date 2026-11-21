@@ -78,6 +78,10 @@
     {
      "nome": "juros_5b",
      "expr": "pct(falta_5b, juros_pct)"
+    },
+    {
+     "nome": "juros_lucas",
+     "expr": "pct(emprestimo_lucas, juros_pct)"
     }
    ]
   },
@@ -97,6 +101,12 @@
    "liberado_por_flag": "caderno"
   },
   "creditos": {
+   "quizzes_alternativos": [
+    [
+     "f5_quiz_juros",
+     "f6_quiz_juros_lucas"
+    ]
+   ],
    "vocabulario": [
     {
      "rotulo": "Capital",
@@ -764,10 +774,11 @@
    "arquivo": "05_balanco.yaml",
    "ids": [
     "f5_fim_do_dia",
+    "f5_ramo_diretor",
+    "f5_chegada_5b",
     "f5_quiz_juros",
     "f5_risco",
     "f5_escolha_credito",
-    "f5_ramo_diretor",
     "f5_diretor",
     "f5_diretor_paga",
     "f5_sobras"
@@ -782,6 +793,9 @@
     "f6_acertos",
     "f6_fiado_pago",
     "f6_ramo_emprestimo",
+    "f6_lucas_cobra",
+    "f6_quiz_juros_lucas",
+    "f6_lucas_recebe",
     "f6_devolve_lucas",
     "f6_revelacao",
     "f6_onibus",
@@ -895,11 +909,6 @@
    "efeitos": [
     {
      "flag": "caderno"
-    }
-   ],
-   "falas": [
-    {
-     "narracao": "Dica: aperte a tecla I (ou o botão \"Caderno\" no alto da tela) para abrir e fechar o Caderno da Tesoureira."
     }
    ],
    "seguir": "f1_supermercado",
@@ -1268,7 +1277,8 @@
    "descricao": "Arraste os ingredientes da receita para a panela.",
    "misturar": {
     "meias_voltas": 8,
-    "descricao": "Mexa a massa em círculos, no sentido do relógio, até as cores se misturarem."
+    "cor_final": "#4a2412",
+    "descricao": "Segure o botão do mouse sobre a panela e gire no sentido do relógio até a massa virar brigadeiro."
    },
    "pergunta": "Como a equipe vai cuidar da panela?",
    "opcoes": [
@@ -1325,6 +1335,7 @@
    "vitrine": [
     "brigadeiro"
    ],
+   "vitrine_destaque": true,
    "efeitos": [
     {
      "producao": "meta_producao"
@@ -1659,7 +1670,34 @@
    ],
    "falas": [
     {
-     "narracao": "Fim do dia, o sol está se pondo. Sobraram <<estoque>> brigadeiros. A turma do 5ºB, os rivais que vendem suco, chega até a barraca."
+     "narracao": "Fim do dia, o sol está se pondo. Sobraram <<estoque>> brigadeiros."
+    }
+   ],
+   "seguir": "f5_ramo_diretor",
+   "tipo": "cena",
+   "fase": "fase5",
+   "fundo": "feira_fim_do_dia",
+   "musica": "evening_harmony"
+  },
+  {
+   "id": "f5_ramo_diretor",
+   "tipo": "ramo",
+   "casos": [
+    {
+     "se": "qualidade == 2 and preco > 200 and estoque > 0",
+     "seguir": "f5_diretor"
+    }
+   ],
+   "senao": "f5_chegada_5b",
+   "fase": "fase5",
+   "fundo": "feira_fim_do_dia",
+   "musica": null
+  },
+  {
+   "id": "f5_chegada_5b",
+   "falas": [
+    {
+     "narracao": "A turma do 5ºB, os rivais que vendem suco, chega até a barraca."
     },
     {
      "quem": "lider_5b",
@@ -1767,7 +1805,7 @@
        "flag": "venda_fiado"
       }
      ],
-     "seguir": "f5_ramo_diretor"
+     "seguir": "f5_sobras"
     },
     {
      "id": "b",
@@ -1786,26 +1824,12 @@
        }
       }
      ],
-     "seguir": "f5_ramo_diretor"
+     "seguir": "f5_sobras"
     }
    ],
    "fase": "fase5",
    "fundo": "feira_fim_do_dia",
    "musica": "evening_harmony"
-  },
-  {
-   "id": "f5_ramo_diretor",
-   "tipo": "ramo",
-   "casos": [
-    {
-     "se": "qualidade == 2 and estoque > 0",
-     "seguir": "f5_diretor"
-    }
-   ],
-   "senao": "f5_sobras",
-   "fase": "fase5",
-   "fundo": "feira_fim_do_dia",
-   "musica": null
   },
   {
    "id": "f5_diretor",
@@ -1832,6 +1856,9 @@
       "qtd": "estoque",
       "desc": "Venda ao Diretor: {qtd} brigadeiros a {preco} (para os professores)"
      }
+    },
+    {
+     "flag": "diretor_comprou"
     }
    ],
    "falas": [
@@ -1909,6 +1936,10 @@
    "tipo": "ramo",
    "casos": [
     {
+     "se": "f_emprestimo_lucas and f_diretor_comprou",
+     "seguir": "f6_lucas_cobra"
+    },
+    {
      "se": "f_emprestimo_lucas",
      "seguir": "f6_devolve_lucas"
     }
@@ -1917,6 +1948,94 @@
    "fase": "fase6",
    "fundo": "patio_revelacao",
    "musica": null
+  },
+  {
+   "id": "f6_lucas_cobra",
+   "falas": [
+    {
+     "quem": "lucas",
+     "expressao": "alegria",
+     "texto": "Tesoureira! Lembra dos <<brl(emprestimo_lucas)>> que eu emprestei? Com o Diretor comprando o resto, o caixa tá cheio, então bora fechar essa conta direitinho!"
+    },
+    {
+     "quem": "lucas",
+     "texto": "Sem sustos, hein: é só um jeitinho de ensinar pra vocês. Eu cobro Juros Simples de <<juros_pct>>% sobre o que emprestei. Faz a conta aí: quanto vocês me devolvem?"
+    }
+   ],
+   "seguir": "f6_quiz_juros_lucas",
+   "tipo": "cena",
+   "fase": "fase6",
+   "fundo": "patio_revelacao",
+   "musica": "wildflowers_by_the_river"
+  },
+  {
+   "id": "f6_quiz_juros_lucas",
+   "tipo": "quiz",
+   "quem": "lucas",
+   "titulo": "Desafio: juros do empréstimo",
+   "pergunta": "Juros simples de <<juros_pct>>% sobre <<brl(emprestimo_lucas)>>. Quanto devolver ao Lucas (Capital + Juros)?",
+   "resposta": "emprestimo_lucas + juros_lucas",
+   "erros": [
+    "juros_lucas",
+    "emprestimo_lucas + juros_lucas * 2"
+   ],
+   "correta": "C",
+   "dica": [
+    {
+     "quem": "lucas",
+     "expressao": "tristeza",
+     "texto": "Quase, Tesoureira! Lembra que juros é só uma partezinha: <<juros_pct>>% do que eu emprestei. E depois soma com o valor que eu emprestei, hein!"
+    }
+   ],
+   "explicacao": [
+    {
+     "quem": "lucas",
+     "rubrica": "Faz uma continha rápida nos dedos",
+     "texto": "Eu te mostro, é fácil! Os juros incidem sobre o que eu emprestei: <<brl(emprestimo_lucas)>>. 10% de <<reais(emprestimo_lucas)>> é <<reais(pct(emprestimo_lucas, 10))>>.",
+     "frase_acao": "Lucas faz uma continha rápida nos dedos."
+    },
+    {
+     "quem": "lucas",
+     "texto": "E <<juros_pct>>% são <<juros_pct // 10>> vezes isso: <<reais(juros_lucas)>> de juros."
+    },
+    {
+     "quem": "lucas",
+     "expressao": "alegria",
+     "texto": "Aí é só somar o capital: <<reais(emprestimo_lucas)>> + <<reais(juros_lucas)>> = <<brl(emprestimo_lucas + juros_lucas)>>. Trato é trato!"
+    }
+   ],
+   "seguir": "f6_lucas_recebe",
+   "fase": "fase6",
+   "fundo": "patio_revelacao",
+   "musica": "wildflowers_by_the_river"
+  },
+  {
+   "id": "f6_lucas_recebe",
+   "efeitos": [
+    {
+     "quitar": {
+      "valor": "emprestimo_lucas",
+      "desc": "Devolução do empréstimo ao Lucas"
+     }
+    },
+    {
+     "despesa": {
+      "valor": "juros_lucas",
+      "desc": "Juros pagos ao Lucas (<<juros_pct>>% de <<brl(emprestimo_lucas)>>)"
+     }
+    }
+   ],
+   "falas": [
+    {
+     "quem": "lucas",
+     "texto": "Opa, <<brl(emprestimo_lucas + juros_lucas)>> certinho! Valeu, Tesoureira! Foi um bom negócio pra todo mundo."
+    }
+   ],
+   "seguir": "f6_revelacao",
+   "tipo": "cena",
+   "fase": "fase6",
+   "fundo": "patio_revelacao",
+   "musica": "wildflowers_by_the_river"
   },
   {
    "id": "f6_devolve_lucas",
@@ -2153,6 +2272,10 @@
    {
     "nome": "juros_5b",
     "expr": "pct(falta_5b, juros_pct)"
+   },
+   {
+    "nome": "juros_lucas",
+    "expr": "pct(emprestimo_lucas, juros_pct)"
    }
   ],
   "precos": {

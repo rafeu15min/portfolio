@@ -171,6 +171,9 @@ h1, h2, h3 { font-family: var(--titulo); font-weight: 500; margin: 0; }
 .hud-direita { position: absolute; right: 24px; top: 20px; display: flex; gap: 16px; align-items: flex-start; }
 .hud-caixa .folha { color: var(--verde); }
 .hud-direita .botao { padding: 14px 28px; }
+/* Dica da tecla I: discreta, logo abaixo do botão do Caderno (screen hud). */
+.hud-dica { position: absolute; right: 24px; top: 104px; }
+.hud .hud-dica .folha { padding: 6px 18px; font-size: 24px; }
 
 .aviso {
   position: absolute;
@@ -192,7 +195,21 @@ h1, h2, h3 { font-family: var(--titulo); font-weight: 500; margin: 0; }
   bottom: 0;
   height: 330px;
   z-index: 30;
-  background: linear-gradient(to bottom, rgba(255, 247, 237, 0.21) 0%, rgba(255, 247, 237, 0.8) 32%, rgba(255, 247, 237, 0.8) 100%);
+  /* Creme quase opaco: com sprite ou cenário atrás, texto e nome ficam legíveis
+     (contraste AA mesmo sobre fundo preto: texto 12:1, nomes 4,3:1 ou mais). */
+  background: rgba(255, 247, 237, 0.94);
+}
+
+/* Borda de cima suave (sem linha dura), no lugar do degradê translúcido de antes. */
+.dialogo::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 100%;
+  height: 48px;
+  background: linear-gradient(to bottom, rgba(255, 247, 237, 0), rgba(255, 247, 237, 0.94));
+  pointer-events: none;
 }
 
 .dialogo-nome {
@@ -290,6 +307,14 @@ h1, h2, h3 { font-family: var(--titulo); font-weight: 500; margin: 0; }
 .vitrine-item img { height: 140px; max-width: 100%; object-fit: contain; }
 .vitrine-item strong { font-family: var(--titulo); font-weight: 500; font-size: 30px; color: var(--ambar); }
 
+/* Item feito em destaque (screen vitrine_destaque): grande no centro, depois no
+   canto, sem moldura; as posições e a escala vêm da animação (paineis.js). */
+.destaque { position: absolute; inset: 0; z-index: 32; pointer-events: none; }   /* à frente da caixa de fala, como a zorder 40 do Ren'Py */
+.destaque-item { position: absolute; left: 960px; top: 450px; height: 320px; width: auto; opacity: 0;
+  transform: translate(-50%, -50%) scale(0.5); }
+.destaque-plaquinha { position: absolute; left: 50%; top: 668px; transform: translateX(-50%); opacity: 0; }
+.destaque-plaquinha .folha { padding: 10px 26px; font-family: var(--titulo); font-size: 44px; color: var(--marrom); white-space: nowrap; }
+
 .quiz {
   position: absolute;
   left: 50%;
@@ -306,44 +331,26 @@ h1, h2, h3 { font-family: var(--titulo); font-weight: 500; margin: 0; }
 .rotulo-quiz { font-size: 26px; font-weight: 700; color: var(--ambar); }
 .opcao-quiz { width: 100%; text-align: left; font-size: 36px; }
 
-.carrinho {
-  position: absolute;
-  left: 50%;
-  top: 45%;
-  z-index: 40;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 14px;
-  width: 1500px;
-  padding: 18px;
-  transform: translate(-50%, -45%);
-  background: var(--marrom);
-}
+/* Montar o carrinho (screen carrinho): as cartas na mesma grade da vitrine, com
+   setas < > ao lado do ícone, e o resumo à direita. */
+.carrinho { position: absolute; inset: 0; z-index: 40; pointer-events: none; }
+.carrinho > * { pointer-events: auto; }
+.carta-carrinho .folha { height: 340px; padding: 8px; gap: 2px; }
+.carta-topo { display: flex; align-items: center; justify-content: center; gap: 2px; }
+.carta-topo img { width: 116px; height: 140px; object-fit: contain; }
+.seta { width: 44px; height: 74px; padding: 0; font-size: 40px; line-height: 1; }
+.seta-vazia { flex: none; width: 44px; }
+.carta-carrinho .folha > span { min-height: 64px; }
+.carta-carrinho small { font-size: 20px; }
 
-.carrinho .titulo-carrinho { padding: 6px 40px; }
-.carrinho h2 { color: var(--ambar); font-size: 36px; }
-.grupos-carrinho { display: flex; gap: 14px; }
-
-.grupo-carrinho {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 4px;
-  width: 270px;
-  min-height: 400px;
-  padding: 10px 12px;
-  text-align: center;
-  font-size: 24px;
-}
-
-.grupo-carrinho img { height: 150px; max-width: 100%; object-fit: contain; }
-.grupo-carrinho span { min-height: 64px; }
-.grupo-carrinho strong { font-family: var(--titulo); font-weight: 500; font-size: 30px; color: var(--ambar); }
-.grupo-carrinho .botao { font-size: 26px; padding: 10px 22px; }
-.grupo-carrinho small { font-size: 20px; }
-.resumo-carrinho { display: flex; gap: 40px; padding: 8px 30px; background: var(--creme); }
-#finalizar_compra { padding: 10px 40px; background: #c9822b; }
+.resumo-carrinho { position: absolute; right: 42px; top: 130px; }
+.resumo-carrinho .folha { display: flex; flex-direction: column; gap: 10px; width: 520px; padding: 18px 24px; }
+.resumo-carrinho h2 { color: var(--ambar); font-size: 36px; text-align: center; }
+.resumo-carrinho .instrucao { margin: 0; font-size: 24px; text-align: center; }
+.linhas-resumo { display: flex; flex-direction: column; gap: 10px; }
+.positivo { color: var(--verde); }
+.negativo { color: var(--vermelho); }
+#finalizar_compra { align-self: center; padding: 10px 40px; background: #c9822b; }
 #finalizar_compra:hover:not(:disabled) { background: #e29a3f; }
 #finalizar_compra:disabled { background: #6b4a2e; color: #d6c3b0; }
 
@@ -536,6 +543,9 @@ h1, h2, h3 { font-family: var(--titulo); font-weight: 500; margin: 0; }
 /* --- cozinha -------------------------------------------------------------------------- */
 
 .cozinha { position: absolute; inset: 0; z-index: 40; touch-action: none; }
+/* As imagens nunca são alvo do ponteiro: o gesto é da tela inteira, e uma imagem
+   arrastável (drag nativo) cancelaria o ponteiro no meio do giro. */
+.cozinha img { pointer-events: none; -webkit-user-drag: none; }
 .panela, .panela-caixa { position: absolute; }
 .panela-caixa { width: 577px; height: 430px; }
 .panela-caixa > img { position: absolute; left: 0; top: 0; }
@@ -613,7 +623,7 @@ h1, h2, h3 { font-family: var(--titulo); font-weight: 500; margin: 0; }
   left: 50%;
   top: 960px;
   transform: translateX(-50%);
-  font-size: 40px;
+  font-size: 30px;
 }
 
 @media (prefers-reduced-motion: reduce) {

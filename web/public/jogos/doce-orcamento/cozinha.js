@@ -2,22 +2,27 @@
 // game/screens_cozinha.rpy; as regras vêm do nó (content/historia/02_cozinha.yaml).
 // Etapa 1 (arrastar): só os itens da receita entram na panela (o ingrediente
 //   tomba e some na massa, que ganha a cor dele: content/itens.yaml > cor); os
-//   distratores voltam com a dica. Mouse, toque (pointer events) ou teclado
-//   (Enter/Espaço no ingrediente o põe na panela).
-// Etapa 2 (misturar, FORA do fogo): sem calor; só meias-voltas no sentido do
-//   relógio (ou o botão Misturar) contam; as cores giram e somem sob a cor média.
-// Etapa 3 (mexer, NO fogo): a barra de calor do protótipo. Meia volta do
-//   ponteiro em volta da panela (qualquer sentido) ou o botão sobe o calor; a
-//   panela esfria a cada 0,12 s; na zona verde o doce avança; acima de
-//   'queima' ele queima (perde progresso).
+//   distratores voltam com a dica; o que sobra na bancada desliza e se
+//   recentraliza (Despensa.reorganizar). Mouse, toque (pointer events) ou
+//   teclado (Enter/Espaço no ingrediente o põe na panela).
+// Etapas 2 e 3: com o BOTÃO DO PONTEIRO PRESSIONADO sobre a panela, o giro em
+//   volta dela (anel ANEL) é o ato de mexer; sem apertar, nada conta. O que conta
+//   é o ângulo girado (a velocidade manda): cada meia volta (pi) vale uma mexida.
+//   Os botões "(sem girar o mouse)" dão uma mexida inteira (touchpad/acessibilidade).
+// Etapa 2 (misturar, FORA do fogo): sem calor; só o sentido do relógio mistura;
+//   'meias_voltas' fecham a massa; as cores somem sob 'cor_final' (marrom).
+// Etapa 3 (mexer, NO fogo): a barra de calor do protótipo. Qualquer sentido sobe
+//   o calor ('passo' por meia volta); a panela esfria a cada 0,12 s; na zona verde
+//   o doce avança; acima de 'queima' ele queima (perde progresso).
 import { animar, botao, el, img, noJogo, painel } from "./dom.js";
 
 const CENTRO = { x: 960, y: 650 };          // centro da panela nas etapas 2 e 3 (e do gesto)
 const PANELA_ARRASTAR_Y = 640;
 const ZOOM_PANELA = 0.95;
 const ALVO = { x: 676, y: 420, largura: 570, altura: 440 };   // área de soltar na panela
-const BANCADA = { x: 330, passo: 270, y: 850 };
-const ANEL = { min: 60, max: 330 };
+const BANCADA = { centro: 900, passo: 270, y: 850 };          // Ren'Py: 900 + (k - (n-1)/2) * 270
+const ANEL = { min: 40, max: 300 };                            // Mexida.r_min / r_max
+const DESLIZAR_MS = 350;
 const ARRASTO_MINIMO = 6;
 const POCAS = [[0.96, 0], [0.74, -34], [0.52, 30]];   // [zoom, deslocamento x] da k-ésima poça
 
@@ -29,6 +34,12 @@ const comprado = (grupo, estado) => grupo.find((item) => (estado.itens[item] ?? 
 const rgb = (cor) => [1, 3, 5].map((k) => parseInt(cor.slice(k, k + 2), 16));
 const corCss = ([r, g, b]) => `rgb(${r}, ${g}, ${b})`;
 
+/** Casas da bancada para 'itens' (na ordem), centradas em x = 900 como no Ren'Py. */
+export function casasDaBancada(itens) {
+  const meio = (itens.length - 1) / 2;
+  return new Map(itens.map((item, k) => [item, { x: BANCADA.centro + Math.trunc((k - meio) * BANCADA.passo), y: BANCADA.y }]));
+}
+
 /** Poça de cor no formato da boca da panela: a forma branca img/cozinha/mistura_oval
  * (577x430, a peça da panela) vira máscara CSS de um fundo da cor; a escala é em
  * volta do centro da boca (290, 170), como o anchor do doce_oval no Ren'Py. */
@@ -38,7 +49,7 @@ function poca(cor, zoom, dx = 0) {
 
 /** Panela 577x430 (com espaço para as poças), centrada em (960, y) e um pouco menor. */
 function panelaComMassa(y) {
-  const imagem = el("img", { src: imagemCozinha("panela_0"), alt: "Panela" });
+  const imagem = el("img", { src: imagemCozinha("panela_0"), alt: "Panela", draggable: "false" });
   const caixa = el("div", { class: "panela-caixa", style: { left: CENTRO.x + "px", top: y + "px",
     transform: `translate(-50%, -50%) scale(${ZOOM_PANELA})` } }, imagem);
   return { caixa, imagem };
@@ -54,10 +65,10 @@ class Bancada {
     this.recado = el("p", { class: "recado", role: "alert" });
     this.panela = panelaComMassa(PANELA_ARRASTAR_Y);
     const ordem = [...this.certos, ...no.distratores.map((grupo) => comprado(grupo, estado))];
-    this.casas = new Map(ordem.map((item, k) => [item, { x: BANCADA.x + k * BANCADA.passo, y: BANCADA.y }]));
+    this.casas = casasDaBancada(ordem);
+    this.pecas = new Map(ordem.map((item) => [item, this.#peca(item)]));   // o que ainda está na bancada, em ordem
     this.raiz = el("div", { class: "cozinha" }, this.panela.caixa,
-      painel({ class: "cozinha-titulo" }, el("h2", {}, no.titulo), el("p", {}, no.descricao), this.recado),
-      ...ordem.map((item) => this.#peca(item)));
+      painel({ class: "cozinha-titulo" }, el("h2", {}, no.titulo), el("p", {}, no.descricao), this.recado), ...this.pecas.values());
     tela.append(this.raiz);
   }
 
@@ -107,9 +118,10 @@ class Bancada {
     return x >= ALVO.x && x <= ALVO.x + ALVO.largura && y >= ALVO.y && y <= ALVO.y + ALVO.altura;
   }
 
-  /** Soltou: fora da panela volta; distrator volta com a dica; da receita cai na panela (uma vez só). */
+  /** Soltou: fora da panela volta; distrator volta com a dica; da receita cai na panela
+   * (uma vez só) e a bancada se reorganiza. */
   soltar(item, peca, naPanela) {
-    if (this.postos.includes(item) || this.postos.length === this.certos.length) return undefined;
+    if (!this.pecas.has(item) || this.postos.length === this.certos.length) return undefined;
     if (!naPanela) return this.#voltar(item, peca, 200);
     if (!this.certos.includes(item)) {
       this.recado.textContent = this.no.dica_errado;
@@ -117,8 +129,12 @@ class Bancada {
       return this.#voltar(item, peca, 250);
     }
     this.recado.textContent = "";
+    const tinhaFoco = document.activeElement === peca;
     peca.remove();
+    this.pecas.delete(item);
     this.#cair(item);
+    this.#reorganizar();
+    if (tinhaFoco) this.pecas.values().next().value?.focus({ preventScroll: true });   // teclado: segue na bancada
     if (this.postos.length === this.certos.length) setTimeout(() => this.concluir(), 1400);
     return undefined;
   }
@@ -139,11 +155,25 @@ class Bancada {
     ], { duration: 700 }).then(() => queda.remove());
   }
 
+  /** Fecha a lacuna do ingrediente que entrou na panela: o que sobrou desliza para as
+   * novas casas, recentralizado (Despensa.reorganizar no Ren'Py). A peça que está
+   * sendo arrastada só ganha a casa nova (volta para ela se for solta fora). */
+  #reorganizar() {
+    this.casas = casasDaBancada([...this.pecas.keys()]);
+    this.pecas.forEach((peca, item) => {
+      if (!peca.dataset.pegando) this.#deslizar(peca, this.casas.get(item), DESLIZAR_MS, "ease-in-out");
+    });
+  }
+
   #voltar(item, peca, ms) {
-    const casa = this.casas.get(item);
+    this.#deslizar(peca, this.casas.get(item), ms, "ease-out");
+  }
+
+  #deslizar(peca, casa, ms, easing) {
     const de = { left: peca.style.left, top: peca.style.top };
-    Object.assign(peca.style, { left: casa.x + "px", top: casa.y + "px" });
-    animar(peca, [de, { left: casa.x + "px", top: casa.y + "px" }], { duration: ms, easing: "ease-out" });
+    const para = { left: casa.x + "px", top: casa.y + "px" };
+    Object.assign(peca.style, para);
+    animar(peca, [de, para], { duration: ms, easing });
   }
 }
 
@@ -155,24 +185,81 @@ export function arrastarIngredientes(deps) {
   });
 }
 
-// --- regras das etapas 2 e 3 (estado puro, sem tela) ------------------------------------
+// --- regras das etapas 2 e 3 e o gesto (estado puro, sem tela: o teste usa) ---------------
 
-/** Etapa 3, no fogo: regras da barra de calor (do protótipo HTML). */
+const dentroDoAnel = (x, y) => {
+  const raio = Math.hypot(x - CENTRO.x, y - CENTRO.y);
+  return raio >= ANEL.min && raio <= ANEL.max;
+};
+
+/**
+ * Gesto de mexer (Mexida.event no Ren'Py): o botão precisa ser PRESSIONADO sobre a
+ * panela (no anel em volta do centro); enquanto ele fica apertado, cada movimento
+ * dentro do anel devolve o ângulo girado. Sem apertar, ou fora do anel, nada conta.
+ */
+export class Gesto {
+  #apertado = false;
+  #angulo = null;
+
+  /** Botão pressionado em (x, y): só vale sobre a panela. Devolve se passou a valer. */
+  pressionar(x, y) {
+    this.#apertado = dentroDoAnel(x, y);
+    this.#angulo = null;
+    return this.#apertado;
+  }
+
+  soltar() {
+    this.#apertado = false;
+    this.#angulo = null;
+  }
+
+  /** Radianos girados desde o ponto anterior (+ = sentido do relógio na tela), ou 0. */
+  mover(x, y) {
+    if (!this.#apertado || !dentroDoAnel(x, y)) {
+      this.#angulo = null;
+      return 0;
+    }
+    const angulo = Math.atan2(y - CENTRO.y, x - CENTRO.x);
+    const anterior = this.#angulo;
+    this.#angulo = angulo;
+    if (anterior === null) return 0;
+    // Menor caminho, com sinal: o +3pi deixa o resto positivo, como o % do Python.
+    return ((angulo - anterior + 3 * Math.PI) % (2 * Math.PI)) - Math.PI;
+  }
+}
+
+/** Etapa 3, no fogo: regras da barra de calor (do protótipo HTML), como Mexida no Ren'Py. */
 export class Mexida {
   constructor(regras) {
-    Object.assign(this, { regras, temp: 50, progresso: 0, mexidas: 0, pronto: false, queimando: false, bolhas: [] });
+    Object.assign(this, { regras, temp: 50, progresso: 0, mexidas: 0, acumulado: 0, pronto: false, queimando: false, bolhas: [] });
   }
 
-  /** Meia volta completa do ponteiro (sinal +1 = sentido do relógio): no fogo, qualquer sentido mexe. */
-  volta() {
-    this.mexer();
-  }
-
-  /** Uma mexida: sobe o calor e solta 3 bolhas. */
-  mexer() {
-    if (this.pronto) return;
-    this.temp = Math.min(100, this.temp + this.regras.passo);
+  /** Giro do ponteiro (radianos): cada meia volta vale uma mexida, na proporção do que
+   * foi girado; girar mais rápido esquenta mais rápido. Qualquer sentido mexe. */
+  avanco(delta) {
+    const fracao = Math.abs(delta) / Math.PI;
+    this.mexerPor(fracao);
+    this.acumulado += fracao;
+    if (this.acumulado < 1) return;
+    this.acumulado -= 1;
     this.mexidas += 1;
+    this.soltarBolhas();
+  }
+
+  /** Uma mexida inteira (o botão da tela, para quem não gira o mouse). */
+  mexer() {
+    this.mexerPor(1);
+    this.mexidas += 1;
+    this.soltarBolhas();
+  }
+
+  /** No fogo: o calor sobe 'passo' x fração de meia volta. */
+  mexerPor(fracao) {
+    if (this.pronto) return;
+    this.temp = Math.min(100, this.temp + this.regras.passo * fracao);
+  }
+
+  soltarBolhas() {
     [0, 1, 2].forEach((i) => this.bolhas.push({ x: CENTRO.x + (i - 1) * 70, y: CENTRO.y - 40 + i * 12, vida: 1 }));
   }
 
@@ -196,21 +283,22 @@ export class Mexida {
   }
 }
 
-/** Etapa 2, fora do fogo: sem calor; só meias-voltas no sentido do relógio contam. */
-export class Misturada {
+/** Etapa 2, fora do fogo (Misturada no Ren'Py): sem calor nem queima; só o sentido do
+ * relógio mistura; 'meias_voltas' meias-voltas fecham a massa. */
+export class Misturada extends Mexida {
   constructor(regras) {
-    Object.assign(this, { regras, progresso: 0, mexidas: 0, pronto: false, bolhas: [], angulo: 0 });
+    super(regras);
+    this.anguloVisual = 0;   // giro da massa (suavizado), em graus
   }
 
-  volta(sinal) {
-    if (sinal > 0) this.mexer();
+  avanco(delta) {
+    if (delta > 0) super.avanco(delta);
   }
 
-  mexer() {
+  /** Fora do fogo: a massa avança em proporção ao que foi girado. */
+  mexerPor(fracao) {
     if (this.pronto) return;
-    this.progresso = Math.min(100, this.progresso + 100 / this.regras.meias_voltas);
-    this.mexidas += 1;
-    [0, 1].forEach((i) => this.bolhas.push({ x: CENTRO.x + (i * 2 - 1) * 60, y: CENTRO.y - 30 + i * 14, vida: 1 }));
+    this.progresso = Math.min(100, this.progresso + (100 / this.regras.meias_voltas) * fracao);
   }
 
   alvo() {
@@ -219,34 +307,9 @@ export class Misturada {
 
   /** A cada 0,05 s: a massa gira até o alvo; pronta quando tudo chegou. */
   tique() {
-    this.angulo += (this.alvo() - this.angulo) * 0.25;
+    this.anguloVisual += (this.alvo() - this.anguloVisual) * 0.25;
     this.bolhas = this.bolhas.filter((b) => b.vida > 0.1).map((b) => ({ x: b.x, y: b.y - 5, vida: b.vida - 0.05 }));
-    this.pronto = this.progresso >= 100 && this.alvo() - this.angulo < 2;
-  }
-}
-
-/** Gesto circular: soma o ângulo percorrido no anel em volta da panela. */
-class Giro {
-  #angulo = null;
-  #giro = 0;
-
-  /** +1 ou -1 quando completa meia volta (+1 = sentido do relógio na tela), senão 0. */
-  mover(x, y) {
-    const dx = x - CENTRO.x;
-    const dy = y - CENTRO.y;
-    const raio = Math.hypot(dx, dy);
-    if (raio < ANEL.min || raio > ANEL.max) {
-      this.#angulo = null;
-      return 0;
-    }
-    const angulo = Math.atan2(dy, dx);
-    // Diferença no menor caminho, com sinal (ir e voltar se anula), como o % do Python.
-    if (this.#angulo !== null) this.#giro += ((angulo - this.#angulo + 3 * Math.PI) % (2 * Math.PI)) - Math.PI;
-    this.#angulo = angulo;
-    if (Math.abs(this.#giro) < Math.PI) return 0;
-    const sinal = Math.sign(this.#giro);
-    this.#giro = 0;
-    return sinal;
+    this.pronto = this.progresso >= 100 && this.alvo() - this.anguloVisual < 2;
   }
 }
 
@@ -263,21 +326,22 @@ function medir(elemento, valor) {
 }
 
 /**
- * Uma etapa de panela (misturar ou mexer): colher no ponteiro, gesto circular,
- * bolhas, texto de alerta e o botão; 'visual' desenha o que é próprio da etapa.
+ * Uma etapa de panela (misturar ou mexer): colher no ponteiro, gesto com o botão
+ * pressionado, bolhas, texto de alerta e o botão; 'visual' desenha o que é próprio da etapa.
  */
 class Etapa {
   constructor({ tela, som }, { regra, tiqueMs, botaoTexto, botaoId, titulo, descricao, pronto, esperaFim, visual }, concluir) {
     Object.assign(this, { tela, som, regra, visual, pronto, concluir, esperaFim });
-    this.giro = new Giro();
+    this.gesto = new Gesto();
     this.colher = el("img", { class: "colher", src: imagemCozinha("colher_1"), alt: "", hidden: true });
     this.bolhas = el("div", { class: "bolhas" });
     this.alerta = el("p", { class: "alerta-cozinha", role: "status" });
     this.raiz = el("div", { class: "cozinha mexendo" }, visual.cena, this.bolhas,
       painel({ class: "cozinha-painel" }, el("h2", {}, titulo), el("p", {}, descricao), ...visual.painel), this.alerta,
       botao(botaoTexto, () => this.mexer(), { class: "botao botao-mexer", id: botaoId }), this.colher);
-    this.raiz.addEventListener("pointermove", (e) => this.#ponteiro(e));
-    this.raiz.addEventListener("pointerdown", (e) => this.#ponteiro(e));
+    this.raiz.addEventListener("pointerdown", (e) => this.#pressionar(e));
+    this.raiz.addEventListener("pointermove", (e) => this.#mover(e));
+    ["pointerup", "pointercancel", "lostpointercapture"].forEach((tipo) => this.raiz.addEventListener(tipo, () => this.#soltar()));
     tela.append(this.raiz);
     this.timer = setInterval(() => this.#tique(), tiqueMs);
     this.desenhar();
@@ -288,14 +352,38 @@ class Etapa {
     this.desenhar();
   }
 
-  #ponteiro(evento) {
+  /** Botão principal pressionado sobre a panela: o gesto passa a valer (e o ponteiro
+   * fica preso à tela até soltar, mesmo saindo dela). Nos botões, nada. */
+  #pressionar(evento) {
+    if (evento.button !== 0 || evento.target.closest("button")) return;
+    const p = this.#colherEm(evento);
+    const vale = this.gesto.pressionar(p.x, p.y);
+    this.raiz.dataset.apertado = String(vale);
+    if (vale) this.raiz.setPointerCapture(evento.pointerId);
+  }
+
+  #soltar() {
+    this.gesto.soltar();
+    this.raiz.dataset.apertado = "false";
+  }
+
+  /** Cada ponto do movimento (também os agrupados pelo navegador) gira a massa. */
+  #mover(evento) {
+    const agrupados = evento.getCoalescedEvents?.() ?? [];
+    const pontos = (agrupados.length ? agrupados : [evento]).map((e) => noJogo(e, this.tela));
+    this.#colherEm(evento);
+    const giros = pontos.map((p) => this.gesto.mover(p.x, p.y)).filter((delta) => delta !== 0);
+    if (!giros.length) return;
+    giros.forEach((delta) => this.regra.avanco(delta));
+    this.desenhar();
+  }
+
+  /** A colher segue o ponteiro (concha na ponta). Devolve o ponto no jogo. */
+  #colherEm(evento) {
     const p = noJogo(evento, this.tela);
     this.colher.hidden = false;
     Object.assign(this.colher.style, { left: p.x - 46 + "px", top: p.y - 256 + "px" });
-    const sinal = this.giro.mover(p.x, p.y);
-    if (!sinal) return;
-    this.regra.volta(sinal);
-    this.desenhar();
+    return p;
   }
 
   #tique() {
@@ -312,7 +400,7 @@ class Etapa {
     this.alerta.textContent = r.pronto ? this.pronto : r.queimando ? "Cuidado! Está queimando!" : "";
     this.alerta.dataset.tipo = r.pronto ? "pronto" : "queima";
     this.bolhas.replaceChildren(...r.bolhas.map((b) => el("img", { src: imagemCozinha("bolha"), alt: "", style: { left: b.x + "px", top: b.y + "px" } })));
-    Object.assign(this.raiz.dataset, { progresso: Math.round(r.progresso), mexidas: r.mexidas });
+    Object.assign(this.raiz.dataset, { progresso: Math.round(r.progresso), calor: Math.round(r.temp), mexidas: r.mexidas });
   }
 
   fechar() {
@@ -328,20 +416,21 @@ function rodarEtapa(deps, opcoes) {
   });
 }
 
-/** Visual da mistura: a cor do 1º ingrediente, discos das cores girando e a cor média por cima. */
-function visualMistura(cores) {
+/** Visual da mistura (doce_mistura_giro): a cor do 1º ingrediente, discos das cores
+ * girando e, por cima, a cor final do brigadeiro aparecendo com o progresso. */
+function visualMistura(cores, corFinal) {
   const { caixa } = panelaComMassa(CENTRO.y);
-  const medio = [0, 1, 2].map((k) => Math.floor(cores.reduce((s, c) => s + c[k], 0) / cores.length));
   const discos = el("div", { class: "discos" }, cores.map((cor, j) => {
     const t = (120 * j * Math.PI) / 180;
     return el("div", { class: "forma-disco", style: { background: corCss(cor), left: 200 + 85 * Math.cos(t) - 70 + "px", top: 200 + 85 * Math.sin(t) - 70 + "px" } });
   }));
-  const uniforme = poca(medio, POCAS[0][0]);
+  const uniforme = poca(rgb(corFinal), POCAS[0][0]);
+  uniforme.classList.add("massa-final");
   caixa.append(poca(cores[0], POCAS[0][0]), discos, uniforme);
   const texto = el("p");
   const consistencia = barra("Consistência da massa");
   const desenhar = (m) => {
-    discos.style.transform = `scaleY(0.46) rotate(${m.angulo}deg)`;
+    discos.style.transform = `scaleY(0.46) rotate(${m.anguloVisual}deg)`;
     discos.style.opacity = 1 - 0.9 * (m.progresso / 100);
     uniforme.style.opacity = m.progresso / 100;
     texto.textContent = `Consistência da massa: ${Math.round(m.progresso)}%`;
@@ -352,13 +441,14 @@ function visualMistura(cores) {
 
 /** Etapa 2: misturar fora do fogo. 'cores' = cor de cada ingrediente da receita. */
 export function misturarMassa(deps, misturar, cores) {
-  return rodarEtapa(deps, { regra: new Misturada(misturar), tiqueMs: 50, botaoTexto: "MISTURAR!", botaoId: "misturar_botao",
-    titulo: "Misture a massa!", descricao: misturar.descricao, pronto: "Massa uniforme!", esperaFim: 1000, visual: visualMistura(cores) });
+  return rodarEtapa(deps, { regra: new Misturada(misturar), tiqueMs: 50, botaoTexto: "MISTURAR (sem girar o mouse)", botaoId: "misturar_botao",
+    titulo: "Misture a massa!", descricao: misturar.descricao, pronto: "Massa uniforme!", esperaFim: 1000,
+    visual: visualMistura(cores, misturar.cor_final) });
 }
 
 /** Visual do fogo: panela pelo progresso, barra de calor (zona verde e de queima) e progresso. */
 function visualFogo(regras) {
-  const panela = el("img", { class: "panela", src: imagemCozinha("panela_3"), alt: "Panela",
+  const panela = el("img", { class: "panela", src: imagemCozinha("panela_3"), alt: "Panela", draggable: "false",
     style: { left: CENTRO.x + "px", top: CENTRO.y + "px", transform: `translate(-50%, -50%) scale(${ZOOM_PANELA})` } });
   const faixa = (de, ate, classe) => el("div", { class: classe, style: { left: de + "%", width: ate - de + "%" } });
   const marcador = el("div", { class: "marcador" });
@@ -380,7 +470,8 @@ function visualFogo(regras) {
 
 /** Etapa 3: mexer no fogo até o ponto. */
 export function mexerPanela(deps, regras) {
-  return rodarEtapa(deps, { regra: new Mexida(regras), tiqueMs: 120, botaoTexto: "MEXER A PANELA!", botaoId: "mexer_botao",
-    titulo: "Ponto do Brigadeiro!", descricao: "Gire o mouse (ou o dedo) em volta da panela, ou clique em Mexer, para manter o calor na zona verde.",
+  return rodarEtapa(deps, { regra: new Mexida(regras), tiqueMs: 120, botaoTexto: "MEXER (sem girar o mouse)", botaoId: "mexer_botao",
+    titulo: "Ponto do Brigadeiro!",
+    descricao: "Segure o botão do mouse sobre a panela e gire: quanto mais rápido, mais esquenta. Mantenha o calor na zona verde.",
     pronto: "Ponto perfeito!", esperaFim: 1200, visual: visualFogo(regras) });
 }

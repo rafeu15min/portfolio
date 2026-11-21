@@ -59,12 +59,14 @@ function montar(c, assets) {
   const palco = new Palco(cenario, atores, c, assets);
   const vitrine = new Vitrine(tela, c, assets);
   const dialogo = new Dialogo(tela, { esperas, prefs, som, livre: () => camadas.vazia });
-  const hud = new Hud(tela, { som, abrirCaderno: () => caderno() });
+  const hud = new Hud(tela, { som, abrirCaderno: () => caderno(), aoVerDica: () => jogo.marcarDicaVista() });
   const jogo = new Jogo({ c, assets, tela, palco, dialogo, hud, vitrine, som, saves, esperas, aoTerminar: () => mostrarMenu() });
   let menu = null;
 
+  /** Abre o Caderno (botão ou tecla I); abrir também tira a dica da tecla I. */
   function caderno() {
     if (!jogo.cadernoLiberado || !camadas.vazia) return;
+    jogo.marcarDicaVista();
     abrirCaderno({ camadas, estado: jogo.estado, c, assets, som });
   }
 
