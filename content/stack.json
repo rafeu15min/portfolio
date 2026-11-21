@@ -37,7 +37,8 @@
           "projects": [
             "claudesktop",
             "biblia",
-            "doce-orcamento"
+            "doce-orcamento",
+            "kaiak"
           ]
         },
         {
@@ -49,7 +50,8 @@
         {
           "name": "JavaScript",
           "projects": [
-            "doce-orcamento"
+            "doce-orcamento",
+            "kaiak"
           ]
         },
         {
@@ -83,7 +85,8 @@
           "name": "Lua",
           "projects": [
             "internal-linux-env",
-            "anubis"
+            "anubis",
+            "kaiak"
           ]
         }
       ]
@@ -116,6 +119,12 @@
           "projects": [
             "portfolio",
             "anubis"
+          ]
+        },
+        {
+          "name": "Electron",
+          "projects": [
+            "kaiak"
           ]
         },
         {

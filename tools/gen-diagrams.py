@@ -490,9 +490,38 @@ def doce_orcamento():
     return d
 
 
+def kaiak():
+    d = D(
+        "kaiak", 880, 40 + 6 * 86 + 46, "KaiaK: do kaiak.lua à janela",
+        "Na partida, o Lua do fengari lê o kaiak.lua e devolve dados: layout, tema, atalhos e botões. O "
+        "processo principal do Electron monta a janela com esses dados: trilho de abas e barras são views em "
+        "HTML e JavaScript, e cada aba é uma página do Chromium. Toda requisição das abas passa pelas listas "
+        "de bloqueio antes de sair para a internet. O k.exec roda comandos da máquina pedidos pela configuração.",
+    )
+    g = Grid(d, 40)
+    g.down(440, 0, 1)
+    g.down(440, 1, 2, "vira dados")
+    d.elbow(360, g.bot(2), 160, g.y(3))
+    g.down(440, 2, 3)
+    d.elbow(520, g.bot(2), 720, g.y(3))
+    g.down(440, 3, 4, "cada requisição")
+    g.down(440, 4, 5, "o que passa")
+    g.n(260, 360, 0, "kaiak.lua", "layout, tema, atalhos e botões", "store")
+    g.n(260, 360, 1, "Lua (fengari)", "na partida e nas teclas do k.bind")
+    g.n(260, 360, 2, "Processo principal", "Electron: monta a janela", "focal-ruby")
+    g.n(40, 240, 3, "Trilho e barras", "views em HTML e JS")
+    g.n(320, 240, 3, "Abas", "páginas do Chromium")
+    g.n(600, 240, 3, "k.exec", "comandos da máquina")
+    g.n(320, 240, 4, "Bloqueio", "anúncios, rastreadores, malware")
+    g.n(320, 240, 5, "Sites", "na internet", "external")
+    legend(d, g.bot(5) + 30, [("kraft", "configuração do usuário"), ("internet", "serviço na internet")])
+    return d
+
+
 out = sys.argv[1]
 for d, name in [(personal_bank(), "personal-bank-suite"), (anubis(), "anubis"), (claudesktop(), "claudesktop"),
                 (vault_sync(), "vault-sync"), (token_econ(), "token-econ-plugins"), (portfolio(), "portfolio"),
-                (ship_n_click(), "ship-n-click"), (kernel(), "kernel-heimdall"), (doce_orcamento(), "doce-orcamento")]:
+                (ship_n_click(), "ship-n-click"), (kernel(), "kernel-heimdall"), (doce_orcamento(), "doce-orcamento"),
+                (kaiak(), "kaiak")]:
     open(f"{out}/{name}.svg", "w").write(d.svg())
     print(name, "ok")

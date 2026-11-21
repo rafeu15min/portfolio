@@ -33,7 +33,7 @@ textos de interface e a copy das seções fixas.
 - **Título:** PROJETOS
 - **Subtítulo:** Projetos pessoais e de estudo, com link para o código quando ele é público.
 - **Rótulos:** `ativo` · `em construção` · `protótipo` · `estudo` · `concluído` · `código ↗` · `🔒 repo privado` · `sem repo público` · `jogar ▶`
-- **Dados:** `content/projects.json` (20 projetos, levantados do GitHub e de `/mnt/Utilitarios/Projetos`).
+- **Dados:** `content/projects.json` (21 projetos, levantados do GitHub e de `/mnt/Utilitarios/Projetos`).
 - **Quadro do jogo** (página de projeto com `play`): título `Jogar` · botão
   `jogar ▶` · link `abrir em outra aba ↗` · `Créditos`. A dica de uso, os
   créditos e o aviso de licença vêm de `content/projects.json` (`play`).
