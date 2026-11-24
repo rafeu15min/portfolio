@@ -235,12 +235,12 @@
     "slug": "kaiak",
     "name": "KaiaK",
     "tagline": "Navegador pessoal em Electron, configurado por um arquivo Lua.",
-    "summary": "Navegador que estou construindo para uso próprio, na linha do Hyprland: layout, trilho de abas, barras, botões, atalhos e tema saem de um arquivo kaiak.lua, sem tela de configurações. Antes de escolher o motor, fiz três protótipos com as mesmas funções (Qt WebEngine, WebKitGTK e Electron). Fiquei com o Electron: os outros dois ficaram presos em 60 fps no monitor de 144 Hz, e ele chegou a cerca de 142 fps, com 350 MiB de memória ociosa. O Lua (fengari) roda na partida e nas teclas ligadas a ele; a configuração vira dados, sem código Lua por quadro. Pela conta do roadmap, por peso de esforço estimado, 54,7% do escopo atual está feito. Extensões, senhas via KeePassXC, workspaces e as páginas internas ainda não existem.",
+    "summary": "Navegador que estou construindo para uso próprio, na linha do Hyprland: layout, trilho de abas, barras, botões, atalhos e tema saem de um arquivo kaiak.lua, sem tela de configurações. Antes de escolher o motor, fiz três protótipos com as mesmas funções (Qt WebEngine, WebKitGTK e Electron). Fiquei com o Electron: os outros dois ficaram presos em 60 fps no monitor de 144 Hz, e ele chegou a cerca de 142 fps, com 350 MiB de memória ociosa. O Lua (fengari) roda na partida e nas teclas ligadas a ele; a configuração vira dados, sem código Lua por quadro. Pela conta do roadmap, por peso de esforço estimado, 54,9% do escopo atual está feito. Extensões, senhas via KeePassXC, workspaces e as páginas internas ainda não existem.",
     "highlights": [
-      "Layout, tema, atalhos, botões, página inicial e tela de boot definidos no kaiak.lua, com o erro mostrado no topo e volta à última configuração que funcionou",
+      "Layout, tema, atalhos, botões (que aceitam lista de ações e estados com tema próprio), página inicial e tela de boot definidos no kaiak.lua, com o erro mostrado no topo e volta à última configuração que funcionou",
       "Bloqueio de anúncios, rastreadores e malware por listas (StevenBlack e URLhaus), cookies de terceiros bloqueados e HTTPS-only",
       "Uso diário já coberto: sessão restaurada, busca na página, zoom por site, menu de contexto, impressão e PDF",
-      "327 testes automáticos e medições de fps, memória e CPU com scripts próprios"
+      "332 testes automáticos e medições de fps, memória e CPU com scripts próprios"
     ],
     "stack": [
       "Electron",
