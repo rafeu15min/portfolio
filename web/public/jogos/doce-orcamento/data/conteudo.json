@@ -342,7 +342,7 @@
  "itens": {
   "leite_condensado": {
    "id": "leite_condensado",
-   "nome": "Leite da Moçinha",
+   "nome": "Leite da Mocinha",
    "preco": 30.0,
    "icone": {
     "folha": "Igredientes/leite_e_granulados.png",
@@ -951,7 +951,7 @@
     {
      "quem": "denis",
      "expressao": "raiva",
-     "texto": "Idiota. Se gastarmos tudo no chocolate, não compramos a forminha. Olha os preços:"
+     "texto": "Calma aí, empolgado! Se gastarmos tudo no chocolate, não compramos a forminha. Olha os preços:"
     }
    ],
    "seguir": "f1_precos",
@@ -971,7 +971,7 @@
    ],
    "falas": [
     {
-     "narracao": "Leite da Moçinha: <<brl(preco_leite_condensado)>> · Achocolatado Premium: <<brl(preco_achocolatado_premium)>> · Creme de Leite: <<brl(preco_creme_de_leite)>> · Granulado: <<brl(preco_granulado)>> · Forminhas: <<brl(preco_forminhas)>>"
+     "narracao": "Leite da Mocinha: <<brl(preco_leite_condensado)>> · Achocolatado Premium: <<brl(preco_achocolatado_premium)>> · Creme de Leite: <<brl(preco_creme_de_leite)>> · Granulado: <<brl(preco_granulado)>> · Forminhas: <<brl(preco_forminhas)>>"
     },
     {
      "quem": "tabata",
@@ -1007,7 +1007,7 @@
     {
      "quem": "tabata",
      "expressao": "raiva",
-     "texto": "Incorreto. Some um item de cada vez e confira na vitrine se nenhum ficou de fora."
+     "texto": "Ainda não. Some um item de cada vez e confira na vitrine se nenhum ficou de fora."
     }
    ],
    "explicacao": [
@@ -1025,7 +1025,7 @@
     {
      "quem": "tabata",
      "expressao": "raiva",
-     "texto": "O total é <<brl(carrinho_total)>>. Eram só números, Angélica: não há espaço para achismo."
+     "texto": "O total é <<brl(carrinho_total)>>. Quando a gente confere item por item, a conta fica bem mais segura, Angélica."
     }
    ],
    "seguir": "f1_estouro",
@@ -1146,7 +1146,7 @@
     {
      "quem": "lucas",
      "se": "f_emprestimo_lucas and c_achocolatado_premium and c_leite_condensado",
-     "texto": "Chocolate premium e ainda o Leite da Moçinha? Aí não é só o chocolate, hein! Tá bom, eu empresto os <<brl(emprestimo_lucas)>>, mas com <<juros_pct>>% de juros simples. Se esse brigadeiro for tão bom assim, vocês dão conta. Depois da feira a gente acerta."
+     "texto": "Chocolate premium e ainda o Leite da Mocinha? Aí não é só o chocolate, hein! Tá bom, eu empresto os <<brl(emprestimo_lucas)>>, mas com <<juros_pct>>% de juros simples. Se esse brigadeiro for tão bom assim, vocês dão conta. Depois da feira a gente acerta."
     },
     {
      "quem": "lucas",
@@ -1240,7 +1240,7 @@
     {
      "quem": "cassia",
      "expressao": "alegria",
-     "texto": "Multiplicamos a receita por <<meta_producao // rendimento_receita>>. Viu só? Não era tão difícil assim..."
+     "texto": "Multiplicamos a receita por <<meta_producao // rendimento_receita>>. Viu só? Com calma, a gente chega lá."
     }
    ],
    "seguir": "f2_minigame_cozinha",
@@ -1402,7 +1402,7 @@
      "quem": "denis",
      "expressao": "raiva",
      "rubrica": "Cruza os braços",
-     "texto": "Hmpf. Errado. Presta atenção: é o que a gente gastou dividido pela quantidade de brigadeiros. Nada de chute.",
+     "texto": "Hmpf. Ainda não. Presta atenção: é o que a gente gastou dividido pela quantidade de brigadeiros. Pense na conta, sem chutar.",
      "anim": "balanca",
      "frase_acao": "Denis cruza os braços."
     }
@@ -1411,7 +1411,7 @@
     {
      "quem": "denis",
      "expressao": "raiva",
-     "texto": "Tsc... vou explicar UMA vez. Custo unitário é quanto cada brigadeiro custou pra gente: o gasto total dividido pela quantidade."
+     "texto": "Tsc... olha só, é assim. Custo unitário é quanto cada brigadeiro custou pra gente: o gasto total dividido pela quantidade."
     },
     {
      "quem": "denis",
@@ -1420,7 +1420,7 @@
     {
      "quem": "denis",
      "expressao": "raiva",
-     "texto": "Cada brigadeiro custou <<brl(custo_unit)>> pra gente. Anota aí e não me faz repetir."
+     "texto": "Cada brigadeiro custou <<brl(custo_unit)>> pra gente. Anota aí, que isso vai ser útil."
     }
    ],
    "seguir": "f3_debate_preco",
@@ -1504,7 +1504,7 @@
     {
      "quem": "tabata",
      "se": "qualidade == 2",
-     "texto": "Mas nossos ingredientes são de primeira: chocolate premium e Leite da Moçinha. A qualidade segura a venda, e isso entra na conta."
+     "texto": "Mas nossos ingredientes são de primeira: chocolate premium e Leite da Mocinha. A qualidade segura a venda, e isso entra na conta."
     },
     {
      "quem": "tabata",
@@ -1746,7 +1746,7 @@
      "quem": "tabata",
      "expressao": "raiva",
      "rubrica": "Revira os olhos",
-     "texto": "Incorreto. Os juros incidem só sobre o que falta pagar, não sobre o total. E depois é preciso somar o capital. Refaça.",
+     "texto": "Quase! Os juros incidem só sobre o que falta pagar, não sobre o total. E depois é preciso somar o capital. Tente de novo.",
      "anim": "balanca",
      "frase_acao": "Tábata revira os olhos."
     }
@@ -1755,7 +1755,7 @@
     {
      "quem": "tabata",
      "rubrica": "Revira os olhos",
-     "texto": "Cálculo básico. Os juros incidem sobre o que falta pagar: <<brl(falta_5b)>>.",
+     "texto": "Vamos com calma: os juros incidem sobre o que falta pagar: <<brl(falta_5b)>>.",
      "anim": "balanca",
      "frase_acao": "Tábata revira os olhos."
     },
